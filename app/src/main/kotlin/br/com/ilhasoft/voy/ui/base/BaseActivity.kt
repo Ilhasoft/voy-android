@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.base
+package br.com.ilhasoft.voy.ui.base
 
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
