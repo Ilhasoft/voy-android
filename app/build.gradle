@@ -54,6 +54,10 @@ android {
     }
 }
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:${versions.androidSupport}"
@@ -68,10 +72,16 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
 
     compile "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
+    compile "com.android.support:appcompat-v7:${versions.androidSupport}"
+    compile "com.android.support:design:${versions.androidSupport}"
 
     compile "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     compile "com.squareup.retrofit2:adapter-rxjava:${versions.retrofit}"
     compile "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     compile "com.squareup.okhttp3:logging-interceptor:${versions.loggingInterceptor}"
+
+    compile("org.bitbucket.ilhasoft.support-core:core:$ilhasoft_core_version") {
+        exclude group: "com.android.support", module: "appcompat-v7"
+    }
 
 }
