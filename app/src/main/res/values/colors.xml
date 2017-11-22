@@ -3,4 +3,24 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="bright_sky_blue">#00cbff</color>
+    <color name="black_38">#60000000</color>
+    <color name="white">#eaeaea</color>
+    <color name="cool_grey">#9b9fa3</color>
+    <color name="white_two">#ececec</color>
+    <color name="black_12">#1e000000</color>
+    <color name="charcoal_grey">#4a4a4a</color>
+    <color name="vivid_purple">#9012fe</color>
+    <color name="white_three">#ffffff</color>
+    <color name="apple_green">#7ed321</color>
+    <color name="black">#000000</color>
+    <color name="white_four">#dbdbdb</color>
+    <color name="warm_grey">#979797</color>
+    <color name="red">#ff0707</color>
+    <color name="vivid_purple_two">#9012fe</color>
+    <color name="vivid_purple_two_25">#409013fe</color>
+    <color name="warm_grey_two">#909090</color>
+    <color name="white_five">#e9e9e9</color>
+    <color name="white_six">#f9f9f9</color>
+    <color name="white_seven">#f0f0f0</color>
 </resources>

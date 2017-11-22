@@ -28,6 +28,30 @@ android {
     dataBinding {
         enabled = true
     }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        debug.java.srcDirs += 'src/debug/kotlin'
+        release.java.srcDirs += 'src/release/kotlin'
+        debugWithProGuard {
+            manifest.srcFile '/src/debug/AndroidManifest.xml'
+            java.srcDirs = ['src/debug/java', 'src/debug/kotlin']
+            resources.srcDirs = ['src/debug/java', 'src/debug/kotlin']
+            aidl.srcDirs = ['src/debug/java', 'src/debug/kotlin']
+            renderscript.srcDirs = ['src/debug/java', 'src/debug/kotlin']
+            res.srcDirs = ['src/debug/res']
+            assets.srcDirs = ['src/debug/assets']
+        }
+        releaseDebuggable {
+            manifest.srcFile '/src/release/AndroidManifest.xml'
+            java.srcDirs = ['src/release/java', 'src/release/kotlin']
+            resources.srcDirs = ['src/release/java', 'src/release/kotlin']
+            aidl.srcDirs = ['src/release/java', 'src/release/kotlin']
+            renderscript.srcDirs = ['src/release/java', 'src/release/kotlin']
+            res.srcDirs = ['src/release/res']
+            assets.srcDirs = ['src/release/assets']
+        }
+    }
 }
 
 dependencies {
