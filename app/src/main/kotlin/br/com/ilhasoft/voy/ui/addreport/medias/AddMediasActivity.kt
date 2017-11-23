@@ -19,8 +19,11 @@ class AddMediasActivity : BaseActivity(), AddMediasContract {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.toolbar?.run {
-            buttonBack.setOnClickListener { onBackPressed() }
+        binding.run {
+            this.presenter = this@AddMediasActivity.presenter
+            toolbar?.apply {
+                buttonBack.setOnClickListener { onBackPressed() }
+            }
         }
 
         presenter.attachView(this)
