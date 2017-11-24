@@ -10,6 +10,7 @@ import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
 
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
+import br.com.ilhasoft.voy.models.Credentials
 
 class LoginActivity : AppCompatActivity(), LoginContract {
 
@@ -18,6 +19,8 @@ class LoginActivity : AppCompatActivity(), LoginContract {
     }
 
     private val presenter: LoginPresenter by lazy { LoginPresenter() }
+
+    private val credentials by lazy { Credentials() }
 
     private val progress: IndeterminateProgressDialog by lazy {
         val progress = IndeterminateProgressDialog(this)
@@ -28,6 +31,7 @@ class LoginActivity : AppCompatActivity(), LoginContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.run {
+            credentials = this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }
         presenter.attachView(this)
