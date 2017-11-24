@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Voy</string>
     <string name="wait">Aguarde...</string>
+    <string name="hey">Hey!</string>
+    <string name="login">Login</string>
+    <string name="login_feedback_error">Nome de Usuário ou Senha incorretos,\ntente novamente!</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="min_length_error_message">Custom message</string>
 </resources>
