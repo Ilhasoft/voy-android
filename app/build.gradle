@@ -83,4 +83,6 @@ dependencies {
         exclude group: "com.android.support", module: "appcompat-v7"
     }
 
+    compile "com.github.Ilhasoft:data-binding-validator:${versions.validator}"
+
 }
