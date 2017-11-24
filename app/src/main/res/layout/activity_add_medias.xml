@@ -61,21 +61,17 @@
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
-                    <include
+                    <br.com.ilhasoft.voy.shared.widget.AddImageView
                         android:id="@+id/image1"
-                        layout="@layout/view_add_image"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        app:onImageClickListener="@{presenter}"/>
+                        android:layout_weight="1"/>
 
-                    <include
+                    <br.com.ilhasoft.voy.shared.widget.AddImageView
                         android:id="@+id/image2"
-                        layout="@layout/view_add_image"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        app:onImageClickListener="@{presenter}" />
+                        android:layout_weight="1"/>
 
                 </LinearLayout>
 
@@ -85,21 +81,17 @@
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
-                    <include
+                    <br.com.ilhasoft.voy.shared.widget.AddImageView
                         android:id="@+id/image3"
-                        layout="@layout/view_add_image"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        app:onImageClickListener="@{presenter}" />
+                        android:layout_weight="1"/>
 
-                    <include
+                    <br.com.ilhasoft.voy.shared.widget.AddImageView
                         android:id="@+id/image4"
-                        layout="@layout/view_add_image"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        app:onImageClickListener="@{presenter}" />
+                        android:layout_weight="1"/>
 
                 </LinearLayout>
 
