@@ -18,12 +18,16 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:name=".ui.splash.SplashActivity">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+        </activity>
+
+        <activity
             android:name=".ui.addreport.medias.AddMediasActivity"
             android:label="@string/title_activity_add_report">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <provider
