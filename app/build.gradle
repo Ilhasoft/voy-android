@@ -28,6 +28,7 @@ android {
     dataBinding {
         enabled = true
     }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         debug.java.srcDirs += 'src/debug/kotlin'
@@ -79,9 +80,13 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     compile "com.squareup.okhttp3:logging-interceptor:${versions.loggingInterceptor}"
 
+    compile "org.bitbucket.ilhasoft.support-core:media:${versions.supportCore}"
     compile("org.bitbucket.ilhasoft.support-core:core:${versions.supportCore}") {
         exclude group: "com.android.support", module: "appcompat-v7"
     }
+
+    compile "com.github.bumptech.glide:glide:${versions.glide}"
+    kapt "com.github.bumptech.glide:compiler:${versions.glide}"
 
     compile "com.github.Ilhasoft:data-binding-validator:${versions.validator}"
 
