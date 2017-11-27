@@ -10,4 +10,5 @@ interface OnAddImageClickListener {
 
     fun onClickAddImage(addImageView: AddImageView)
     fun onClickRemove(imageView: ImageView)
+
 }

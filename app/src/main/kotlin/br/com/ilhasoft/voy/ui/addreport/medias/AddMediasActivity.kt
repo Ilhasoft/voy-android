@@ -4,10 +4,8 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
-import br.com.ilhasoft.voy.GlideApp
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddMediasBinding
 import br.com.ilhasoft.voy.shared.widget.AddImageView
@@ -81,7 +79,7 @@ class AddMediasActivity : BaseActivity(), AddMediasContract,
         image4.setImageListener(this@AddMediasActivity)
     }
 
-    fun onNewPhoto(uri: Uri){
+    private fun onNewPhoto(uri: Uri) {
         imageViewSelected?.setImageFromUri(uri)
 
     }
