@@ -1,14 +1,17 @@
 package br.com.ilhasoft.voy.ui.splash
 
-import android.support.v7.app.AppCompatActivity
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.databinding.ActivitySplashBinding
+import br.com.ilhasoft.voy.ui.base.BaseActivity
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.splash_screen)
+        DataBindingUtil.setContentView<ActivitySplashBinding>(this, R.layout.activity_splash)
     }
+
 }
