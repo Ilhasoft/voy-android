@@ -40,6 +40,10 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity
+            android:name=".ui.login.LoginActivity">
+        </activity>
+
     </application>
 
 </manifest>
