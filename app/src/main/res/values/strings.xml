@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">Voy</string>
-    <string name="wait">Aguarde...</string>
+    <string name="app_name">Voices of Youth</string>
+    <string name="wait">Loading…</string>
+    <string name="title_activity_add_report">Add Report</string>
+    <string name="next">Next</string>
+    <string name="add_photos_videos">Add photos\nand videos</string>
 </resources>

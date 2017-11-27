@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <merge>
+
+        <br.com.ilhasoft.voy.shared.widget.SquareImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:background="@color/white_six"
+            android:scaleType="center"
+            android:src="@drawable/ic_add"/>
+
+        <ImageButton
+            android:id="@+id/remove"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="top|end"
+            android:paddingBottom="8dp"
+            android:paddingEnd="0dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="0dp"
+            android:paddingStart="8dp"
+            android:paddingTop="0dp"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            android:src="@drawable/ic_remove"
+            tools:visibility="visible"/>
+
+    </merge>
+
+</layout>
