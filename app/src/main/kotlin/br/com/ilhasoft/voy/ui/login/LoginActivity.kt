@@ -2,17 +2,14 @@ package br.com.ilhasoft.voy.ui.login
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 
-
-import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
 
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
+import br.com.ilhasoft.voy.ui.base.BaseActivity
 
-class LoginActivity : AppCompatActivity(), LoginContract {
+class LoginActivity : BaseActivity(), LoginContract {
 
     private val binding: ActivityLoginBinding by lazy {
         DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
@@ -21,12 +18,6 @@ class LoginActivity : AppCompatActivity(), LoginContract {
     private val presenter: LoginPresenter by lazy { LoginPresenter() }
 
     private val credentials by lazy { Credentials() }
-
-    private val progress: IndeterminateProgressDialog by lazy {
-        val progress = IndeterminateProgressDialog(this)
-        progress.setMessage("Aguarde...")
-        progress
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,20 +43,5 @@ class LoginActivity : AppCompatActivity(), LoginContract {
         presenter.detachView()
     }
 
-    override fun showMessage(messageId: Int) {
-        //showMessage(getString(messageid))
-    }
-
-    override fun showMessage(message: CharSequence) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun showLoading() {
-        progress.show()
-    }
-
-    override fun dismissLoading() {
-        progress.dismiss()
-    }
 
 }
