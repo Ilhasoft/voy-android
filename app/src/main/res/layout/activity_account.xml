@@ -5,6 +5,12 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="editingPhoto"
+            type="Boolean" />
+
         <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.account.AccountPresenter" />
@@ -31,7 +37,7 @@
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="0.3" />
+            android:layout_weight="0.1" />
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -52,67 +58,85 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/ic_change"
-                tools:visibility="visible" />
+                android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
+                tools:visibility="gone" />
 
         </FrameLayout>
 
-
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="0.3" />
+            android:layout_weight="0.1" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1.5dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:background="@color/white" />
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.05" />
-
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:hint="@string/username_hint" />
+            android:orientation="vertical"
+            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
+            tools:visibility="gone">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:hint="@string/email" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@color/white" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.05" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:hint="@string/password_hint" />
+                android:hint="@string/username_hint" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <EditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="8dp"
-                android:text="@string/change"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                android:enabled="false"
+                android:hint="@string/email" />
 
-        </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="@string/password_hint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="8dp"
+                    android:text="@string/change"
+                    android:visibility="visible" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="@{editingPhoto ? View.VISIBLE : View.GONE}"
+            tools:visibility="visible" />
 
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="0.4"
+            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
+            tools:visibility="gone" />
 
         <Button
             style="?android:borderlessButtonStyle"
