@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="noReports"
+            type="Boolean" />
+
+        <variable
+            name="greetings"
+            type="String" />
+
+        <variable
+            name="createReportTip"
+            type="String" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.report.ReportsPresenter" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="@{noReports ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/ic_bg_no_report"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="60dp"
+                    android:src="@drawable/ic_greetings_no_report" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="24dp"
+                    android:text="@{greetings}"
+                    android:textColor="@color/bright_sky_blue"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    tools:text="@string/approved_greetings" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="@{createReportTip}"
+                    android:textColor="@color/charcoal_grey"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="@string/approved_greetings_tip" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="134dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_bright_sky_blue_button"
+                android:drawableLeft="@drawable/ic_add_report"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/ic_add_report"
+                android:onClick="@{() -> presenter.onClickAddReport()}"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/add_report_label"
+                android:textAllCaps="false"
+                android:textColor="@color/white_three"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reports"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="48dp"
+            android:visibility="@{noReports ? View.GONE : View.VISIBLE}" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="@color/bright_sky_blue"
+            android:onClick="@{() -> presenter.onClickAddReport()}"
+            android:text="@string/add_report_label"
+            android:textAllCaps="false"
+            android:textColor="@color/white_three"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="@{noReports ? View.GONE : View.VISIBLE}" />
+
+    </FrameLayout>
+
+</layout>
