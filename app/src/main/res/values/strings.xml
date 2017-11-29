@@ -10,7 +10,18 @@
     <string name="login_network_error">We do not identify an active internet connection,\ncheck your connection, and try again!</string>
     <string name="login_label">Login</string>
 
-    <string name="title_activity_add_report">Add Report</string>
+    <string name="approved_fragment_title">Approved</string>
+    <string name="pending_fragment_title">Pending</string>
+    <string name="rejected_fragment_title">Rejected</string>
+    <string name="approved_greetings">Hello!</string>
+    <string name="approved_greetings_tip">You have not\ncreated any report yet</string>
+    <string name="pending_greetings">Great!</string>
+    <string name="pending_greetings_tip">All you reports has\nbeen approved</string>
+    <string name="rejected_greetings">Great Job!</string>
+    <string name="rejected_greetings_tip">You have no rejects\nreports</string>
+    <string name="add_report_label">Add Report</string>
+
+    <string name="add_report_title_label">Add Report</string>
     <string name="next">Next</string>
     <string name="add_photos_videos">Add photos\nand videos</string>
 </resources>

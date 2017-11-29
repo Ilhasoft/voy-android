@@ -45,7 +45,7 @@ class AddImageView : FrameLayout {
 
     private fun removeImage() {
         binding?.apply {
-            image.setImageResource(R.drawable.ic_add)
+            image.setImageResource(R.drawable.ic_add_media)
             remove.visibility = View.GONE
         }
     }

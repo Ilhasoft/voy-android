@@ -32,7 +32,7 @@ abstract class BaseActivity : AppCompatActivity(), BasicView {
     }
 
     override fun showMessage(message: CharSequence) {
-        Snackbar.make(getRootView(), message, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(getRootView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun getRootView(): View {
