@@ -44,12 +44,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="5dp"
-                android:src="@drawable/ic_account_avatar" />
+                android:src="@drawable/ic_account_avatar"/>
 
             <ImageButton
                 style="@style/Widget.AppCompat.Button.Borderless"
@@ -59,7 +59,7 @@
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/ic_change"
                 android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
         </FrameLayout>
 
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
 
             <View
@@ -113,8 +113,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
+                    android:layout_gravity="bottom|end"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:text="@string/change"
                     android:visibility="visible" />
@@ -123,20 +124,20 @@
 
         </LinearLayout>
 
-        <GridView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/gridview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:visibility="@{editingPhoto ? View.VISIBLE : View.GONE}"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:layout_weight="0.4"
-            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
-            tools:visibility="gone" />
+            android:visibility="@{editingPhoto ? View.VISIBLE : View.GONE}"
+            tools:visibility="visible" />
 
         <Button
             style="?android:borderlessButtonStyle"

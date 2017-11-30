@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.ui.account
 
+
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 
@@ -18,12 +19,7 @@ class AccountActivity : BaseActivity(), AccountContract {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.run {
-            presenter = this@AccountActivity.presenter
-            toolbar?.apply {
-                buttonBack.setOnClickListener { onBackPressed() }
-            }
-        }
+        setupView()
         presenter.attachView(this)
     }
 
@@ -40,6 +36,15 @@ class AccountActivity : BaseActivity(), AccountContract {
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    private fun setupView() {
+        binding.run {
+            presenter = this@AccountActivity.presenter
+            toolbar?.apply {
+                buttonBack.setOnClickListener { onBackPressed() }
+            }
+        }
     }
 
 }
