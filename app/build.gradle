@@ -80,10 +80,12 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     compile "com.squareup.okhttp3:logging-interceptor:${versions.loggingInterceptor}"
 
-    compile "org.bitbucket.ilhasoft.support-core:recyclerview:${versions.supportCore}"
     compile "org.bitbucket.ilhasoft.support-core:media:${versions.supportCore}"
     compile("org.bitbucket.ilhasoft.support-core:core:${versions.supportCore}") {
         exclude group: "com.android.support", module: "appcompat-v7"
+    }
+    compile("org.bitbucket.ilhasoft.support-core:recyclerview:${versions.supportCore}") {
+        exclude(group: 'com.android.support')
     }
 
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
@@ -92,6 +94,4 @@ dependencies {
     compile "com.github.Ilhasoft:data-binding-validator:${versions.validator}"
 
     compile "de.hdodenhof:circleimageview:${versions.circleImageView}"
-
-
 }
