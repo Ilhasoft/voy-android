@@ -3,17 +3,21 @@ package br.com.ilhasoft.voy.ui.account
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
+import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 
 
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAccountBinding
+import br.com.ilhasoft.voy.models.Avatar
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 
-class AccountActivity : BaseActivity(), AccountContract {
+class AccountActivity : BaseActivity(), AccountContract{
 
     private val binding: ActivityAccountBinding by lazy {
         DataBindingUtil.setContentView<ActivityAccountBinding>(this, R.layout.activity_account)
     }
+
 
     private val presenter: AccountPresenter by lazy { AccountPresenter() }
 
