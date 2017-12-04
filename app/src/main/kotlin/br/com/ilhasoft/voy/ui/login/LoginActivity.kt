@@ -15,8 +15,11 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context): Intent =
-                Intent(context, LoginActivity::class.java)
+        fun createIntent(context: Context): Intent {
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            return intent
+        }
     }
 
     private val binding: ActivityLoginBinding by lazy {

@@ -10,6 +10,12 @@
     <string name="login_network_error">We do not identify an active internet connection,\ncheck your connection, and try again!</string>
     <string name="login_label">Login</string>
 
+    <string name="title_activity_account">Account</string>
+    <string name="email">Email</string>
+    <string name="save">Save</string>
+    <string name="change">Change</string>
+    <string name="logout">Logout</string>
+
     <string name="title_activity_add_report">Add Report</string>
     <string name="next">Next</string>
     <string name="add_photos_videos">Add photos\nand videos</string>
