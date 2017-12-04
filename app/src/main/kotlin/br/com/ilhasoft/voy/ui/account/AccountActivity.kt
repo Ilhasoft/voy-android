@@ -1,25 +1,40 @@
 package br.com.ilhasoft.voy.ui.account
 
-
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
-
-
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAccountBinding
-import br.com.ilhasoft.voy.models.Avatar
+import br.com.ilhasoft.voy.databinding.ItemAvatarBinding
 import br.com.ilhasoft.voy.ui.base.BaseActivity
+import br.com.ilhasoft.voy.ui.login.LoginActivity
 
-class AccountActivity : BaseActivity(), AccountContract{
+class AccountActivity : BaseActivity(), AccountContract {
+
+    companion object {
+        private const val AVATARS_SPAN_COUNT = 5
+    }
 
     private val binding: ActivityAccountBinding by lazy {
         DataBindingUtil.setContentView<ActivityAccountBinding>(this, R.layout.activity_account)
     }
-
-
     private val presenter: AccountPresenter by lazy { AccountPresenter() }
+    private val avatarViewHolder:
+            OnCreateViewHolder<Int, AvatarViewHolder> by lazy {
+        OnCreateViewHolder { layoutInflater, parent, _ ->
+            AvatarViewHolder(ItemAvatarBinding.inflate(layoutInflater, parent, false),
+                    presenter)
+        }
+    }
+    private val avatarsAdapter:
+            AutoRecyclerAdapter<Int, AvatarViewHolder> by lazy {
+        AutoRecyclerAdapter(mutableListOf(), avatarViewHolder).apply {
+            setHasStableIds(true)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,13 +57,30 @@ class AccountActivity : BaseActivity(), AccountContract{
         presenter.detachView()
     }
 
+    override fun navigateToSwitchAvatar() {
+        binding.editingPhoto = binding.editingPhoto?.not()
+    }
+
+    override fun navigateToMakeLogout() = startActivity(LoginActivity.createIntent(this))
+
     private fun setupView() {
         binding.run {
+            editingPhoto = false
             presenter = this@AccountActivity.presenter
             toolbar?.apply {
                 buttonBack.setOnClickListener { onBackPressed() }
             }
+            setupRecyclerView(avatars)
         }
     }
+
+    private fun setupRecyclerView(reports: RecyclerView) = with(reports) {
+        layoutManager = setupLayoutManager()
+        setHasFixedSize(true)
+        adapter = avatarsAdapter
+    }
+
+    private fun setupLayoutManager(): RecyclerView.LayoutManager =
+            GridLayoutManager(this, AVATARS_SPAN_COUNT)
 
 }
