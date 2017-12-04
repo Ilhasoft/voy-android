@@ -95,5 +95,4 @@ dependencies {
     compile "com.github.Ilhasoft:data-binding-validator:${versions.validator}"
 
     compile "de.hdodenhof:circleimageview:${versions.circleImageView}"
-
 }
