@@ -1,3 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="avatar_with_border">3dp</dimen>
+    <dimen name="avatar_no_border">0dp</dimen>
 </resources>
