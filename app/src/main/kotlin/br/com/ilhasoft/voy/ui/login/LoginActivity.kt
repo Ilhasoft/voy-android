@@ -10,6 +10,9 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.ui.base.BaseActivity
+import br.com.ilhasoft.voy.ui.home.HomeActivity
+import rx.Observable
+import java.util.concurrent.TimeUnit
 
 class LoginActivity : BaseActivity(), LoginContract {
 
@@ -57,6 +60,11 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     override fun navigateToHome() {
         showMessage(getString(R.string.login_success))
+        Observable.timer(1, TimeUnit.SECONDS)
+                .subscribe({
+                    startActivity(HomeActivity.createIntent(this))
+                    finish()
+                })
     }
 
     private fun setupView() {

@@ -24,7 +24,7 @@
                 android:id="@+id/toolbar"
                 layout="@layout/view_toolbar"
                 app:actionName="@{@string/next}"
-                app:title="@{@string/title_activity_add_report}" />
+                app:title="@{@string/add_report_title_label}" />
 
         </android.support.design.widget.AppBarLayout>
 

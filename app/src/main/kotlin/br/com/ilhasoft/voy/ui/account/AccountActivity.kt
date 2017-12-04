@@ -1,5 +1,7 @@
 package br.com.ilhasoft.voy.ui.account
 
+import android.content.Context
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -19,6 +21,9 @@ class AccountActivity : BaseActivity(), AccountContract {
 
     companion object {
         private const val AVATARS_SPAN_COUNT = 5
+
+        @JvmStatic
+        fun createIntent(context: Context): Intent = Intent(context, AccountActivity::class.java)
     }
 
     private val binding: ActivityAccountBinding by lazy {
@@ -60,6 +65,14 @@ class AccountActivity : BaseActivity(), AccountContract {
         presenter.detachView()
     }
 
+    override fun navigateBack() {
+        onBackPressed()
+    }
+
+    override fun navigateToHome() {
+        finish()
+    }
+
     override fun navigateToSwitchAvatar() {
         binding.editingPhoto = binding.editingPhoto?.not()
     }
@@ -70,8 +83,8 @@ class AccountActivity : BaseActivity(), AccountContract {
         binding.run {
             editingPhoto = false
             presenter = this@AccountActivity.presenter
-            toolbar?.apply {
-                buttonBack.setOnClickListener { onBackPressed() }
+            toolbar?.run {
+                presenter = this@AccountActivity.presenter
             }
             setupAdapter()
             setupRecyclerView(avatars)

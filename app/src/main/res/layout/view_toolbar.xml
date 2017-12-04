@@ -12,6 +12,10 @@
             name="actionName"
             type="String" />
 
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.account.AccountPresenter" />
+
     </data>
 
     <FrameLayout
@@ -23,11 +27,12 @@
         <ImageButton
             android:id="@+id/button_back"
             style="@style/RippleButton"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical|start"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:onClick="@{() -> presenter.onClickNavigateBack()}"
             android:src="@drawable/ic_arrow_back" />
 
         <TextView
@@ -49,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
+            android:onClick="@{() -> presenter.onClickSaveMyAccount()}"
             android:text="@{actionName}"
             android:textColor="@color/colorAccent"
             android:textSize="18sp"
@@ -58,8 +64,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="@color/colorAccent"
-            android:layout_gravity="bottom"/>
+            android:layout_gravity="bottom"
+            android:background="@color/colorAccent" />
 
     </FrameLayout>
 

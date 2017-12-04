@@ -15,7 +15,7 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         DataBindingUtil.setContentView<ActivitySplashBinding>(this, R.layout.activity_splash)
 
-        Observable.timer(2, TimeUnit.SECONDS)
+        Observable.timer(1, TimeUnit.SECONDS)
                 .subscribe({
                     startActivity(LoginActivity.createIntent(this))
                     finish()
