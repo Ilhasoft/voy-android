@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
+import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.adapter.HomeAdapter
 import br.com.ilhasoft.voy.ui.home.adapter.NavigationItem
@@ -44,7 +45,9 @@ class HomeActivity : BaseActivity(), HomeContract {
         presenter.detachView()
     }
 
-    override fun navigateToAddReport() {
+    override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
+
+    override fun showNotifications() {
 
     }
 
@@ -55,6 +58,9 @@ class HomeActivity : BaseActivity(), HomeContract {
     private fun setupTabs() {
         val adapter = HomeAdapter(supportFragmentManager, createNavigationItems())
         binding.apply {
+            viewToolbar?.run {
+                presenter = this@HomeActivity.presenter
+            }
             viewPager.let {
                 it.adapter = adapter
                 it.offscreenPageLimit = adapter.count
