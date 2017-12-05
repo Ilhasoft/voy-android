@@ -8,6 +8,10 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
         view.navigateToMyAccount()
     }
 
+    fun onClickSelectMap() {
+        view.selectMap()
+    }
+
     fun onClickNotifications() {
         view.showNotifications()
     }

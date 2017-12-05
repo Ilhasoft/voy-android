@@ -4,12 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
+import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
+import br.com.ilhasoft.voy.databinding.ItemMapBinding
+import br.com.ilhasoft.voy.models.Map
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.adapter.HomeAdapter
 import br.com.ilhasoft.voy.ui.home.adapter.NavigationItem
+import br.com.ilhasoft.voy.ui.home.holder.MapViewHolder
 import br.com.ilhasoft.voy.ui.report.ReportsFragment
 
 class HomeActivity : BaseActivity(), HomeContract {
@@ -23,6 +30,16 @@ class HomeActivity : BaseActivity(), HomeContract {
         DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
     }
     private val presenter: HomePresenter by lazy { HomePresenter() }
+    private val mapViewHolder: OnCreateViewHolder<Map, MapViewHolder> by lazy {
+        OnCreateViewHolder { layoutInflater, parent, _ ->
+            MapViewHolder(ItemMapBinding.inflate(layoutInflater, parent, false), presenter)
+        }
+    }
+    private val mapsAdapter: AutoRecyclerAdapter<Map, MapViewHolder> by lazy {
+        AutoRecyclerAdapter(mutableListOf(), mapViewHolder).apply {
+            setHasStableIds(true)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,20 +64,42 @@ class HomeActivity : BaseActivity(), HomeContract {
 
     override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
 
+    override fun selectMap() {
+        binding.selectingThemes = binding.selectingThemes?.not()
+    }
+
     override fun showNotifications() {
 
     }
 
     private fun setupView() {
+        setupToolbar()
+        setupRecyclerView(binding.maps)
         setupTabs()
     }
+
+    private fun setupToolbar() {
+        binding.apply {
+            selectingThemes = false
+            viewToolbar?.run {
+                map = Map()
+                presenter = this@HomeActivity.presenter
+            }
+        }
+    }
+
+    private fun setupRecyclerView(maps: RecyclerView) = with(maps) {
+        layoutManager = setupLayoutManager()
+        setHasFixedSize(true)
+        adapter = mapsAdapter
+    }
+
+    private fun setupLayoutManager(): RecyclerView.LayoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
     private fun setupTabs() {
         val adapter = HomeAdapter(supportFragmentManager, createNavigationItems())
         binding.apply {
-            viewToolbar?.run {
-                presenter = this@HomeActivity.presenter
-            }
             viewPager.let {
                 it.adapter = adapter
                 it.offscreenPageLimit = adapter.count

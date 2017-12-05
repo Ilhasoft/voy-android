@@ -6,6 +6,8 @@ interface HomeContract : BasicView {
 
     fun navigateToMyAccount()
 
+    fun selectMap()
+
     fun showNotifications()
 
 }
