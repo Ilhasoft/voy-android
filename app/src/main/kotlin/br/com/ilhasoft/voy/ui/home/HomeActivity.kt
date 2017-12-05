@@ -11,6 +11,7 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
 import br.com.ilhasoft.voy.databinding.ItemMapBinding
+import br.com.ilhasoft.voy.databinding.ViewHomeToolbarBinding
 import br.com.ilhasoft.voy.models.Map
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
@@ -73,19 +74,17 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
 
     private fun setupView() {
-        setupToolbar()
-        setupRecyclerView(binding.maps)
-        setupTabs()
-    }
-
-    private fun setupToolbar() {
         binding.apply {
             selectingThemes = false
-            viewToolbar?.run {
-                map = Map()
-                presenter = this@HomeActivity.presenter
-            }
+            viewToolbar?.run { setupToolbar(this) }
+            setupRecyclerView(maps)
+            setupTabs()
         }
+    }
+
+    private fun setupToolbar(viewToolbar: ViewHomeToolbarBinding) = with(viewToolbar) {
+        map = Map()
+        presenter = this@HomeActivity.presenter
     }
 
     private fun setupRecyclerView(maps: RecyclerView) = with(maps) {
