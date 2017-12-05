@@ -3,42 +3,88 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.design.widget.CoordinatorLayout
+    <data>
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.home.HomePresenter" />
+
+    </data>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white_three"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical"
-        tools:context=".ui.home.HomeActivity">
+        android:fitsSystemWindows="false"
+        tools:openDrawer="end">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <include
-                android:id="@+id/viewToolbar"
-                layout="@layout/view_home_toolbar" />
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
-                style="@style/TabLayoutStyle"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentBottom="true"
-                android:minHeight="?android:attr/actionBarSize"
-                app:tabGravity="fill"
-                app:tabMode="fixed" />
-
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:background="@color/white_three"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical"
+            tools:context=".ui.home.HomeActivity">
 
-    </android.support.design.widget.CoordinatorLayout>
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <include
+                    android:id="@+id/viewToolbar"
+                    layout="@layout/view_home_toolbar" />
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabLayout"
+                    style="@style/TabLayoutStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_alignParentBottom="true"
+                    android:minHeight="?android:attr/actionBarSize"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navView"
+            android:layout_width="220dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end">
+
+            <TextView
+                android:id="@+id/drawerHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:textColor="@color/black"
+                android:text="@string/notifications"
+                android:onClick="@{() -> presenter.onClickHeaderNavView()}"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/notificationsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="74dp" />
+
+        </android.support.design.widget.NavigationView>
+
+    </android.support.v4.widget.DrawerLayout>
+
 
 </layout>

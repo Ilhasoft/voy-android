@@ -8,4 +8,9 @@ interface HomeContract : BasicView {
 
     fun showNotifications()
 
+    fun dismissNotifications()
+    
+    fun navigateToNotificationDetail()
+
+
 }
