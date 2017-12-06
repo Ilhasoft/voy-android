@@ -17,13 +17,13 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
 import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
+import br.com.ilhasoft.voy.databinding.ViewHomeToolbarBinding
 import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.adapter.HomeAdapter
 import br.com.ilhasoft.voy.ui.home.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.ReportsFragment
-import kotlinx.android.synthetic.main.activity_home.view.notificationsList
 
 class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notification, NotificationViewHolder> {
 
@@ -94,18 +94,22 @@ class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notificati
     }
 
     private fun setupView() {
-        setupTabs()
-        setupDrawer()
-        setupNotificationsList(binding.navView.notificationsList)
+        binding.apply {
+            viewToolbar?.run { setupToolbar(this) }
+            setupTabs()
+            setupDrawer()
+            setupNotifications(notifications)
+        }
+    }
+
+    private fun setupToolbar(viewToolbar: ViewHomeToolbarBinding) = with(viewToolbar) {
+        presenter = this@HomeActivity.presenter
     }
 
     private fun setupTabs() {
         val adapter = HomeAdapter(supportFragmentManager, createNavigationItems())
         binding.apply {
             presenter = this@HomeActivity.presenter
-            viewToolbar?.run {
-                presenter = this@HomeActivity.presenter
-            }
             viewPager.let {
                 it.adapter = adapter
                 it.offscreenPageLimit = adapter.count
@@ -124,24 +128,22 @@ class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notificati
         return mutableListOf(approved, pending, rejected)
     }
 
-    private fun setupDrawer(){
+    private fun setupDrawer() {
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    private fun setupNotificationsList(recyclerView: RecyclerView) = with(recyclerView) {
+    private fun setupNotifications(recyclerView: RecyclerView) = with(recyclerView) {
         val exampleList = resources.getStringArray(R.array.notifications).map { Notification(it, null) }
+        notificationsAdapter.setList(exampleList)
         layoutManager = setLayoutManager()
         addItemDecoration(setItemDecoration())
-        notificationsAdapter.setList(exampleList)
         adapter = notificationsAdapter
     }
 
-    private fun setLayoutManager(): RecyclerView.LayoutManager? {
-        return LinearLayoutManager(this@HomeActivity, LinearLayout.VERTICAL, false)
-    }
+    private fun setLayoutManager(): RecyclerView.LayoutManager? =
+            LinearLayoutManager(this@HomeActivity, LinearLayout.VERTICAL, false)
 
-    private fun setItemDecoration(): RecyclerView.ItemDecoration? {
-        return DividerItemDecoration(this@HomeActivity, DividerItemDecoration.VERTICAL)
-    }
+    private fun setItemDecoration(): RecyclerView.ItemDecoration? =
+            DividerItemDecoration(this@HomeActivity, DividerItemDecoration.VERTICAL)
 
 }
