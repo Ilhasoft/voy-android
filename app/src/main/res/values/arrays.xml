@@ -25,12 +25,4 @@
         <item>@drawable/ic_avatar22</item>
         <item>@drawable/ic_avatar23</item>
     </integer-array>
-
-    <string-array name="notifications">
-        <item>A report from you has been approved</item>
-        <item>A report from you was rejected</item>
-        <item>Pedro and 3 others commented in their report</item>
-        <item>Salim and 23 others commented in their report</item>
-        <item>Ana commented in her report</item>
-    </string-array>
 </resources>

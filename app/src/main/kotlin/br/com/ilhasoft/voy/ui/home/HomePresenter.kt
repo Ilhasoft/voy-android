@@ -9,15 +9,19 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
         view.navigateToMyAccount()
     }
 
+    fun onClickSelectMap() {
+        view.selectMap()
+    }
+
     fun onClickNotifications() {
         view.showNotifications()
     }
 
-    fun onClickHeaderNavView(){
+    fun onClickHeaderNavView() {
         view.dismissNotifications()
     }
 
-    fun onClickItemNotification(notification: Notification){
+    fun onClickItemNotification(notification: Notification) {
         view.navigateToNotificationDetail()
     }
 }

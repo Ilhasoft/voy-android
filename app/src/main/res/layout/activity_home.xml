@@ -5,6 +5,12 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="selectingThemes"
+            type="Boolean" />
+
         <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.home.HomePresenter" />
@@ -36,6 +42,13 @@
                     android:id="@+id/viewToolbar"
                     layout="@layout/view_home_toolbar" />
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/maps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="28dp"
+                    android:visibility="@{selectingThemes ? View.VISIBLE : View.GONE}" />
+
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabLayout"
                     style="@style/TabLayoutStyle"
@@ -43,6 +56,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_alignParentBottom="true"
                     android:minHeight="?android:attr/actionBarSize"
+                    android:visibility="@{selectingThemes ? View.GONE : View.VISIBLE}"
                     app:tabGravity="fill"
                     app:tabMode="fixed" />
 

@@ -9,23 +9,24 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
+import br.com.ilhasoft.voy.databinding.ItemMapBinding
 import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
 import br.com.ilhasoft.voy.databinding.ViewHomeToolbarBinding
+import br.com.ilhasoft.voy.models.Map
 import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.adapter.HomeAdapter
 import br.com.ilhasoft.voy.ui.home.adapter.NavigationItem
+import br.com.ilhasoft.voy.ui.home.holder.MapViewHolder
 import br.com.ilhasoft.voy.ui.report.ReportsFragment
 
-class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notification, NotificationViewHolder> {
+class HomeActivity : BaseActivity(), HomeContract {
 
     companion object {
         @JvmStatic
@@ -35,11 +36,25 @@ class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notificati
     private val binding: ActivityHomeBinding by lazy {
         DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
     }
-
     private val presenter: HomePresenter by lazy { HomePresenter() }
-
-    private val notificationsAdapter by lazy {
-        AutoRecyclerAdapter<Notification, NotificationViewHolder>(this).apply {
+    private val mapViewHolder: OnCreateViewHolder<Map, MapViewHolder> by lazy {
+        OnCreateViewHolder { layoutInflater, parent, _ ->
+            MapViewHolder(ItemMapBinding.inflate(layoutInflater, parent, false), presenter)
+        }
+    }
+    private val mapsAdapter: AutoRecyclerAdapter<Map, MapViewHolder> by lazy {
+        AutoRecyclerAdapter(mutableListOf(), mapViewHolder).apply {
+            setHasStableIds(true)
+        }
+    }
+    private val notificationViewHolder: OnCreateViewHolder<Notification, NotificationViewHolder> by lazy {
+        OnCreateViewHolder { layoutInflater, parent, _ ->
+            NotificationViewHolder(ItemNotificationBinding
+                    .inflate(layoutInflater, parent, false), presenter)
+        }
+    }
+    private val notificationsAdapter: AutoRecyclerAdapter<Notification, NotificationViewHolder> by lazy {
+        AutoRecyclerAdapter(mutableListOf(), notificationViewHolder).apply {
             setHasStableIds(true)
         }
     }
@@ -73,13 +88,11 @@ class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notificati
         }
     }
 
-    override fun onCreateViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup?,
-                                    viewType: Int): NotificationViewHolder {
-        return NotificationViewHolder(ItemNotificationBinding
-                .inflate(layoutInflater, parent, false), presenter)
-    }
-
     override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
+
+    override fun selectMap() {
+        binding.selectingThemes = binding.selectingThemes?.not()
+    }
 
     override fun showNotifications() {
         binding.drawerLayout.openDrawer(GravityCompat.END)
@@ -95,7 +108,9 @@ class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notificati
 
     private fun setupView() {
         binding.apply {
+            selectingThemes = false
             viewToolbar?.run { setupToolbar(this) }
+            setupRecyclerView(maps)
             setupTabs()
             setupDrawer()
             setupNotifications(notifications)
@@ -103,8 +118,18 @@ class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notificati
     }
 
     private fun setupToolbar(viewToolbar: ViewHomeToolbarBinding) = with(viewToolbar) {
+        map = Map()
         presenter = this@HomeActivity.presenter
     }
+
+    private fun setupRecyclerView(maps: RecyclerView) = with(maps) {
+        layoutManager = setupLayoutManager()
+        setHasFixedSize(true)
+        adapter = mapsAdapter
+    }
+
+    private fun setupLayoutManager(): RecyclerView.LayoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
     private fun setupTabs() {
         val adapter = HomeAdapter(supportFragmentManager, createNavigationItems())
@@ -133,8 +158,6 @@ class HomeActivity : BaseActivity(), HomeContract, OnCreateViewHolder<Notificati
     }
 
     private fun setupNotifications(recyclerView: RecyclerView) = with(recyclerView) {
-        val exampleList = resources.getStringArray(R.array.notifications).map { Notification(it, null) }
-        notificationsAdapter.setList(exampleList)
         layoutManager = setLayoutManager()
         addItemDecoration(setItemDecoration())
         adapter = notificationsAdapter

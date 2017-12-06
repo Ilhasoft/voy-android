@@ -17,6 +17,7 @@ class ReportViewHolder(val binding: ItemReportBinding,
 
     override fun onBind(report: Report) {
         binding.report = report
+        binding.executePendingBindings()
     }
 
 }

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <variable
+            name="map"
+            type="br.com.ilhasoft.voy.models.Map" />
 
         <variable
             name="presenter"
@@ -30,11 +35,20 @@
             android:layout_height="match_parent"
             android:layout_weight="0.1" />
 
-        <Spinner
+        <TextView
             android:id="@+id/maps"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4" />
+            android:layout_weight="0.4"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawableRight="@drawable/ic_arrow_down"
+            android:gravity="center"
+            android:onClick="@{() -> presenter.onClickSelectMap()}"
+            android:text="@{map.name}"
+            android:textColor="@color/vivid_purple"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="São Paulo" />
 
         <Space
             android:layout_width="0dp"
