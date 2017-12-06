@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">@color/white_eight</color>
     <color name="colorAccent">@color/bright_sky_blue</color>
     <color name="bright_sky_blue">#00cbff</color>
+    <color name="bright_sky_blue_dark">#0089ac</color>
     <color name="black_38">#60000000</color>
     <color name="white">#eaeaea</color>
     <color name="cool_grey">#9b9fa3</color>
