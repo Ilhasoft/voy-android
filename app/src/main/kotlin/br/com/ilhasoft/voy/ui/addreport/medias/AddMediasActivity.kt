@@ -19,7 +19,7 @@ class AddMediasActivity : BaseActivity(), AddMediasContract,
         OnAddImageClickListener {
 
     private val binding by lazy {
-        DataBindingUtil.setContentView<ActivityAddMediasBinding>(this@AddMediasActivity, R.layout.activity_add_medias)
+        DataBindingUtil.setContentView<ActivityAddMediasBinding>(this, R.layout.activity_add_medias)
     }
 
     private val presenter by lazy { AddMediasPresenter() }
@@ -74,7 +74,7 @@ class AddMediasActivity : BaseActivity(), AddMediasContract,
     }
 
     private fun setupToolbar() {
-        binding.toolbar?.apply {
+        binding.toolbar?.run {
             presenter = this@AddMediasActivity.presenter
         }
     }
