@@ -22,7 +22,7 @@
 
             <include
                 android:id="@+id/toolbar"
-                layout="@layout/view_toolbar"
+                layout="@layout/view_medias_toolbar"
                 app:actionName="@{@string/next}"
                 app:title="@{@string/add_report_title_label}" />
 
@@ -51,8 +51,8 @@
             <br.com.ilhasoft.voy.shared.widget.SquareLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_marginBottom="48dp"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -65,13 +65,13 @@
                         android:id="@+id/image1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                     <br.com.ilhasoft.voy.shared.widget.AddImageView
                         android:id="@+id/image2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
@@ -85,13 +85,13 @@
                         android:id="@+id/image3"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                     <br.com.ilhasoft.voy.shared.widget.AddImageView
                         android:id="@+id/image4"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 

@@ -35,14 +35,9 @@ class AddMediasActivity : BaseActivity(), AddMediasContract,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.run {
-            presenter = this@AddMediasActivity.presenter
-            toolbar?.apply {
-                buttonBack.setOnClickListener { onBackPressed() }
-            }
-        }
+        setupView()
+        setupToolbar()
         setUpImages()
-
         presenter.attachView(this)
     }
 
@@ -70,6 +65,18 @@ class AddMediasActivity : BaseActivity(), AddMediasContract,
 
     override fun onClickRemove(imageView: ImageView) {
 
+    }
+
+    private fun setupView() {
+        binding.run {
+            presenter = this@AddMediasActivity.presenter
+        }
+    }
+
+    private fun setupToolbar() {
+        binding.toolbar?.apply {
+            presenter = this@AddMediasActivity.presenter
+        }
     }
 
     private fun setUpImages() = with(binding) {
