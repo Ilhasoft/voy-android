@@ -45,10 +45,10 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:onClick="@{() -> presenter.onClickPopupMenu()}"
-            tools:src="@drawable/ic_default_img_profile" />
+            android:src="@drawable/ic_expanded_menu" />
 
         <View
             android:layout_width="match_parent"
