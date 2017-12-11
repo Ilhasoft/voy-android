@@ -16,4 +16,8 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="WhiteRaisedButton" parent="Theme.AppCompat.Light">
+        <item name="colorButtonNormal">@color/white_three</item>
+    </style>
+
 </resources>
