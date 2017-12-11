@@ -26,6 +26,7 @@
         </activity>
         <activity android:name=".ui.login.LoginActivity" />
         <activity android:name=".ui.home.HomeActivity" />
+        <activity android:name=".ui.report.detail.ReportDetailActivity" />
         <activity android:name=".ui.account.AccountActivity" />
         <activity android:name=".ui.addreport.medias.AddMediasActivity" />
 
