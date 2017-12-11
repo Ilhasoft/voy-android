@@ -14,7 +14,7 @@
 
         <variable
             name="presenter"
-            type="br.com.ilhasoft.voy.ui.addreport.medias.AddMediasPresenter" />
+            type="br.com.ilhasoft.voy.ui.addreport.AddReportPresenter" />
 
     </data>
 

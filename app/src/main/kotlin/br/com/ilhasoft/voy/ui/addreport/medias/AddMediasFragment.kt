@@ -1,44 +1,58 @@
 package br.com.ilhasoft.voy.ui.addreport.medias
 
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.View
 import android.widget.ImageView
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
-import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.databinding.ActivityAddMediasBinding
+import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
 import br.com.ilhasoft.voy.shared.widget.AddImageView
-import br.com.ilhasoft.voy.ui.base.BaseActivity
+
+import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.shared.OnAddImageClickListener
 
-/**
- * Created by lucasbarros on 23/11/17.
- */
-class AddMediasActivity : BaseActivity(), AddMediasContract,
-        OnAddImageClickListener {
 
-    private val binding by lazy {
-        DataBindingUtil.setContentView<ActivityAddMediasBinding>(this, R.layout.activity_add_medias)
+class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageClickListener {
+
+    private val binding: FragmentAddMediasBinding by lazy {
+        FragmentAddMediasBinding.inflate(LayoutInflater.from(context))
     }
 
-    private val presenter by lazy { AddMediasPresenter() }
+    private val presenter: AddMediasFragmentPresenter by lazy { AddMediasFragmentPresenter() }
 
     private val delegate: MediaSelectorDelegate by lazy {
         val listener = MediaSelectorDelegate.OnLoadMediaListener {
             it?.let { onNewPhoto(it) }
         }
-        MediaSelectorDelegate(this, "br.com.ilhasoft.voy.provider")
+        MediaSelectorDelegate(context, "br.com.ilhasoft.voy.provider")
                 .setOnLoadImageListener(listener)
                 .setOnLoadGalleryImageListener(listener)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private var imageViewSelected: AddImageView? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupView()
-        setupToolbar()
         setUpImages()
-        presenter.attachView(this)
+        return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -52,12 +66,6 @@ class AddMediasActivity : BaseActivity(), AddMediasContract,
         delegate.onRequestPermissionResult(this, requestCode, grantResults)
     }
 
-    override fun getMedia() {
-        delegate.selectMedia(this, MediaSelectorDelegate.GALLERY_IMAGE or MediaSelectorDelegate.CAMERA_IMAGE)
-    }
-
-    private var imageViewSelected: AddImageView? = null
-
     override fun onClickAddImage(addImageView: AddImageView) {
         imageViewSelected = addImageView
         getMedia()
@@ -69,25 +77,24 @@ class AddMediasActivity : BaseActivity(), AddMediasContract,
 
     private fun setupView() {
         binding.run {
-            presenter = this@AddMediasActivity.presenter
-        }
-    }
-
-    private fun setupToolbar() {
-        binding.toolbar?.run {
-            presenter = this@AddMediasActivity.presenter
+            presenter = this@AddMediasFragment.presenter
         }
     }
 
     private fun setUpImages() = with(binding) {
-        image1.setImageListener(this@AddMediasActivity)
-        image2.setImageListener(this@AddMediasActivity)
-        image3.setImageListener(this@AddMediasActivity)
-        image4.setImageListener(this@AddMediasActivity)
+        image1.setImageListener(this@AddMediasFragment)
+        image2.setImageListener(this@AddMediasFragment)
+        image3.setImageListener(this@AddMediasFragment)
+        image4.setImageListener(this@AddMediasFragment)
     }
 
     private fun onNewPhoto(uri: Uri) {
         imageViewSelected?.setImageFromUri(uri)
 
     }
+
+    override fun getMedia() {
+        delegate.selectMedia(this, MediaSelectorDelegate.GALLERY_IMAGE or MediaSelectorDelegate.CAMERA_IMAGE)
+    }
+
 }
