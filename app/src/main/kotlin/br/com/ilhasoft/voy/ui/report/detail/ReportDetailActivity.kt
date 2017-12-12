@@ -4,14 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.PopupMenu
+import br.com.ilhasoft.support.core.helpers.DimensionHelper
+import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
+import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
+import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
+import br.com.ilhasoft.voy.databinding.ItemTagBinding
 import br.com.ilhasoft.voy.databinding.ViewReportToolbarBinding
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.ui.base.BaseActivity
+import br.com.ilhasoft.voy.ui.report.detail.holder.TagViewHolder
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 
 class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnMenuItemClickListener {
 
@@ -25,6 +35,18 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
     }
     private val presenter: ReportDetailPresenter by lazy { ReportDetailPresenter() }
     private lateinit var popupMenu: PopupMenu
+    private val tagViewHolder:
+            OnCreateViewHolder<Tag, TagViewHolder> by lazy {
+        OnCreateViewHolder { layoutInflater, parent, _ ->
+            TagViewHolder(ItemTagBinding.inflate(layoutInflater, parent, false))
+        }
+    }
+    private val tagsAdapter:
+            AutoRecyclerAdapter<Tag, TagViewHolder> by lazy {
+        AutoRecyclerAdapter(mutableListOf(), tagViewHolder).apply {
+            setHasStableIds(true)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +87,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         binding.run {
             report = Report()
             viewToolbar?.run { setupToolbar(this) }
+            setupRecyclerView(tags)
             presenter = this@ReportDetailActivity.presenter
         }
     }
@@ -79,6 +102,23 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         popupMenu = PopupMenu(this, expandedMenu)
         popupMenu.setOnMenuItemClickListener(this)
         popupMenu.menuInflater.inflate(R.menu.report_detail, popupMenu.menu)
+    }
+
+    private fun setupRecyclerView(tags: RecyclerView) = with(tags) {
+        layoutManager = setupLayoutManager()
+        addItemDecoration(setupItemDecoration())
+        setHasFixedSize(true)
+        adapter = tagsAdapter
+    }
+
+    private fun setupLayoutManager(): RecyclerView.LayoutManager =
+            FlexboxLayoutManager(this).apply {
+                flexWrap = FlexWrap.WRAP
+            }
+
+    private fun setupItemDecoration(): SpaceItemDecoration {
+        val space = DimensionHelper.toPx(this, 4f)
+        return SpaceItemDecoration(2 * space, space, 2 * space, space)
     }
 
 }

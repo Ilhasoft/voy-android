@@ -11,7 +11,7 @@
     </data>
 
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_vivid_purple_two">
 
@@ -25,6 +25,8 @@
             android:paddingTop="8dp"
             android:text="@{tag.name}"
             android:textColor="@color/white_three"
+            android:textSize="8sp"
+            tools:ignore="SmallSp"
             tools:text="Accessibility" />
 
     </FrameLayout>
