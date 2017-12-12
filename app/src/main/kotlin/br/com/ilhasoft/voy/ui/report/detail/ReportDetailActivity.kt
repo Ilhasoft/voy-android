@@ -118,7 +118,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
 
     private fun setupItemDecoration(): SpaceItemDecoration {
         val space = DimensionHelper.toPx(this, 4f)
-        return SpaceItemDecoration(2 * space, space, 2 * space, space)
+        return SpaceItemDecoration(0, 0, 2 * space, space)
     }
 
 }
