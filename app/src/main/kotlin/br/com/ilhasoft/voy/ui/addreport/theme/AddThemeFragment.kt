@@ -34,7 +34,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract, OnCreateViewH
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding.presenter = presenter
         return binding.root
     }
 

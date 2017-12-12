@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="presenter"
-            type="br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragmentPresenter" />
+            name="clicked"
+            type="boolean" />
     </data>
 
     <TextView
@@ -18,7 +18,6 @@
         android:gravity="center"
         android:minHeight="0dp"
         android:minWidth="0dp"
-        android:onClick="@{() ->  presenter.onClickTag()}"
         android:paddingBottom="10dp"
         android:paddingEnd="20dp"
         android:paddingLeft="20dp"
@@ -26,6 +25,7 @@
         android:paddingStart="20dp"
         android:paddingTop="10dp"
         android:textAllCaps="false"
+        android:textColor="@color/selector_tag_text"
         tools:text="Accessibility" />
 
 </layout>
