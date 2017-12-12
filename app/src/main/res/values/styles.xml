@@ -16,4 +16,8 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="HintStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/cool_grey</item>
+    </style>
+
 </resources>

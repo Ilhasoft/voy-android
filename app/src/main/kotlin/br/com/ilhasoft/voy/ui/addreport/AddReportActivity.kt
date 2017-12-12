@@ -1,9 +1,12 @@
 package br.com.ilhasoft.voy.ui.addreport
 
+import android.support.v4.app.Fragment
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
+import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
+import br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragment
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 
 /**
@@ -21,6 +24,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
         super.onCreate(savedInstanceState)
         setupView()
         setupToolbar()
+        startFragment(AddThemeFragment(), "Medias")
         presenter.attachView(this)
     }
 
@@ -36,4 +40,10 @@ class AddReportActivity : BaseActivity(), AddReportContract {
         }
     }
 
+    private fun startFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment, tag)
+                .addToBackStack(null)
+                .commit()
+    }
 }

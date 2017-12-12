@@ -13,6 +13,10 @@
             type="String" />
 
         <variable
+            name="enabled"
+            type="Boolean"/>
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.addreport.AddReportPresenter" />
 
@@ -56,7 +60,8 @@
             android:layout_gravity="center_vertical|end"
             android:onClick="@{() -> presenter.onClickNext()}"
             android:text="@{actionName}"
-            android:textColor="@color/colorAccent"
+            android:enabled="@{enabled}"
+            android:textColor="@color/selector_action_button_text"
             android:textSize="18sp"
             android:textStyle="normal"
             tools:text="Next" />

@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.ui.addreport.medias
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.view.View
 import android.widget.ImageView
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
 import br.com.ilhasoft.voy.shared.widget.AddImageView
 
@@ -34,10 +36,16 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
 
     private var imageViewSelected: AddImageView? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding.presenter = presenter
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupView()
         setUpImages()
-        return binding.root
+        presenter.attachView(this)
     }
 
     override fun onStart() {

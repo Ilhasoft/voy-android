@@ -35,4 +35,10 @@
     <string name="title_activity_add_report">Add Report</string>
     <string name="next">Next</string>
     <string name="add_photos_videos">Add photos\nand videos</string>
+    <string name="add_title_and_description">Title and\nDescription</string>
+    <string name="title_hint">Title</string>
+    <string name="description_hint">Description</string>
+    <string name="add_link">Add Link</string>
+    <string name="themes_and_tags">Themes\nand Tags</string>
+    <string name="add_tags">Add Tags</string>
 </resources>
