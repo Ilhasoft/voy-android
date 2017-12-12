@@ -24,7 +24,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
         super.onCreate(savedInstanceState)
         setupView()
         setupToolbar()
-        startFragment(AddThemeFragment(), "Medias")
+        startFragment(AddMediasFragment(), "Medias")
         presenter.attachView(this)
     }
 
