@@ -4,7 +4,7 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 
 class AddThemeFragmentPresenter : Presenter<AddThemeFragmentContract>(AddThemeFragmentContract::class.java) {
 
-    fun onClickTag() {
-        view.toggleTagStatus()
+    fun onClickThemes() {
+        view.showThemesDialog()
     }
 }

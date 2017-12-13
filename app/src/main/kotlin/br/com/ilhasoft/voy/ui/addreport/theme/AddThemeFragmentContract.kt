@@ -4,4 +4,5 @@ import br.com.ilhasoft.support.core.mvp.BasicView
 
 interface AddThemeFragmentContract : BasicView {
     fun toggleTagStatus()
+    fun showThemesDialog()
 }

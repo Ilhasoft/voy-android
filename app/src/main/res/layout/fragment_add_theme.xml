@@ -29,15 +29,21 @@
             android:textStyle="normal"
             tools:text="Themes\nand tags" />
 
-        <Spinner
+        <Button
             android:id="@+id/themes"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/listPreferredItemHeight"
-            android:layout_marginEnd="16dp"
+            android:layout_gravity="start"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
+            android:background="@drawable/selector_rectangle_white"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawableRight="@drawable/ic_arrow_down"
+            android:onClick="@{() -> presenter.onClickThemes()}"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:textAlignment="textStart"
             tools:listitem="@layout/support_simple_spinner_dropdown_item"
             tools:text="List Item" />
 
@@ -64,7 +70,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            tools:listitem="@layout/item_tag"/>
+            tools:listitem="@layout/item_tag" />
 
     </LinearLayout>
 

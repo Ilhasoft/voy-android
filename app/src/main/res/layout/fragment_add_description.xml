@@ -127,20 +127,20 @@
                 android:id="@+id/link"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
-                android:layout_weight="1"
-                android:background="@drawable/selector_retangle_edittext"
-                android:inputType="text"
                 android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/selector_rectangle_white"
+                android:inputType="text"
                 android:padding="5dp" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/btn_add_link"
                 android:layout_margin="5dp"
-                android:padding="7dp"
+                android:background="@drawable/btn_add_link"
                 android:onClick="@{() -> presenter.addLink()}"
+                android:padding="7dp"
                 android:src="@drawable/ic_add_link" />
 
         </LinearLayout>
@@ -150,7 +150,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:visibility="@{hasLinks ? view.GONE : view.VISIBLE}"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
         <Space
             android:layout_width="1dp"

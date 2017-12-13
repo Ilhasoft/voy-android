@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.View
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
-import br.com.ilhasoft.voy.R
 
 
 import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
@@ -34,6 +33,7 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract, OnCreateViewH
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding.presenter = presenter
         return binding.root
     }
 
@@ -68,9 +68,16 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract, OnCreateViewH
 
     }
 
+    override fun showThemesDialog() {
+        val transaction = fragmentManager.beginTransaction()
+        fragmentManager.findFragmentByTag("Dialog")?.let {
+            transaction.remove(it)
+        }
+        DialogTheme().show(transaction, "Dialog")
+    }
+
     private fun setupTagsList(tagsList: RecyclerView) = with(tagsList) {
         layoutManager = setupLayoutManager()
-        tagsAdapter.addAll(resources.getStringArray(R.array.tags))
         adapter = tagsAdapter
     }
 
