@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="drawableId"
+            type="Integer" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <ImageButton
+            style="@style/RippleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:onClick="@{() -> presenter.onClickNavigateBack()}"
+            android:src="@drawable/ic_arrow_back" />
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            app:drawableRes="@{drawableId}"
+            tools:src="@drawable/ic_default_img_profile" />
+
+        <ImageButton
+            android:id="@+id/expanded_menu"
+            style="@style/RippleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:onClick="@{() -> presenter.onClickPopupMenu()}"
+            android:src="@drawable/ic_expanded_menu" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_gravity="bottom"
+            android:background="@color/colorAccent" />
+
+    </FrameLayout>
+
+</layout>

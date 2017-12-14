@@ -102,4 +102,6 @@ dependencies {
 
     compile "com.jakewharton.rxbinding2:rxbinding:${versions.rxBinding}"
 
+    compile "com.google.android:flexbox:${versions.flexboxLayout}"
+
 }
