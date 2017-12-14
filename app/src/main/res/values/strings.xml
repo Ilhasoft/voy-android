@@ -36,6 +36,9 @@
     <string name="add_photos_videos">Add photos\nand videos</string>
 
     <string name="comment_report_label">Comment</string>
+    <string name="send_comment_hint">Send Comment</string>
+
     <string name="edit_menu_label">Edit</string>
     <string name="share_menu_label">Share</string>
+    <string name="remove_menu_label">Remove</string>
 </resources>
