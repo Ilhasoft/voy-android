@@ -11,4 +11,6 @@ interface CommentsContract : BasicView {
 
     fun navigateToRemoveComment(comment: Comment?)
 
+    fun sendComment(comment: Comment?)
+
 }

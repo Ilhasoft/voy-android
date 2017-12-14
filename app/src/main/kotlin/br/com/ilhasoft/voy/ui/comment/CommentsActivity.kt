@@ -68,6 +68,8 @@ class CommentsActivity : BaseActivity(), CommentsContract {
 
     override fun navigateToRemoveComment(comment: Comment?) {}
 
+    override fun sendComment(comment: Comment?) {}
+
     private fun setupView() {
         binding.run {
             viewToolbar?.run { setupToolbar(this) }

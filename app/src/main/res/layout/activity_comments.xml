@@ -5,6 +5,10 @@
     <data>
 
         <variable
+            name="comment"
+            type="br.com.ilhasoft.voy.models.Comment" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.comment.CommentsPresenter" />
 
@@ -55,6 +59,7 @@
                     android:background="@drawable/bg_comment_edittext"
                     android:hint="@string/send_comment_hint"
                     android:padding="8dp"
+                    android:text="@={comment.description}"
                     android:theme="@style/CommentEditText" />
 
                 <ImageButton
@@ -65,6 +70,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="end"
+                    android:onClick="@{() -> presenter.onClickSendComment(comment)}"
                     android:src="@drawable/ic_send_comment" />
 
             </RelativeLayout>

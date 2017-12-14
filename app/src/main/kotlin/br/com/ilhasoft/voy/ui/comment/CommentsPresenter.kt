@@ -17,4 +17,8 @@ class CommentsPresenter : Presenter<CommentsContract>(CommentsContract::class.ja
         view.navigateToRemoveComment(comment)
     }
 
+    fun onClickSendComment(comment: Comment?) {
+        view.sendComment(comment)
+    }
+
 }
