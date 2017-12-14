@@ -12,80 +12,93 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingEnd="12dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="12dp"
-        android:paddingStart="20dp"
-        android:paddingTop="16dp">
+        android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/image"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/ic_default_img_profile" />
-
-        <TextView
-            android:id="@+id/title"
+        <RelativeLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/image"
-            android:layout_toLeftOf="@+id/expanded_menu"
-            android:layout_toRightOf="@+id/image"
-            android:layout_toStartOf="@+id/expanded_menu"
-            android:ellipsize="end"
-            android:gravity="start"
-            android:maxLines="1"
-            android:text="@{comment.user.username}"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="Carlos Santos" />
+            android:paddingBottom="16dp"
+            android:paddingEnd="12dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="12dp"
+            android:paddingStart="20dp"
+            android:paddingTop="16dp">
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            android:layout_marginTop="4dp"
-            android:layout_toEndOf="@+id/image"
-            android:layout_toLeftOf="@+id/expanded_menu"
-            android:layout_toRightOf="@+id/image"
-            android:layout_toStartOf="@+id/expanded_menu"
-            android:ellipsize="end"
-            android:text="@{comment.createdAt}"
-            android:textColor="@color/black"
-            android:textSize="10sp"
-            tools:ignore="SmallSp"
-            tools:text="Aug 4, 2017" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/ic_default_img_profile" />
 
-        <ImageView
-            android:id="@+id/expanded_menu"
-            style="@style/RippleButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:padding="12dp"
-            android:src="@drawable/ic_comments_menu" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/image"
+                android:layout_toLeftOf="@+id/expanded_menu"
+                android:layout_toRightOf="@+id/image"
+                android:layout_toStartOf="@+id/expanded_menu"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                android:text="@{comment.user.username}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Carlos Santos" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/date"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_toEndOf="@+id/image"
-            android:layout_toRightOf="@+id/image"
-            android:gravity="fill"
-            android:text="@{comment.description}"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            tools:text="KOPAJA - Koperasi Angkutan Jakarta, or in English Jakarta Transportation Cooperation is a public transportation service in Jakarta. Many people in Jakarta use this transportation for commuting to the workplace from home, or vice versa. Besides providing benefits, KOPAJA has a bad impact on respiratory health from it's emissions. KOPAJA must be demolished because the average age of KOPAJA armada is above 10 Years, and is using outdated technology." />
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="4dp"
+                android:layout_toEndOf="@+id/image"
+                android:layout_toLeftOf="@+id/expanded_menu"
+                android:layout_toRightOf="@+id/image"
+                android:layout_toStartOf="@+id/expanded_menu"
+                android:ellipsize="end"
+                android:text="@{comment.createdAt}"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                tools:ignore="SmallSp"
+                tools:text="Aug 4, 2017" />
+
+            <ImageView
+                android:id="@+id/expanded_menu"
+                style="@style/RippleButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_comments_menu" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/date"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_toEndOf="@+id/image"
+                android:layout_toRightOf="@+id/image"
+                android:gravity="fill"
+                android:text="@{comment.description}"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                tools:text="KOPAJA - Koperasi Angkutan Jakarta, or in English Jakarta Transportation Cooperation is a public transportation service in Jakarta. Many people in Jakarta use this transportation for commuting to the workplace from home, or vice versa. Besides providing benefits, KOPAJA has a bad impact on respiratory health from it's emissions. KOPAJA must be demolished because the average age of KOPAJA armada is above 10 Years, and is using outdated technology." />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/content"
+            android:background="@color/warm_grey" />
 
     </RelativeLayout>
 
