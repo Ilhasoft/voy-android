@@ -16,7 +16,7 @@ import br.com.ilhasoft.voy.models.Comment
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.holder.CommentViewHolder
 
-class CommentsActivity : BaseActivity(), CommentsContract/*, PopupMenu.OnMenuItemClickListener*/ {
+class CommentsActivity : BaseActivity(), CommentsContract {
 
     companion object {
         @JvmStatic
@@ -64,7 +64,9 @@ class CommentsActivity : BaseActivity(), CommentsContract/*, PopupMenu.OnMenuIte
 
     override fun navigateBack() = onBackPressed()
 
-    override fun showPopupMenu() {}
+    override fun navigateToEditComment(comment: Comment?) {}
+
+    override fun navigateToRemoveComment(comment: Comment?) {}
 
     private fun setupView() {
         binding.run {
