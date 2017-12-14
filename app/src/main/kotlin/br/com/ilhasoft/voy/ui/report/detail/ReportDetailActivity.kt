@@ -19,6 +19,7 @@ import br.com.ilhasoft.voy.databinding.ViewReportToolbarBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.ui.base.BaseActivity
+import br.com.ilhasoft.voy.ui.comment.CommentsActivity
 import br.com.ilhasoft.voy.ui.report.detail.holder.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -75,7 +76,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         popupMenu.show()
     }
 
-    override fun navigateToCommentReport() {}
+    override fun navigateToCommentReport() = startActivity(CommentsActivity.createIntent(this))
 
     override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
         R.id.edit -> true
