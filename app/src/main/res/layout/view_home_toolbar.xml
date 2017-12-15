@@ -42,13 +42,15 @@
             android:layout_weight="0.4"
             android:drawableEnd="@drawable/ic_arrow_down"
             android:drawableRight="@drawable/ic_arrow_down"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="1"
             android:onClick="@{() -> presenter.onClickSelectMap()}"
             android:text="@{map.name}"
             android:textColor="@color/vivid_purple"
             android:textSize="20sp"
             android:textStyle="bold"
-            tools:text="São Paulo" />
+            tools:text="Santa Catarina" />
 
         <Space
             android:layout_width="0dp"
