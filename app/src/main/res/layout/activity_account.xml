@@ -12,6 +12,10 @@
             type="Boolean" />
 
         <variable
+            name="drawableId"
+            type="Integer" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.account.AccountPresenter" />
 
@@ -45,7 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="5dp"
-                android:src="@drawable/ic_account_avatar" />
+                app:drawableRes="@{drawableId}"
+                tools:src="@drawable/ic_account_avatar" />
 
             <ImageButton
                 style="@style/Widget.AppCompat.Button.Borderless"

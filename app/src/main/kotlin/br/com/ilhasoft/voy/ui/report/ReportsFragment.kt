@@ -15,6 +15,7 @@ import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.ui.base.BaseFragment
+import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
 class ReportsFragment : BaseFragment(), ReportsContract {
@@ -61,6 +62,11 @@ class ReportsFragment : BaseFragment(), ReportsContract {
         return binding.root
     }
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.attachView(this)
+    }
+
     override fun onStart() {
         super.onStart()
         presenter.start()
@@ -80,16 +86,15 @@ class ReportsFragment : BaseFragment(), ReportsContract {
 
     }
 
-    override fun navigateToReportDetail(report: Report) {
-
-    }
+    override fun navigateToReportDetail(report: Report) =
+            startActivity(ReportDetailActivity.createIntent(context))
 
     private fun setupView() {
         binding.run {
             noReports = true
             greetings = getGreetings(type)
             createReportTip = getGreetingsTip(type)
-            presenter = presenter
+            presenter = this@ReportsFragment.presenter
         }
         setupRecyclerView(binding.reports)
     }

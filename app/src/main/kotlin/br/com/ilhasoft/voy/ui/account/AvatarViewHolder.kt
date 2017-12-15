@@ -14,19 +14,28 @@ class AvatarViewHolder(val binding: ItemAvatarBinding,
         ViewHolder<Int>(binding.root), View.OnClickListener {
 
     init {
-        binding.clicked = false
-        binding.circleImageView.setOnClickListener(this)
+        binding.let {
+            it.clicked = false
+            it.apply {
+                circleImageView.borderWidth = context.resources.getDimension(R.dimen.avatar_no_border).toInt()
+                circleImageView.borderColor = ContextCompat.getColor(context, android.R.color.transparent)
+                circleImageView.setOnClickListener(this@AvatarViewHolder)
+            }
+        }
     }
 
     override fun onBind(avatar: Int?) {
+        configAvatarSelection(avatar)
         binding.drawableId = avatar
-        binding.circleImageView.borderWidth = context.resources.getDimension(R.dimen.avatar_no_border).toInt()
-        binding.circleImageView.borderColor = ContextCompat.getColor(context, android.R.color.transparent)
         binding.executePendingBindings()
     }
 
     override fun onClick(v: View?) {
-        binding.clicked = binding.clicked?.not()
+        presenter.setSelectedAvatar(binding.drawableId)
+    }
+
+    private fun configAvatarSelection(avatar: Int?) {
+        binding.clicked = presenter.getSelectedAvatar() == avatar
         binding.clicked.let {
             binding.circleImageView.borderWidth = setupBorderWidth(it)
             binding.circleImageView.borderColor = setupBorderColor(it)

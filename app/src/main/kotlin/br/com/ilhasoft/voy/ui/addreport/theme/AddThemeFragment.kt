@@ -19,6 +19,7 @@ import br.com.ilhasoft.voy.databinding.DialogThemesBinding
 import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
 import br.com.ilhasoft.voy.databinding.ItemThemeBinding
+import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import com.google.android.flexbox.FlexDirection
@@ -34,13 +35,13 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
 
     private val presenter: AddThemeFragmentPresenter by lazy { AddThemeFragmentPresenter() }
 
-    private val tagsAdapter: AutoRecyclerAdapter<String, TagViewHolder> by lazy {
-        AutoRecyclerAdapter<String, TagViewHolder>(tagsViewHolder).apply {
+    private val tagsAdapter: AutoRecyclerAdapter<Tag, TagViewHolder> by lazy {
+        AutoRecyclerAdapter<Tag, TagViewHolder>(tagsViewHolder).apply {
             setHasStableIds(true)
         }
     }
 
-    private val tagsViewHolder: OnCreateViewHolder<String, TagViewHolder> by lazy {
+    private val tagsViewHolder: OnCreateViewHolder<Tag, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             TagViewHolder(ItemTagBinding.inflate(layoutInflater, parent, false), presenter)
         }
@@ -120,7 +121,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
 
     private fun setupTagsList(tagsList: RecyclerView) = with(tagsList) {
         layoutManager = setupLayoutManager()
-        tagsAdapter.addAll(resources.getStringArray(R.array.tags))
         adapter = tagsAdapter
     }
 
@@ -132,9 +132,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
 
     private fun setupThemesList(themes: RecyclerView) = with(themes) {
         layoutManager = setupLayoutManagerThemes()
-        themesAdapter.addAll(resources.getStringArray(R.array.themes).map { it ->
-            Theme("", it, "", mutableListOf(), "", "")
-        })
         addItemDecoration(setItemDecoration())
         adapter = themesAdapter
     }

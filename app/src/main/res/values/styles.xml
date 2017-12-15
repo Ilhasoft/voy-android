@@ -20,4 +20,13 @@
         <item name="android:textColor">@color/cool_grey</item>
     </style>
 
+    <style name="WhiteRaisedButton" parent="Theme.AppCompat.Light">
+        <item name="colorButtonNormal">@color/white_three</item>
+    </style>
+
+    <style name="CommentEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@android:color/transparent</item>
+        <item name="colorControlActivated">@android:color/transparent</item>
+    </style>
+
 </resources>

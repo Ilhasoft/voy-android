@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="comment"
+            type="br.com.ilhasoft.voy.models.Comment" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.comment.CommentsPresenter" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/viewToolbar"
+                layout="@layout/view_comments_toolbar" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/comments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="60dp"
+                tools:listitem="@layout/item_comment" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                tools:ignore="RtlSymmetry">
+
+                <EditText
+                    android:id="@+id/comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/send_comment"
+                    android:layout_toStartOf="@+id/send_comment"
+                    android:background="@drawable/bg_comment_edittext"
+                    android:hint="@string/send_comment_hint"
+                    android:padding="8dp"
+                    android:text="@={comment.description}"
+                    android:theme="@style/CommentEditText" />
+
+                <ImageButton
+                    android:id="@+id/send_comment"
+                    style="@style/RippleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="end"
+                    android:onClick="@{() -> presenter.onClickSendComment(comment)}"
+                    android:src="@drawable/ic_send_comment" />
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</layout>

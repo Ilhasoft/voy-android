@@ -5,27 +5,30 @@
     <data>
 
         <variable
-            name="clicked"
-            type="boolean" />
+            name="tag"
+            type="br.com.ilhasoft.voy.models.Tag" />
+
     </data>
 
-    <TextView
-        android:id="@+id/tag"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:background="@drawable/selector_tag_button"
-        android:gravity="center"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:paddingBottom="10dp"
-        android:paddingEnd="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingStart="20dp"
-        android:paddingTop="10dp"
-        android:textAllCaps="false"
-        android:textColor="@color/selector_tag_text"
-        tools:text="Accessibility" />
+        android:background="@drawable/bg_vivid_purple_two">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:text="@{tag.name}"
+            android:textColor="@color/white_three"
+            android:textSize="8sp"
+            tools:ignore="SmallSp"
+            tools:text="Accessibility" />
+
+    </FrameLayout>
 
 </layout>

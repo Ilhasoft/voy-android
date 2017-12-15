@@ -91,7 +91,7 @@ class HomeActivity : BaseActivity(), HomeContract {
     override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
 
     override fun selectMap() {
-        binding.selectingThemes = binding.selectingThemes?.not()
+        binding.selectingMap = binding.selectingMap?.not()
     }
 
     override fun showNotifications() {
@@ -102,13 +102,22 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
+    override fun swapMap(map: Map?) {
+        binding.run {
+            selectingMap = selectingMap?.not()
+            viewToolbar?.map = map
+            this@HomeActivity.presenter.setSelectedMap(map)
+        }
+        mapsAdapter.notifyDataSetChanged()
+    }
+
     override fun navigateToNotificationDetail() {
 
     }
 
     private fun setupView() {
         binding.apply {
-            selectingThemes = false
+            selectingMap = false
             viewToolbar?.run { setupToolbar(this) }
             setupRecyclerView(maps)
             setupTabs()
@@ -118,8 +127,8 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
 
     private fun setupToolbar(viewToolbar: ViewHomeToolbarBinding) = with(viewToolbar) {
-        map = Map()
         presenter = this@HomeActivity.presenter
+        this@HomeActivity.presenter.setSelectedMap(map)
     }
 
     private fun setupRecyclerView(maps: RecyclerView) = with(maps) {

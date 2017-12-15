@@ -77,12 +77,17 @@ class AccountActivity : BaseActivity(), AccountContract {
         binding.editingPhoto = binding.editingPhoto?.not()
     }
 
+    override fun swapAvatar() {
+        avatarsAdapter.notifyDataSetChanged()
+    }
+
     override fun navigateToMakeLogout() = startActivity(LoginActivity.createIntent(this))
 
     private fun setupView() {
         binding.run {
             editingPhoto = false
             presenter = this@AccountActivity.presenter
+            this@AccountActivity.presenter.setSelectedAvatar(drawableId)
             toolbar?.run {
                 presenter = this@AccountActivity.presenter
             }
