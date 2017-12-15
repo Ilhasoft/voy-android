@@ -35,6 +35,11 @@
     <string name="title_activity_add_report">Add Report</string>
     <string name="next">Next</string>
     <string name="add_photos_videos">Add photos\nand videos</string>
+
+    <string name="thanks">Thanks!</string>
+    <string name="thanks_feedback">Thanks for reporting!\nPlease come back whenever\nyou have a new request</string>
+    <string name="new_report">New Report</string>
+    <string name="close">Close</string>
     <string name="add_title_and_description">Title and\nDescription</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Description</string>
