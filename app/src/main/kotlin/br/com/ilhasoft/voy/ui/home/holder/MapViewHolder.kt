@@ -12,12 +12,20 @@ class MapViewHolder(val binding: ItemMapBinding,
                     val presenter: HomePresenter) : ViewHolder<Map>(binding.root) {
 
     init {
-        binding.presenter = presenter
+        binding.run {
+            isSelected = false
+            presenter = this@MapViewHolder.presenter
+        }
     }
 
     override fun onBind(map: Map) {
+        configMapSelection(map)
         binding.map = map
         binding.executePendingBindings()
+    }
+
+    private fun configMapSelection(map: Map) {
+        binding.isSelected = presenter.getSelectedMap() == map
     }
 
 }

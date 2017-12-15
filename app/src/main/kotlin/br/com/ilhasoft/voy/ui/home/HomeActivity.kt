@@ -106,7 +106,9 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.run {
             selectingMap = selectingMap?.not()
             viewToolbar?.map = map
+            this@HomeActivity.presenter.setSelectedMap(map)
         }
+        mapsAdapter.notifyDataSetChanged()
     }
 
     override fun navigateToNotificationDetail() {
@@ -126,6 +128,7 @@ class HomeActivity : BaseActivity(), HomeContract {
 
     private fun setupToolbar(viewToolbar: ViewHomeToolbarBinding) = with(viewToolbar) {
         presenter = this@HomeActivity.presenter
+        this@HomeActivity.presenter.setSelectedMap(map)
     }
 
     private fun setupRecyclerView(maps: RecyclerView) = with(maps) {

@@ -9,6 +9,10 @@
             type="br.com.ilhasoft.voy.models.Map" />
 
         <variable
+            name="isSelected"
+            type="Boolean" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.home.HomePresenter" />
 
@@ -22,9 +26,10 @@
         android:gravity="center"
         android:onClick="@{() -> presenter.onClickMap(map)}"
         android:text="@{map.name}"
-        android:textColor="@color/black"
+        android:textColor="@{isSelected ? @color/vivid_purple : @color/black}"
         android:textSize="14sp"
-        tools:text="São Paulo">
+        tools:text="São Paulo"
+        tools:textColor="@color/vivid_purple">
 
     </TextView>
 

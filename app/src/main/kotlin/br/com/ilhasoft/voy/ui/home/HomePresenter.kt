@@ -6,6 +6,8 @@ import br.com.ilhasoft.voy.models.Notification
 
 class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
 
+    private var selectedMap: Map? = null
+
     fun onClickMyAccount() {
         view.navigateToMyAccount()
     }
@@ -29,4 +31,11 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
     fun onClickItemNotification(notification: Notification) {
         view.navigateToNotificationDetail()
     }
+
+    fun setSelectedMap(map: Map?) {
+        selectedMap = map
+    }
+
+    fun getSelectedMap(): Map? = selectedMap
+
 }
