@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="report"
+            type="br.com.ilhasoft.voy.models.Report" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/viewToolbar"
+                layout="@layout/view_report_toolbar" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:paddingBottom="28dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@{report.title}"
+                    android:textColor="@color/vivid_purple_two"
+                    android:textSize="20sp"
+                    tools:text="Pollution, a global problem" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@{report.createdAt}"
+                    android:textColor="@color/vivid_purple_two"
+                    android:textSize="12sp"
+                    tools:text="Aug 03, 2017" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@{report.description}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    tools:text="KOPAJA - Koperasi Angkutan Jakarta, or in English Jakarta transportation Cooperation is a public transportation service in Jakarta. Many people in Jakarta use this transportation for commuting to the workplace from home, or vice versa. Besides providing benefits, KOPAJA has a bad impact on respiratory health from it's emissions. KOPAJA " />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    tools:listitem="@layout/item_tag" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_message_baloon"
+                    android:drawablePadding="-108dp"
+                    android:drawableStart="@drawable/ic_message_baloon"
+                    android:onClick="@{() -> presenter.onClickCommentOnReport()}"
+                    android:paddingLeft="112dp"
+                    android:paddingStart="112dp"
+                    android:text="@string/comment_report_label"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:theme="@style/WhiteRaisedButton"
+                    tools:ignore="RtlSymmetry" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</layout>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="editingPhoto"
+            type="Boolean" />
+
+        <variable
+            name="drawableId"
+            type="Integer" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.account.AccountPresenter" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/view_toolbar"
+                app:actionName="@{@string/save}"
+                app:title="@{@string/title_activity_account}" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                app:drawableRes="@{drawableId}"
+                tools:src="@drawable/ic_account_avatar" />
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="5dp"
+                android:onClick="@{() -> presenter.onClickSwitchAvatar()}"
+                android:src="@{editingPhoto ? @drawable/ic_check_avatar : @drawable/ic_change}"
+                tools:src="@drawable/ic_change" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:orientation="vertical"
+            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
+            tools:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@color/white" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.05" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="@string/username_hint" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="@string/email" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="@string/password_hint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="@string/change"
+                    android:visibility="visible" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
+            tools:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/avatars"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:paddingEnd="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="8dp"
+            android:paddingStart="16dp"
+            android:visibility="@{editingPhoto ? View.VISIBLE : View.GONE}"
+            tools:listitem="@layout/item_avatar"
+            tools:visibility="visible" />
+
+        <Button
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:onClick="@{() -> presenter.onClickLogout()}"
+            android:text="@string/logout"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+</layout>

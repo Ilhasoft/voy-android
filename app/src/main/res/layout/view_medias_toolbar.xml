@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="actionName"
+            type="String" />
+
+        <variable
+            name="enabled"
+            type="Boolean"/>
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.addreport.AddReportPresenter" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_back"
+            style="@style/RippleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:onClick="@{() -> presenter.onClickNavigateBack()}"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="8sp"
+            android:text="@{title}"
+            android:textColor="@color/charcoal_grey"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Add Report" />
+
+        <Button
+            android:id="@+id/button_action"
+            style="@style/RippleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:onClick="@{() -> presenter.onClickNext()}"
+            android:text="@{actionName}"
+            android:enabled="@{enabled}"
+            android:textColor="@color/selector_action_button_text"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            tools:text="Next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_gravity="bottom"
+            android:background="@color/colorAccent" />
+
+    </FrameLayout>
+
+</layout>

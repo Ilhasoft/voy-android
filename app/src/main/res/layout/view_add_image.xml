@@ -11,7 +11,7 @@
             android:layout_margin="8dp"
             android:background="@color/white_six"
             android:scaleType="center"
-            android:src="@drawable/ic_add"/>
+            android:src="@drawable/ic_add_media"/>
 
         <ImageButton
             android:id="@+id/remove"

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="notification"
+            type="br.com.ilhasoft.voy.models.Notification" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.home.HomePresenter" />
+    </data>
+
+    <TextView
+        android:id="@+id/notificationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:onClick="@{() -> presenter.onClickItemNotification(notification)}"
+        tools:text="A report from you has been approved" />
+
+</layout>

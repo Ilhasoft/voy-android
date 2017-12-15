@@ -4,19 +4,32 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.util.Log
+import android.widget.EditText
 import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.BuildConfig
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.ui.base.BaseActivity
+import br.com.ilhasoft.voy.ui.home.HomeActivity
+import com.jakewharton.rxbinding2.widget.RxTextView
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.Observables
+
+import java.util.concurrent.TimeUnit
 
 class LoginActivity : BaseActivity(), LoginContract {
 
     companion object {
+        private const val TAG = "LoginActivity"
         @JvmStatic
-        fun createIntent(context: Context): Intent =
-                Intent(context, LoginActivity::class.java)
+        fun createIntent(context: Context): Intent {
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            return intent
+        }
     }
 
     private val binding: ActivityLoginBinding by lazy {
@@ -30,6 +43,7 @@ class LoginActivity : BaseActivity(), LoginContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupView()
+        startListener()
         presenter.attachView(this)
     }
 
@@ -54,6 +68,11 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     override fun navigateToHome() {
         showMessage(getString(R.string.login_success))
+        Observable.timer(1, TimeUnit.SECONDS)
+                .subscribe({
+                    startActivity(HomeActivity.createIntent(this))
+                    finish()
+                })
     }
 
     private fun setupView() {
@@ -64,5 +83,19 @@ class LoginActivity : BaseActivity(), LoginContract {
             presenter = this@LoginActivity.presenter
         }
     }
+
+    private fun startListener() {
+        val usernameObservable = createEditTextObservable(binding.username)
+        val passwordObservable = createEditTextObservable(binding.password)
+
+        Observables.combineLatest(usernameObservable, passwordObservable,
+                { username, password -> username.isNotEmpty() && password.isNotEmpty()})
+                .subscribe({ binding.login.isEnabled = it },
+                        { Log.e(TAG, "Error ", it) })
+    }
+
+    private fun createEditTextObservable(editText: EditText) = RxTextView.textChanges(editText)
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
 
 }
