@@ -4,6 +4,8 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 
 class AccountPresenter : Presenter<AccountContract>(AccountContract::class.java) {
 
+    private var avatarDrawableId: Int? = null
+
     fun onClickNavigateBack() {
         view.navigateBack()
     }
@@ -19,5 +21,12 @@ class AccountPresenter : Presenter<AccountContract>(AccountContract::class.java)
     fun onClickLogout() {
         view.navigateToMakeLogout()
     }
+
+    fun setSelectedAvatar(drawableId: Int?) {
+        avatarDrawableId = drawableId
+        view.swapAvatar()
+    }
+
+    fun getSelectedAvatar() = avatarDrawableId
 
 }
