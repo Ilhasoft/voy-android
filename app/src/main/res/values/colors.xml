@@ -25,4 +25,5 @@
     <color name="white_six">#f9f9f9</color>
     <color name="white_seven">#f0f0f0</color>
     <color name="white_eight">#ededed</color>
+    <color name="warm_grey_opacity_20">#33979797</color>
 </resources>
