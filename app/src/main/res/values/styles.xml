@@ -16,6 +16,10 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="HintStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/cool_grey</item>
+    </style>
+
     <style name="WhiteRaisedButton" parent="Theme.AppCompat.Light">
         <item name="colorButtonNormal">@color/white_three</item>
     </style>

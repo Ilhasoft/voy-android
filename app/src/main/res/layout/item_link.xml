@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.addreport.description.AddDescriptionFragmentPresenter" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/itemLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:padding="5dp"
+            android:layout_gravity="center"
+            android:textColor="@color/dark_sky_blue"
+            tools:text="http://resources.voy.com/description/223..."/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_weight="0.1"
+            android:src="@drawable/ic_remove"
+            android:onClick="@{() -> presenter.removeLink()}"/>
+
+    </LinearLayout>
+
+</layout>
