@@ -47,6 +47,7 @@
                 android:layout_below="@+id/image"
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
+                android:text="@{report.createdAt}"
                 android:textColor="@color/black"
                 android:textSize="10sp"
                 tools:ignore="SmallSp"
@@ -60,6 +61,7 @@
                 android:layout_toRightOf="@+id/image"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:text="@{report.title}"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -74,6 +76,7 @@
                 android:layout_toRightOf="@+id/image"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:text="@{report.description}"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 tools:text="Lorem ipsu m dolor sit amet, coed iscingelit, sed doet, conseadipisci" />
