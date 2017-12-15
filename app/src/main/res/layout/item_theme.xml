@@ -5,6 +5,14 @@
     <data>
 
         <variable
+            name="theme"
+            type="br.com.ilhasoft.voy.models.Theme" />
+
+        <variable
+            name="isSelected"
+            type="Boolean" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragmentPresenter" />
     </data>
@@ -29,8 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|end"
+            android:checked="@{isSelected}"
+            android:onClick="@{()-> presenter.onClickTheme(theme)}"
             android:paddingEnd="10dp"
             android:paddingRight="10dp" />
+
 
     </FrameLayout>
 
