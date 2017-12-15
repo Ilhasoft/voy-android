@@ -10,6 +10,8 @@ interface AccountContract : BasicView {
 
     fun navigateToSwitchAvatar()
 
+    fun swapAvatar()
+
     fun navigateToMakeLogout()
 
 }
