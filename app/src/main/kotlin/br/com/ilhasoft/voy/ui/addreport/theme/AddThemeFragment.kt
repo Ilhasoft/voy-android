@@ -13,14 +13,16 @@ import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
+import br.com.ilhasoft.voy.databinding.ItemThemeBinding
+import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
 import br.com.ilhasoft.voy.databinding.DialogThemesBinding
 
 
-import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
-import br.com.ilhasoft.voy.databinding.ItemTagBinding
-import br.com.ilhasoft.voy.databinding.ItemThemeBinding
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.ui.addreport.theme.holder.TagViewHolder
+import br.com.ilhasoft.voy.ui.addreport.theme.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -43,7 +45,7 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
 
     private val tagsViewHolder: OnCreateViewHolder<Tag, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
-            TagViewHolder(ItemTagBinding.inflate(layoutInflater, parent, false), presenter)
+            TagViewHolder(ItemTagThemeBinding.inflate(layoutInflater, parent, false), presenter)
         }
     }
 

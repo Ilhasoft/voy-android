@@ -129,7 +129,7 @@
                 android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:background="@drawable/selector_rectangle_white"
+                android:background="@drawable/btn_themes_white"
                 android:inputType="text"
                 android:padding="5dp" />
 
