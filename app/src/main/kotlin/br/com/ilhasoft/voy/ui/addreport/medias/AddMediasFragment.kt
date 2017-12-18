@@ -1,20 +1,21 @@
 package br.com.ilhasoft.voy.ui.addreport.medias
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
-import android.widget.ImageView
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
-import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
+import br.com.ilhasoft.voy.models.Media
+import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.shared.widget.AddImageView
+import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.shared.OnAddImageClickListener
+import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 
 
 class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageClickListener {
@@ -24,6 +25,10 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
     }
 
     private val presenter: AddMediasFragmentPresenter by lazy { AddMediasFragmentPresenter() }
+
+    private var report: Report? = null
+
+    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
 
     private val delegate: MediaSelectorDelegate by lazy {
         val listener = MediaSelectorDelegate.OnLoadMediaListener {
@@ -46,6 +51,11 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
         setupView()
         setUpImages()
         presenter.attachView(this)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        report = arguments.getParcelable("Report")
     }
 
     override fun onStart() {
@@ -79,7 +89,11 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
         getMedia()
     }
 
-    override fun onClickRemove(imageView: ImageView) {
+    override fun onClickRemove(uri: Uri?) {
+        report?.apply {
+            mediaList.remove(mediaList.filter { it.uri == uri }.single())
+            reportListener.onMediaChange(mediaList.size)
+        }
 
     }
 
@@ -98,11 +112,14 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
 
     private fun onNewPhoto(uri: Uri) {
         imageViewSelected?.setImageFromUri(uri)
-
+        report?.apply {
+            mediaList.add(Media(uri))
+            reportListener.onMediaChange(mediaList.size)
+        }
     }
 
     override fun getMedia() {
-        delegate.selectMedia(this, MediaSelectorDelegate.GALLERY_IMAGE or MediaSelectorDelegate.CAMERA_IMAGE)
+        delegate.selectMedia(this, MediaSelectorDelegate.VIDEO or MediaSelectorDelegate.CAMERA_IMAGE)
     }
 
 }

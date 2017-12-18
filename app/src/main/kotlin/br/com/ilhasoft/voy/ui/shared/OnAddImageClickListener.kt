@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.ui.shared
 
+import android.net.Uri
 import android.widget.ImageView
 import br.com.ilhasoft.voy.shared.widget.AddImageView
 
@@ -9,6 +10,6 @@ import br.com.ilhasoft.voy.shared.widget.AddImageView
 interface OnAddImageClickListener {
 
     fun onClickAddImage(addImageView: AddImageView)
-    fun onClickRemove(imageView: ImageView)
+    fun onClickRemove(uri: Uri?)
 
 }

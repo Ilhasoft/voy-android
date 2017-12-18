@@ -18,6 +18,7 @@ class AddImageView : FrameLayout {
 
     private var binding: ViewAddImageBinding? = null
     private var listener: OnAddImageClickListener? = null
+    private var uri: Uri? = null
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
         init()
@@ -38,7 +39,7 @@ class AddImageView : FrameLayout {
             image.setOnClickListener { listener?.onClickAddImage(this@AddImageView) }
             remove.setOnClickListener {
                 removeImage()
-                listener?.onClickRemove(image)
+                listener?.onClickRemove(uri)
             }
         }
     }
@@ -58,6 +59,7 @@ class AddImageView : FrameLayout {
                     .into(image)
             remove.visibility = View.VISIBLE
         }
+        this@AddImageView.uri = uri
     }
 
     fun setImageListener(listener: OnAddImageClickListener) {
