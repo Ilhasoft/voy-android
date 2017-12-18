@@ -6,10 +6,11 @@ import android.os.Bundle
 
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityThanksBinding
+import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 
 
-class ThanksActivity :BaseActivity(), ThanksContract {
+class ThanksActivity : BaseActivity(), ThanksContract {
 
     private val binding: ActivityThanksBinding by lazy {
         DataBindingUtil.setContentView<ActivityThanksBinding>(this, R.layout.activity_thanks)
@@ -39,6 +40,18 @@ class ThanksActivity :BaseActivity(), ThanksContract {
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun navigateToAddReport() {
+        startActivity(AddReportActivity.createIntent(this))
+    }
+
+    override fun onClickClose() {
+        finish()
+    }
+
+    override fun onBackPressed() {
+        this.onClickClose()
     }
 
 

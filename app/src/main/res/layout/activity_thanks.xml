@@ -67,6 +67,7 @@
             android:layout_marginRight="30dp"
             android:background="@drawable/rounded_button_blue"
             android:fontFamily="sans-serif"
+            android:onClick="@{() -> presenter.navigateToAddReport()}"
             android:text="@string/new_report"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
@@ -82,8 +83,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="@drawable/rounded_button_blue"
+            android:background="@drawable/bg_rounded_white"
             android:fontFamily="sans-serif"
+            android:onClick="@{() -> presenter.onClickClose()}"
             android:text="@string/close"
             android:textAllCaps="false"
             android:textSize="16sp" />
