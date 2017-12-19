@@ -47,10 +47,11 @@ class AddImageView : FrameLayout {
         binding?.apply {
             image.setImageResource(R.drawable.ic_add_media)
             remove.visibility = View.GONE
+            play.visibility = View.GONE
         }
     }
 
-    fun setImageFromUri(uri: Uri) {
+    fun setMediaFromUri(uri: Uri) {
         binding?.apply {
             GlideApp.with(context)
                     .load(uri)
@@ -58,9 +59,17 @@ class AddImageView : FrameLayout {
                     .into(image)
             remove.visibility = View.VISIBLE
         }
+
+        if(isVideo(uri))
+            binding?.play?.visibility = View.VISIBLE
     }
 
     fun setImageListener(listener: OnAddImageClickListener) {
         this@AddImageView.listener = listener
+    }
+
+    private fun isVideo(uri: Uri): Boolean {
+        val mimeType = context.contentResolver.getType(uri)
+        return mimeType != null && mimeType.startsWith("video")
     }
 }
