@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.addreport.medias
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import android.view.View
 import android.widget.ImageView
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
-import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
 import br.com.ilhasoft.voy.shared.widget.AddImageView
 
@@ -32,6 +30,7 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
         MediaSelectorDelegate(context, "br.com.ilhasoft.voy.provider")
                 .setOnLoadImageListener(listener)
                 .setOnLoadGalleryImageListener(listener)
+                .setOnLoadVideoListener(listener)
     }
 
     private var imageViewSelected: AddImageView? = null
@@ -97,12 +96,12 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
     }
 
     private fun onNewPhoto(uri: Uri) {
-        imageViewSelected?.setImageFromUri(uri)
-
+        imageViewSelected?.setMediaFromUri(uri)
     }
 
     override fun getMedia() {
-        delegate.selectMedia(this, MediaSelectorDelegate.GALLERY_IMAGE or MediaSelectorDelegate.CAMERA_IMAGE)
+        delegate.selectMedia(this, MediaSelectorDelegate.GALLERY_IMAGE
+                or MediaSelectorDelegate.CAMERA_IMAGE
+                or MediaSelectorDelegate.VIDEO)
     }
-
 }
