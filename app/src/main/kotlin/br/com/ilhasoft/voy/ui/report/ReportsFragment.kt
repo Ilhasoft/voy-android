@@ -14,6 +14,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
@@ -83,7 +84,7 @@ class ReportsFragment : BaseFragment(), ReportsContract {
     }
 
     override fun navigateToAddReport() {
-
+        startActivity(AddReportActivity.createIntent(context))
     }
 
     override fun navigateToReportDetail(report: Report) =

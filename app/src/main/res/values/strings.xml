@@ -35,9 +35,6 @@
     <string name="title_activity_add_report">Add Report</string>
     <string name="next">Next</string>
     <string name="add_photos_videos">Add photos\nand videos</string>
-
-    <string name="thanks">Thanks!</string>
-    <string name="thanks_feedback">Thanks for reporting!\nPlease come back whenever\nyou have a new request</string>
     <string name="new_report">New Report</string>
     <string name="close">Close</string>
     <string name="add_title_and_description">Title and\nDescription</string>
@@ -49,6 +46,9 @@
     <string name="themes">Themes</string>
     <string name="cancel">Cancel</string>
     <string name="select_theme">Select Theme</string>
+    <string name="send">Send</string>
+    <string name="thanks">Thanks!</string>
+    <string name="thanks_feedback">Thanks for reporting!\nPlease come back whenever\nyou have a new request</string>
 
     <string name="comment_report_label">Comment</string>
     <string name="send_comment_hint">Send Comment</string>
@@ -56,4 +56,7 @@
     <string name="edit_menu_label">Edit</string>
     <string name="share_menu_label">Share</string>
     <string name="remove_menu_label">Remove</string>
+
+    <string name="feedback_list_title">Hey!</string>
+    <string name="feedback_list_message">You can\'t add the same link twice :(</string>
 </resources>

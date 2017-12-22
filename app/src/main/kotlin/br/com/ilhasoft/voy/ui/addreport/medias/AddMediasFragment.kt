@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.View
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
+import br.com.ilhasoft.voy.models.Fragments
 import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.shared.widget.AddImageView
@@ -18,15 +19,20 @@ import br.com.ilhasoft.voy.ui.shared.OnAddImageClickListener
 import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 
 
-class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageClickListener {
+class AddMediasFragment :
+        BaseFragment(),
+        AddMediasFragmentContract,
+        OnAddImageClickListener {
+
+    companion object {
+        val TAG = "Medias"
+    }
 
     private val binding: FragmentAddMediasBinding by lazy {
         FragmentAddMediasBinding.inflate(LayoutInflater.from(context))
     }
 
     private val presenter: AddMediasFragmentPresenter by lazy { AddMediasFragmentPresenter() }
-
-    private var report: Report? = null
 
     private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
 
@@ -35,8 +41,9 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
             it?.let { onNewPhoto(it) }
         }
         MediaSelectorDelegate(context, "br.com.ilhasoft.voy.provider")
-                .setOnLoadImageListener(listener)
                 .setOnLoadGalleryImageListener(listener)
+                .setOnLoadVideoListener (listener)
+                .setOnLoadImageListener(listener)
     }
 
     private var imageViewSelected: AddImageView? = null
@@ -55,12 +62,18 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        report = arguments.getParcelable("Report")
+        presenter.setReportReference(arguments.getParcelable("Report"))
     }
 
     override fun onStart() {
         super.onStart()
         presenter.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.verifyMediaListSize()
+        reportListener.updateNextFragmentReference(Fragments.DESCRIPTION)
     }
 
     override fun onStop() {
@@ -90,11 +103,15 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
     }
 
     override fun onClickRemove(uri: Uri?) {
-        report?.apply {
-            mediaList.remove(mediaList.filter { it.uri == uri }.single())
-            reportListener.onMediaChange(mediaList.size)
-        }
+        presenter.removeMedia(uri)
+    }
 
+    override fun changeActionButtonStatus(status: Boolean) {
+        reportListener.changeActionButtonStatus(status)
+    }
+
+    override fun updateReportMedias(mediaList: MutableList<Media>) {
+        reportListener.updateReportMedias(mediaList)
     }
 
     private fun setupView() {
@@ -112,14 +129,11 @@ class AddMediasFragment : BaseFragment(), AddMediasFragmentContract, OnAddImageC
 
     private fun onNewPhoto(uri: Uri) {
         imageViewSelected?.setImageFromUri(uri)
-        report?.apply {
-            mediaList.add(Media(uri))
-            reportListener.onMediaChange(mediaList.size)
-        }
+        presenter.addMedia(uri)
     }
 
     override fun getMedia() {
-        delegate.selectMedia(this, MediaSelectorDelegate.VIDEO or MediaSelectorDelegate.CAMERA_IMAGE)
+        delegate.selectMedia(this, MediaSelectorDelegate.VIDEO or MediaSelectorDelegate.CAMERA_IMAGE or MediaSelectorDelegate.GALLERY_IMAGE)
     }
 
 }

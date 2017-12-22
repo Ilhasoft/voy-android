@@ -7,7 +7,8 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
-import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.Fragments
+import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
@@ -22,8 +23,6 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
         fun createIntent(context: Context): Intent = Intent(context, AddReportActivity::class.java)
     }
 
-    private var report: Report =  Report()
-
     private val binding by lazy {
         DataBindingUtil.setContentView<ActivityAddReportBinding>(this, R.layout.activity_add_report)
     }
@@ -34,12 +33,42 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
         super.onCreate(savedInstanceState)
         setupView()
         setupToolbar()
-        startFragment(AddMediasFragment(), "Medias", setupReportBundle(Bundle()))
         presenter.attachView(this)
+        presenter.startFragmentByReference(Fragments.MEDIAS)
     }
 
-    override fun onMediaChange(listSize: Int) {
-        binding.toolbar?.enabled = listSize > 0
+    override fun displayFragment(fragment: Fragment, tag: String) {
+        val transaction = supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment, tag)
+
+        if(tag != AddMediasFragment.TAG)
+            transaction.addToBackStack(tag)
+
+        transaction.commit()
+    }
+
+    override fun changeActionButtonStatus(status: Boolean) {
+        binding.toolbar?.enabled = status
+    }
+
+    override fun changeActionButtonName(resourceId: Int) {
+        binding.toolbar?.actionName = resources.getString(resourceId)
+    }
+
+    override fun updateReportMedias(mediaList: MutableList<Media>) {
+        presenter.updateReportMedias(mediaList)
+    }
+
+    override fun updateNextFragmentReference(nextFragment: Fragments) {
+        presenter.updateNextFragmentReference(nextFragment)
+    }
+
+    override fun updateExternalLinksList(externalLinks: MutableList<String>) {
+        presenter.updateExternalLinksList(externalLinks)
+    }
+
+    override fun navigateBack() {
+        super.onBackPressed()
     }
 
     private fun setupView() {
@@ -54,17 +83,4 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
         }
     }
 
-    private fun startFragment(fragment: Fragment, tag: String, bundle: Bundle?) {
-        bundle?.let {
-            fragment.arguments = it
-        }
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.container, fragment, tag)
-                .commit()
-    }
-
-    private fun setupReportBundle(bundle: Bundle): Bundle? = with(bundle) {
-        putParcelable("Report", report)
-        return bundle
-    }
 }

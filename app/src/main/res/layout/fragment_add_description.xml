@@ -6,8 +6,20 @@
     <data>
 
         <variable
+            name="report"
+            type="br.com.ilhasoft.voy.models.Report" />
+
+        <variable
+            name="linkValue"
+            type="String" />
+
+        <variable
             name="view"
             type="android.view.View" />
+
+        <variable
+            name="canAddLink"
+            type="Boolean" />
 
         <variable
             name="hasLinks"
@@ -19,165 +31,142 @@
 
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.1" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:fontFamily="sans-serif-black"
-            android:lineSpacingExtra="2sp"
-            android:text="@string/add_title_and_description"
-            android:textColor="@color/bright_sky_blue"
-            android:textSize="35sp"
-            android:textStyle="normal"
-            tools:text="Title and\nDescription" />
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.1" />
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            app:hintTextAppearance="@style/HintStyle">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/title_hint"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:maxLines="1"
-                android:nextFocusDown="@id/description"
-                app:validateEmpty="@{true}">
-
-            </android.support.design.widget.TextInputEditText>
-
-        </android.support.design.widget.TextInputLayout>
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.1" />
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            app:hintTextAppearance="@style/HintStyle">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/description_hint"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:maxLines="1"
-                app:validateEmpty="@{true}">
-
-            </android.support.design.widget.TextInputEditText>
-
-        </android.support.design.widget.TextInputLayout>
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.2" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_horizontal"
-            android:text="@string/add_link"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="normal"
-            tools:text="Add Link" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/link"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/btn_themes_white"
-                android:inputType="text"
-                android:padding="5dp" />
-
-            <ImageButton
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
-                android:background="@drawable/btn_add_link"
-                android:onClick="@{() -> presenter.addLink()}"
-                android:padding="7dp"
-                android:src="@drawable/ic_add_link" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-black"
+                android:lineSpacingExtra="2sp"
+                android:text="@string/add_title_and_description"
+                android:textColor="@color/bright_sky_blue"
+                android:textSize="35sp"
+                android:textStyle="normal"
+                tools:text="Title and\nDescription" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="5dp"
+                app:hintTextAppearance="@style/HintStyle">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/title_hint"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:text="@={report.title}"
+                    android:maxLines="1"
+                    android:nextFocusDown="@id/description">
+
+                </android.support.design.widget.TextInputEditText>
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                app:hintTextAppearance="@style/HintStyle">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/description_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:text="@={report.description}">
+
+                </android.support.design.widget.TextInputEditText>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="25dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_horizontal"
+                android:text="@string/add_link"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="normal"
+                tools:text="Add Link" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/link"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_themes_white"
+                    android:enabled="@{hasLinks}"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:padding="5sp"
+                    android:text="@{linkValue}"
+                    app:validateType='@{"url"}' />
+
+
+                <ImageButton
+                    android:id="@+id/addLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/selector_btn_add_link"
+                    android:enabled="@{canAddLink}"
+                    android:padding="7dp"
+                    android:src="@drawable/ic_add_link" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/linkList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                tools:listitem="@layout/item_link"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:visibility="@{hasLinks ? view.GONE : view.VISIBLE}"
-            tools:visibility="gone" />
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:visibility="@{hasLinks ? view.VISIBLE : view.GONE}"
-            tools:visibility="visible" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/linkList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            tools:visibility="visible">
-
-        </android.support.v7.widget.RecyclerView>
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:visibility="@{hasLinks ? view.VISIBLE : view.GONE}"
-            tools:visibility="visible" />
-
-    </LinearLayout>
+    </ScrollView>
 
 </layout>

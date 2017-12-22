@@ -14,7 +14,7 @@
 
         <variable
             name="enabled"
-            type="Boolean"/>
+            type="Boolean" />
 
         <variable
             name="presenter"
@@ -58,9 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
-            android:onClick="@{() -> presenter.onClickNext()}"
-            android:text="@{actionName}"
             android:enabled="@{enabled}"
+            android:onClick="@{() -> presenter.onClickNavigateNext()}"
+            android:text="@{actionName}"
             android:textColor="@color/selector_action_button_text"
             android:textSize="18sp"
             android:textStyle="normal"

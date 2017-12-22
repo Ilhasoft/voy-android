@@ -17,19 +17,26 @@ import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
 import br.com.ilhasoft.voy.databinding.ItemThemeBinding
 import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
 import br.com.ilhasoft.voy.databinding.DialogThemesBinding
+import br.com.ilhasoft.voy.models.Report
 
 
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.addreport.theme.holder.TagViewHolder
 import br.com.ilhasoft.voy.ui.addreport.theme.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.base.BaseFragment
+import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 
 class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
+
+    companion object {
+        const val TAG = "Theme"
+    }
 
     private val binding: FragmentAddThemeBinding by lazy {
         FragmentAddThemeBinding.inflate(LayoutInflater.from(context))
@@ -77,8 +84,11 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         }
     }
 
+    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding.presenter = presenter
+        reportListener.changeActionButtonName(R.string.send)
+        setupView()
         return binding.root
     }
 
@@ -88,9 +98,19 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         presenter.attachView(this)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        presenter.setReportReference(arguments.getParcelable(Report.TAG))
+    }
+
     override fun onStart() {
         super.onStart()
         presenter.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reportListener.changeActionButtonStatus(false)
     }
 
     override fun onStop() {
@@ -103,10 +123,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         presenter.detachView()
     }
 
-    override fun toggleTagStatus() {
-
-    }
-
     override fun showThemesDialog() {
         dialog.show()
     }
@@ -116,13 +132,28 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         themesAdapter.notifyDataSetChanged()
     }
 
+    override fun changeActionButtonStatus(status: Boolean) {
+        reportListener.changeActionButtonStatus(status)
+    }
+
+    override fun notifyTagsListChange() {
+        //presenter.addTag(tag)
+        tagsAdapter.notifyDataSetChanged()
+    }
+
     private fun dismissDialog() {
         if (dialog.isShowing) dialog.dismiss()
     }
 
+    fun setupView() {
+        binding.run {
+            presenter = this@AddThemeFragment.presenter
+        }
+    }
 
     private fun setupTagsList(tagsList: RecyclerView) = with(tagsList) {
         layoutManager = setupLayoutManager()
+        tagsAdapter.addAll(resources.getStringArray(R.array.tags).map { it -> Tag(it) })
         adapter = tagsAdapter
     }
 
@@ -135,6 +166,9 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
     private fun setupThemesList(themes: RecyclerView) = with(themes) {
         layoutManager = setupLayoutManagerThemes()
         addItemDecoration(setItemDecoration())
+        themesAdapter.addAll(resources.getStringArray(R.array.themes).map { it ->
+            Theme("", it, "", "", "", mutableListOf())
+        })
         adapter = themesAdapter
     }
 

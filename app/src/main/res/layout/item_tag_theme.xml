@@ -12,23 +12,32 @@
             name="tag"
             type="br.com.ilhasoft.voy.models.Tag" />
 
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragmentPresenter" />
+
+        <variable
+            name="tagSelectionController"
+            type="br.com.ilhasoft.voy.ui.addreport.theme.TagSelectionController" />
+
+
     </data>
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp">
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="4dp">
 
         <TextView
             android:id="@+id/tagTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@drawable/selector_tag_button"
             android:paddingBottom="6dp"
             android:paddingLeft="20dp"
-            android:background="@drawable/selector_tag_button"
             android:paddingRight="20dp"
             android:paddingTop="6dp"
             android:text="@{tag.name}"
