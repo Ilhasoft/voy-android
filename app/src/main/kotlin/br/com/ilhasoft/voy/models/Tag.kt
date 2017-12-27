@@ -6,7 +6,7 @@ import android.os.Parcelable
 /**
  * Created by developer on 07/12/17.
  */
-data class Tag(var name: String = "", var selected: Boolean = false) : Parcelable {
+data class Tag(var name: String = "") : Parcelable {
 
     constructor(parcel: Parcel) : this(parcel.readString())
 
@@ -16,9 +16,7 @@ data class Tag(var name: String = "", var selected: Boolean = false) : Parcelabl
         parcel.writeString(name)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<Tag> {
         override fun createFromParcel(parcel: Parcel): Tag {

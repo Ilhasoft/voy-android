@@ -30,7 +30,6 @@ class AddReportPresenter : Presenter<AddReportContract>(AddReportContract::class
     }
 
     private fun sendReport() {
-        println("SEND REPORT!")
         println(report)
     }
 

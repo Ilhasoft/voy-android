@@ -10,8 +10,7 @@ data class Theme(val project: String = "",
                  val name: String = "",
                  val description: String = "",
                  val color: String= "",
-                 val pin: String = "",
-                 val tags: MutableList<Tag> = mutableListOf()) : Parcelable {
+                 val pin: String = "") : Parcelable {
 
 
     constructor(parcel: Parcel) : this(
@@ -19,9 +18,7 @@ data class Theme(val project: String = "",
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readString()) {
-        parcel.readTypedList(tags, Tag.CREATOR)
-    }
+            parcel.readString())
 
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

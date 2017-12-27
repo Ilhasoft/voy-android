@@ -10,8 +10,6 @@ class AddThemeFragmentPresenter : Presenter<AddThemeFragmentContract>(AddThemeFr
     var report: Report? = null
         private set
 
-    private var theme: Theme? = null
-
     fun onClickThemes() {
         view.showThemesDialog()
     }
@@ -20,32 +18,27 @@ class AddThemeFragmentPresenter : Presenter<AddThemeFragmentContract>(AddThemeFr
         view.swapTheme(theme)
     }
 
+    fun getSelectedTheme(): Theme? = report?.theme
+
     fun setSelectedTheme(theme: Theme?) {
-        this.theme = theme
+        report?.theme = theme
         view.changeActionButtonStatus(true)
     }
 
-    fun getSelectedTheme(): Theme? = theme
-
-
-    fun setReportReference(report: Report) {
-        this.report = report
-    }
-
-    fun setSelectedTag(tag: Tag?) {
-        tag?.let {
-            this.report?.tagsList?.apply {
-                val empty = filter { it -> it == tag }.isEmpty()
-                if (empty) {
-                    add(it)
-                } else {
-                    remove(it)
-                }
+    fun setSelectedTag(tag: Tag) {
+        report?.tagsList?.apply {
+            if (!contains(tag)) {
+                add(tag)
+            } else {
+                remove(tag)
             }
         }
     }
 
-    fun verifyTagSelected(tag: Tag?): Boolean? = report?.tagsList?.contains(tag)
+    fun verifyTagSelected(tag: Tag): Boolean? = report?.tagsList?.contains(tag)
 
+    fun setReportReference(report: Report) {
+        this.report = report
+    }
 
 }

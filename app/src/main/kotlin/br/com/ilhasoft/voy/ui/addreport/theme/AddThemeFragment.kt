@@ -137,7 +137,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
     }
 
     override fun notifyTagsListChange() {
-        //presenter.addTag(tag)
         tagsAdapter.notifyDataSetChanged()
     }
 
@@ -153,7 +152,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
 
     private fun setupTagsList(tagsList: RecyclerView) = with(tagsList) {
         layoutManager = setupLayoutManager()
-        tagsAdapter.addAll(resources.getStringArray(R.array.tags).map { it -> Tag(it) })
         adapter = tagsAdapter
     }
 
@@ -166,9 +164,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
     private fun setupThemesList(themes: RecyclerView) = with(themes) {
         layoutManager = setupLayoutManagerThemes()
         addItemDecoration(setItemDecoration())
-        themesAdapter.addAll(resources.getStringArray(R.array.themes).map { it ->
-            Theme("", it, "", "", "", mutableListOf())
-        })
         adapter = themesAdapter
     }
 

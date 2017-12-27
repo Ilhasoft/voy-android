@@ -26,14 +26,14 @@ class TagViewHolder(val binding: ItemTagThemeBinding,
     }
 
     override fun onClick(v: View) {
-        presenter.setSelectedTag(binding.tag)
+        presenter.setSelectedTag(binding.tag!!)
         binding.clicked = binding.clicked?.not()
         binding.clicked.let {
             binding.tagTitle.isSelected = !v.isSelected
         }
     }
 
-    private fun configSelectedTag(tag: Tag?) {
+    private fun configSelectedTag(tag: Tag) {
         binding.clicked = presenter.verifyTagSelected(tag)
         binding.clicked?.let {
             binding.tagTitle.isSelected = it
