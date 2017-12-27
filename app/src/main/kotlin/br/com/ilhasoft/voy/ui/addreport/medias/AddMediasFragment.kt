@@ -10,7 +10,6 @@ import br.com.ilhasoft.support.media.MediaSelectorDelegate
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
 import br.com.ilhasoft.voy.models.Fragments
 import br.com.ilhasoft.voy.models.Media
-import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.shared.widget.AddImageView
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 
@@ -42,8 +41,8 @@ class AddMediasFragment :
         }
         MediaSelectorDelegate(context, "br.com.ilhasoft.voy.provider")
                 .setOnLoadGalleryImageListener(listener)
-                .setOnLoadVideoListener (listener)
                 .setOnLoadImageListener(listener)
+                .setOnLoadVideoListener(listener)
     }
 
     private var imageViewSelected: AddImageView? = null
@@ -128,12 +127,14 @@ class AddMediasFragment :
     }
 
     private fun onNewPhoto(uri: Uri) {
-        imageViewSelected?.setImageFromUri(uri)
+        imageViewSelected?.setMediaFromUri(uri)
         presenter.addMedia(uri)
     }
 
     override fun getMedia() {
-        delegate.selectMedia(this, MediaSelectorDelegate.VIDEO or MediaSelectorDelegate.CAMERA_IMAGE or MediaSelectorDelegate.GALLERY_IMAGE)
+        delegate.selectMedia(this, MediaSelectorDelegate.GALLERY_IMAGE
+                or MediaSelectorDelegate.CAMERA_IMAGE
+                or MediaSelectorDelegate.VIDEO)
     }
 
 }
