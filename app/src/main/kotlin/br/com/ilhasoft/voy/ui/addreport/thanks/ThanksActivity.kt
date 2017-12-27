@@ -50,6 +50,7 @@ class ThanksActivity : BaseActivity(), ThanksContract {
     }
 
     override fun navigateToAddReport() {
+        finish()
         startActivity(AddReportActivity.createIntent(this))
     }
 
