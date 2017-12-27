@@ -8,4 +8,5 @@ import br.com.ilhasoft.support.core.mvp.BasicView
 interface AddReportContract : BasicView {
     fun displayFragment(fragment: Fragment, tag: String)
     fun navigateBack()
+    fun displayThanks()
 }

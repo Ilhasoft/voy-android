@@ -31,6 +31,7 @@ class AddReportPresenter : Presenter<AddReportContract>(AddReportContract::class
 
     private fun sendReport() {
         println(report)
+        view.displayThanks()
     }
 
     private fun startFragment(fragment: Fragment, tag: String, nextFragment: Fragments?) {

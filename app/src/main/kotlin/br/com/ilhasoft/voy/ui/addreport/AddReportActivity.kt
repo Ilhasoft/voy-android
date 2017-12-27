@@ -10,6 +10,7 @@ import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
 import br.com.ilhasoft.voy.models.Fragments
 import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
+import br.com.ilhasoft.voy.ui.addreport.thanks.ThanksActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 
@@ -65,6 +66,11 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
 
     override fun updateExternalLinksList(externalLinks: MutableList<String>) {
         presenter.updateExternalLinksList(externalLinks)
+    }
+
+    override fun displayThanks() {
+        finish()
+        startActivity(ThanksActivity.createIntent(this))
     }
 
     override fun navigateBack() {
