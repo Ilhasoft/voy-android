@@ -7,11 +7,14 @@ import android.os.Parcelable
 /**
  * Created by geral on 18/12/17.
  */
-data class Media(var uri: Uri) : Parcelable {
-    constructor() : this(Uri.EMPTY)
+data class Media(val uri: Uri? = Uri.EMPTY) : Parcelable {
+
     constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()))
 
     companion object {
+
+        val TAG = "Media"
+
         @JvmField
         val CREATOR: Parcelable.Creator<Media> = object : Parcelable.Creator<Media> {
             override fun createFromParcel(source: Parcel): Media =

@@ -13,6 +13,7 @@ import br.com.ilhasoft.voy.databinding.ActivityCommentsBinding
 import br.com.ilhasoft.voy.databinding.ItemCommentBinding
 import br.com.ilhasoft.voy.databinding.ViewCommentsToolbarBinding
 import br.com.ilhasoft.voy.models.Comment
+import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.holder.CommentViewHolder
 
@@ -85,6 +86,8 @@ class CommentsActivity : BaseActivity(), CommentsContract {
     private fun setupRecyclerView(comments: RecyclerView) = with(comments) {
         layoutManager = setupLayoutManager()
         setHasFixedSize(true)
+        commentsAdapter.addAll(resources.getStringArray(R.array.comments).map { it ->
+            Comment(User(), "12/22/2017", "Just a Description") })
         adapter = commentsAdapter
     }
 

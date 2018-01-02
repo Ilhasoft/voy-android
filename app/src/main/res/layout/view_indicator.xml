@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="indicator"
+            type="br.com.ilhasoft.voy.models.Indicator" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <br.com.ilhasoft.voy.shared.widget.CircularTextView
+            android:id="@+id/itemIndicator"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            app:circleColor="@color/vivid_purple_two_25" />
+
+    </FrameLayout>
+
+</layout>
