@@ -8,6 +8,7 @@ import android.os.Parcelable
  * Created by geral on 18/12/17.
  */
 data class Media(var uri: Uri) : Parcelable {
+
     constructor() : this(Uri.EMPTY)
     constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()))
 
@@ -29,4 +30,5 @@ data class Media(var uri: Uri) : Parcelable {
     }
 
     override fun describeContents(): Int = 0
+    
 }

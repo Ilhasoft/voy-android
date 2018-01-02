@@ -3,7 +3,8 @@ package br.com.ilhasoft.voy.ui.addreport.description
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Report
 
-class AddDescriptionFragmentPresenter : Presenter<AddDescriptionFragmentContract>(AddDescriptionFragmentContract::class.java) {
+class AddDescriptionFragmentPresenter :
+        Presenter<AddDescriptionFragmentContract>(AddDescriptionFragmentContract::class.java) {
 
     private val LIST_MAX_SIZE = 4
 

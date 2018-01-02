@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.addreport.description
 
-
 import android.app.AlertDialog
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -34,30 +33,22 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
         const val TAG = "Description"
     }
 
-    private var link: String? = null
-
-    private val validator: Validator by lazy { Validator(binding) }
-
     private val binding: FragmentAddDescriptionBinding by lazy {
         FragmentAddDescriptionBinding.inflate(LayoutInflater.from(context))
     }
-
-    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
-
     private val presenter: AddDescriptionFragmentPresenter by lazy { AddDescriptionFragmentPresenter() }
-
     private val linkAdapter: AutoRecyclerAdapter<String, LinkViewHolder> by lazy {
         AutoRecyclerAdapter<String, LinkViewHolder>(linkViewHolder).apply {
             setHasStableIds(true)
         }
     }
-
     private val linkViewHolder: OnCreateViewHolder<String, LinkViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             LinkViewHolder(ItemLinkBinding.inflate(layoutInflater, parent, false), presenter)
         }
     }
-
+    private val validator: Validator by lazy { Validator(binding) }
+    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
     private val sameLinkDialog by lazy {
         AlertDialog.Builder(context)
                 .setTitle(R.string.feedback_list_title)
@@ -66,6 +57,7 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
                 .setCancelable(true)
                 .create()
     }
+    private var link: String? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupView()

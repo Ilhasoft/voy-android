@@ -4,19 +4,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.View
+import android.view.ViewGroup
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
 import br.com.ilhasoft.voy.models.Fragments
 import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.shared.widget.AddImageView
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
-
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.shared.OnAddImageClickListener
 import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
-
 
 class AddMediasFragment :
         BaseFragment(),
@@ -30,11 +28,8 @@ class AddMediasFragment :
     private val binding: FragmentAddMediasBinding by lazy {
         FragmentAddMediasBinding.inflate(LayoutInflater.from(context))
     }
-
     private val presenter: AddMediasFragmentPresenter by lazy { AddMediasFragmentPresenter() }
-
     private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
-
     private val delegate: MediaSelectorDelegate by lazy {
         val listener = MediaSelectorDelegate.OnLoadMediaListener {
             it?.let { onNewPhoto(it) }
@@ -44,7 +39,6 @@ class AddMediasFragment :
                 .setOnLoadImageListener(listener)
                 .setOnLoadVideoListener(listener)
     }
-
     private var imageViewSelected: AddImageView? = null
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -55,7 +49,7 @@ class AddMediasFragment :
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setUpImages()
+        setupImages()
         presenter.attachView(this)
     }
 
@@ -119,7 +113,7 @@ class AddMediasFragment :
         }
     }
 
-    private fun setUpImages() = with(binding) {
+    private fun setupImages() = with(binding) {
         image1.setImageListener(this@AddMediasFragment)
         image2.setImageListener(this@AddMediasFragment)
         image3.setImageListener(this@AddMediasFragment)

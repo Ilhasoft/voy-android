@@ -61,4 +61,5 @@ class AddReportPresenter : Presenter<AddReportContract>(AddReportContract::class
     fun onClickNavigateBack() {
         view.navigateBack()
     }
+
 }
