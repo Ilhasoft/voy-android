@@ -25,6 +25,7 @@
             android:text="@string/themes"
             android:textColor="@color/bright_sky_blue"
             android:textSize="16sp"
+            android:textStyle="bold"
             tools:text="Themes" />
 
         <android.support.v7.widget.RecyclerView
