@@ -1,17 +1,14 @@
 package br.com.ilhasoft.voy.ui.addreport.description
 
-import android.annotation.SuppressLint
+
 import android.app.AlertDialog
-import android.databinding.Bindable
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
-
-import android.view.ViewGroup
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
@@ -19,8 +16,6 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.BR
 import br.com.ilhasoft.voy.R
-
-
 import br.com.ilhasoft.voy.databinding.FragmentAddDescriptionBinding
 import br.com.ilhasoft.voy.databinding.ItemLinkBinding
 import br.com.ilhasoft.voy.models.Fragments
@@ -92,7 +87,6 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
 
     override fun onResume() {
         super.onResume()
-
         reportListener.changeActionButtonName(R.string.next)
         reportListener.updateNextFragmentReference(Fragments.THEME)
     }
@@ -120,7 +114,6 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
         linkAdapter.setList(externalLinks)
         updateReportExternalLinksList(externalLinks)
         changeAddLinkButton(presenter.verifyListSize())
-
     }
 
     override fun updateReportExternalLinksList(externalLinks: MutableList<String>) {
@@ -154,13 +147,13 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
         link?.let {
             presenter.addLink(it)
         }
+        binding.link.text.clear()
     }
 
     private fun changeAddLinkButton(status: Boolean) {
         binding.canAddLink = status
         binding.notifyPropertyChanged(BR.canAddLink)
     }
-
 
     private fun startTitleListeners() {
         val titleNotEmptyObservable = createEditTextObservable(binding.title)
@@ -177,7 +170,6 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
     }
 
     private fun startLinkListeners() {
-
         val validLinkObservable = RxTextView.textChangeEvents(binding.link)
         val linkNotEmptyObservable = RxTextView.textChangeEvents(binding.link)
 
