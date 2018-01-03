@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.models
 
-import android.databinding.Bindable
 import android.os.Parcel
 import android.os.Parcelable
 

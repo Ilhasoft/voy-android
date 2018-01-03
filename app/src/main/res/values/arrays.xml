@@ -25,36 +25,4 @@
         <item>@drawable/ic_avatar22</item>
         <item>@drawable/ic_avatar23</item>
     </integer-array>
-
-    <string-array name="themes">
-        <item>Water</item>
-        <item>Accessibility</item>
-        <item>Pollution</item>
-        <item>Climate Change</item>
-        <item>Ace</item>
-        <item>Security</item>
-    </string-array>
-
-    <string-array name="tags">
-        <item>Water</item>
-        <item>Accessibility</item>
-        <item>Pollution</item>
-        <item>Climate Change</item>
-        <item>Ace</item>
-        <item>Security</item>
-    </string-array>
-
-    <string-array name="comments">
-        <item>Curabitur cursus urna id sapien gravida elementum.</item>
-        <item>Aliquam faucibus at erat non porttitor.</item>
-        <item>Nulla neque diam, pellentesque in bibendum vel</item>
-        <item>Duis ut libero a elit molestie cursus.</item>
-    </string-array>
-
-    <string-array name="Reports">
-        <item>Curabitur cursus urna id sapien gravida elementum.</item>
-        <item>Aliquam faucibus at erat non porttitor.</item>
-        <item>Nulla neque diam, pellentesque in bibendum vel</item>
-        <item>Duis ut libero a elit molestie cursus.</item>
-    </string-array>
 </resources>

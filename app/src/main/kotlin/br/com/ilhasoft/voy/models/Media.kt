@@ -7,13 +7,15 @@ import android.os.Parcelable
 /**
  * Created by geral on 18/12/17.
  */
-data class Media(val uri: Uri? = Uri.EMPTY) : Parcelable {
+data class Media(val uri: Uri? = Uri.EMPTY, val type: String = "") : Parcelable {
 
-    constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()))
+    constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()), source.readString())
 
     companion object {
 
         val TAG = "Media"
+        val TYPE_IMAGE = "image"
+        val TYPE_VIDEO = "video"
 
         @JvmField
         val CREATOR: Parcelable.Creator<Media> = object : Parcelable.Creator<Media> {
@@ -28,6 +30,7 @@ data class Media(val uri: Uri? = Uri.EMPTY) : Parcelable {
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.apply {
             writeParcelable(uri, flags)
+            writeString(type)
         }
     }
 

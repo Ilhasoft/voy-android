@@ -14,7 +14,6 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
-import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
@@ -91,9 +90,10 @@ class ReportsFragment : BaseFragment(), ReportsContract {
     override fun navigateToReportDetail(report: Report) =
             startActivity(ReportDetailActivity.createIntent(context))
 
+
     private fun setupView() {
         binding.run {
-            noReports = false
+            noReports = true
             greetings = getGreetings(type)
             createReportTip = getGreetingsTip(type)
             presenter = this@ReportsFragment.presenter
@@ -125,9 +125,6 @@ class ReportsFragment : BaseFragment(), ReportsContract {
         layoutManager = setupLayoutManager()
         addItemDecoration(setupItemDecoration())
         setHasFixedSize(true)
-        reportsAdapter.addAll(resources.getStringArray(R.array.Reports).map { it ->
-            Report(title = it, description = it)
-        })
         adapter = reportsAdapter
     }
 
@@ -139,12 +136,5 @@ class ReportsFragment : BaseFragment(), ReportsContract {
         itemDecoration.space = DimensionHelper.toPx(context, 12f)
         return itemDecoration
     }
-
-    private fun getReportList(): MutableList<Report> = mutableListOf(
-            Report("A Title For a Report 1", "12/27/2017", "Just a Description 1", Theme("Project 1", "Just a Name 1", "Just a Description 1")),
-            Report("A Title For a Report 2", "12/26/2017", "Just a Description 2", Theme("Project 2", "Just a Name 2", "Just a Description 2")),
-            Report("A Title For a Report 3", "12/25/2017", "Just a Description 3", Theme("Project 3", "Just a Name 3", "Just a Description 3")),
-            Report("A Title For a Report 4", "12/24/2017", "Just a Description 4", Theme("Project 4", "Just a Name 4", "Just a Description 4")),
-            Report("A Title For a Report 5", "12/23/2017", "Just a Description 5", Theme("Project 5", "Just a Name 5", "Just a Description 5")))
 
 }

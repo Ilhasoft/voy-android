@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
@@ -16,7 +17,6 @@ import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.*
 import br.com.ilhasoft.voy.models.Indicator
-import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.base.BaseActivity
@@ -30,7 +30,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.android.synthetic.main.view_detail_viewpager.*
 
-class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnMenuItemClickListener {
+class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
 
     companion object {
         @JvmStatic
@@ -41,9 +41,11 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
     }
 
+    private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, getCarouselItems()) }
+
     private val indicatorAdapter: AutoRecyclerAdapter<Indicator, IndicatorViewHolder> by lazy {
         AutoRecyclerAdapter<Indicator, IndicatorViewHolder>(indicatorViewHolder).apply {
-            setHasStableIds(true)
+            setHasStableIds(false)
         }
     }
 
@@ -54,7 +56,9 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
     }
 
     private val presenter: ReportDetailPresenter by lazy { ReportDetailPresenter() }
+
     private lateinit var popupMenu: PopupMenu
+
     private val tagViewHolder:
             OnCreateViewHolder<Tag, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
@@ -103,10 +107,31 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         else -> false
     }
 
+    override fun swapPage(indicator: Indicator) {
+        binding.run {
+            viewPager.setCurrentItem(indicator.position, true)
+        }
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {
+
+    }
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+    }
+
+    override fun onPageSelected(position: Int) {
+        indicatorAdapter.single { it -> it.selected }.selected = false
+        indicatorAdapter[position].selected = true
+        presenter.indicator = indicatorAdapter[position]
+        indicatorAdapter.notifyDataSetChanged()
+    }
+
     private fun setupView() {
         binding.run {
-            report = presenter?.report
             presenter = this@ReportDetailActivity.presenter
+            report = presenter?.report
             viewToolbar?.run { setupToolbar(this) }
             setupRecyclerView(tags)
             setupViewPager(viewPager)
@@ -115,10 +140,9 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
     }
 
     private fun setupViewPager(viewPager: WrapContentViewPager) = with(viewPager) {
-        val carouselAdapter = CarouselAdapter(supportFragmentManager, getCarouselItems())
-        println(getCarouselItems())
         adapter = carouselAdapter
         offscreenPageLimit = carouselAdapter.count
+        addOnPageChangeListener(this@ReportDetailActivity)
     }
 
     private fun getCarouselItems(): List<CarouselItem> = presenter.report.mediaList.map { it ->
@@ -142,7 +166,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         layoutManager = setupLayoutManager()
         addItemDecoration(setupItemDecoration())
         setHasFixedSize(true)
-        tagsAdapter.addAll(resources.getStringArray(R.array.tags).map { it -> Tag(it) })
+        //tagsAdapter.addAll(resources.getStringArray(R.array.tags).map { it -> Tag(it) })
         adapter = tagsAdapter
     }
 
@@ -160,6 +184,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         layoutManager = setupIndicatorLayoutManager()
         setHasFixedSize(true)
         indicatorAdapter.addAll(presenter.getIndicators())
+        indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
         adapter = indicatorAdapter
     }
 

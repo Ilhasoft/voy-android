@@ -86,8 +86,6 @@ class CommentsActivity : BaseActivity(), CommentsContract {
     private fun setupRecyclerView(comments: RecyclerView) = with(comments) {
         layoutManager = setupLayoutManager()
         setHasFixedSize(true)
-        commentsAdapter.addAll(resources.getStringArray(R.array.comments).map { it ->
-            Comment(User(), "12/22/2017", "Just a Description") })
         adapter = commentsAdapter
     }
 

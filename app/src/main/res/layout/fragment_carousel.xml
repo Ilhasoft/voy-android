@@ -5,6 +5,10 @@
     <data>
 
         <variable
+            name="media"
+            type="br.com.ilhasoft.voy.models.Media" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselPresenter" />
 
@@ -17,14 +21,19 @@
         <ImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
-            tools:src="@drawable/bg_bright_sky_blue_button"/>
+            android:layout_height="160dp"
+            android:onClick="@{() -> presenter.displayMedia(media)}"
+            tools:src="@color/warm_grey" />
 
-        <VideoView
-            android:id="@+id/video"
-            android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_video_player"
+            android:visibility="gone"
+            tools:background="@color/red"
+            tools:visibility="visible" />
 
     </FrameLayout>
 
