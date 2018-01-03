@@ -9,9 +9,8 @@ import android.os.Parcelable
 data class Theme(val project: String = "",
                  val name: String = "",
                  val description: String = "",
-                 val color: String= "",
+                 val color: String = "",
                  val pin: String = "") : Parcelable {
-
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -19,7 +18,6 @@ data class Theme(val project: String = "",
             parcel.readString(),
             parcel.readString(),
             parcel.readString())
-
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(project)
@@ -29,18 +27,12 @@ data class Theme(val project: String = "",
         parcel.writeString(pin)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<Theme> {
-        override fun createFromParcel(parcel: Parcel): Theme {
-            return Theme(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): Theme = Theme(parcel)
 
-        override fun newArray(size: Int): Array<Theme?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<Theme?> = arrayOfNulls(size)
     }
 
 }

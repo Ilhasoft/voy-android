@@ -5,12 +5,10 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 
-
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityThanksBinding
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
-
 
 class ThanksActivity : BaseActivity(), ThanksContract {
 
@@ -22,16 +20,14 @@ class ThanksActivity : BaseActivity(), ThanksContract {
     private val binding: ActivityThanksBinding by lazy {
         DataBindingUtil.setContentView<ActivityThanksBinding>(this, R.layout.activity_thanks)
     }
-
     private val presenter: ThanksPresenter by lazy { ThanksPresenter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding.run {
             presenter = this@ThanksActivity.presenter
+            this@ThanksActivity.presenter.attachView(this@ThanksActivity)
         }
-        presenter.attachView(this)
     }
 
     override fun onStart() {
@@ -61,6 +57,5 @@ class ThanksActivity : BaseActivity(), ThanksContract {
     override fun onBackPressed() {
         this.onClickClose()
     }
-
 
 }

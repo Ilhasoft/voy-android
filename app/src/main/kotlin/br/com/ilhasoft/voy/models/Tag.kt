@@ -19,12 +19,9 @@ data class Tag(var name: String = "") : Parcelable {
     override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<Tag> {
-        override fun createFromParcel(parcel: Parcel): Tag {
-            return Tag(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): Tag = Tag(parcel)
 
-        override fun newArray(size: Int): Array<Tag?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<Tag?> = arrayOfNulls(size)
     }
+
 }

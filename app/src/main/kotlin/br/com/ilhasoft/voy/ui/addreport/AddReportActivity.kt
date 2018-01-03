@@ -2,9 +2,9 @@ package br.com.ilhasoft.voy.ui.addreport
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
 import br.com.ilhasoft.voy.models.Fragments
@@ -27,22 +27,23 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
     private val binding by lazy {
         DataBindingUtil.setContentView<ActivityAddReportBinding>(this, R.layout.activity_add_report)
     }
-
     private val presenter by lazy { AddReportPresenter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupView()
         setupToolbar()
-        presenter.attachView(this)
-        presenter.startFragmentByReference(Fragments.MEDIAS)
+        presenter.run {
+            attachView(this@AddReportActivity)
+            startFragmentByReference(Fragments.MEDIAS)
+        }
     }
 
     override fun displayFragment(fragment: Fragment, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment, tag)
 
-        if(tag != AddMediasFragment.TAG)
+        if (tag != AddMediasFragment.TAG)
             transaction.addToBackStack(tag)
 
         transaction.commit()

@@ -43,6 +43,9 @@
             android:name=".ui.addreport.AddReportActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.addreport.thanks.ThanksActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="br.com.ilhasoft.support.media.view.MediaViewActivity"
             android:theme="@style/MediaViewTheme"/>
 
@@ -55,10 +58,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
-        <activity
-            android:name=".ui.addreport.thanks.ThanksActivity"
-            android:screenOrientation="portrait" />
 
     </application>
 

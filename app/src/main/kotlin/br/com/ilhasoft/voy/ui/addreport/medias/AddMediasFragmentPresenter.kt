@@ -5,10 +5,10 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.models.Report
 
-class AddMediasFragmentPresenter : Presenter<AddMediasFragmentContract>(AddMediasFragmentContract::class.java) {
+class AddMediasFragmentPresenter :
+        Presenter<AddMediasFragmentContract>(AddMediasFragmentContract::class.java) {
 
     var report: Report? = null
-
 
     fun addMedia(uri: Uri) {
         report?.mediaList?.apply {

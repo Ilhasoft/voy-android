@@ -34,19 +34,13 @@ data class Report(var title: String = "",
         parcel.writeList(tagsList)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<Report> {
         val TAG = "Report"
-        override fun createFromParcel(parcel: Parcel): Report {
-            return Report(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): Report = Report(parcel)
 
-        override fun newArray(size: Int): Array<Report?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<Report?> = arrayOfNulls(size)
     }
 
 }

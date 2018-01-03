@@ -1,7 +1,6 @@
 package br.com.ilhasoft.voy.ui.addreport.theme.holder
 
 import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
-import br.com.ilhasoft.support.validation.BR
 import br.com.ilhasoft.voy.databinding.ItemThemeBinding
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragmentPresenter

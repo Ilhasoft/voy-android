@@ -1,25 +1,24 @@
 package br.com.ilhasoft.voy.ui.addreport.theme
 
+import android.app.Dialog
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-
-import android.view.ViewGroup
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
-import br.com.ilhasoft.voy.databinding.ItemThemeBinding
-import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
 import br.com.ilhasoft.voy.databinding.DialogThemesBinding
+import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
+import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
+import br.com.ilhasoft.voy.databinding.ItemThemeBinding
 import br.com.ilhasoft.voy.models.Report
-
-
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
@@ -66,7 +65,7 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     binding.themes.text = presenter.getSelectedTheme()?.name
                 }
-                .setNegativeButton(android.R.string.cancel) { _, _ ->
+                .setNegativeButton(android.R.string.no) { _, _ ->
                     dismissDialog()
                 }
                 .create()
@@ -125,6 +124,8 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
 
     override fun showThemesDialog() {
         dialog.show()
+        dialog.getButton(Dialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(context, R.color.cool_grey))
     }
 
     override fun swapTheme(theme: Theme?) {

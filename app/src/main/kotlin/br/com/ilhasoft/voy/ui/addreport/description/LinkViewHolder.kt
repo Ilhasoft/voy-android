@@ -7,8 +7,8 @@ import br.com.ilhasoft.voy.databinding.ItemLinkBinding
 /**
  * Created by geral on 11/12/17.
  */
-class LinkViewHolder(val binding: ItemLinkBinding,
-                     val presenter: AddDescriptionFragmentPresenter) : ViewHolder<String>(binding.root), View.OnClickListener {
+class LinkViewHolder(val binding: ItemLinkBinding, val presenter: AddDescriptionFragmentPresenter) :
+        ViewHolder<String>(binding.root), View.OnClickListener {
 
     init {
         binding.presenter = presenter
@@ -20,10 +20,10 @@ class LinkViewHolder(val binding: ItemLinkBinding,
         binding.executePendingBindings()
     }
 
-
     override fun onClick(v: View?) {
-        binding.link?.let{
+        binding.link?.let {
             presenter.removeLink(it)
         }
     }
+
 }

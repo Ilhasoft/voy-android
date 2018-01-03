@@ -1,17 +1,13 @@
 package br.com.ilhasoft.voy.ui.addreport.description
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.databinding.Bindable
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
-
-import android.view.ViewGroup
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
@@ -19,8 +15,6 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.BR
 import br.com.ilhasoft.voy.R
-
-
 import br.com.ilhasoft.voy.databinding.FragmentAddDescriptionBinding
 import br.com.ilhasoft.voy.databinding.ItemLinkBinding
 import br.com.ilhasoft.voy.models.Fragments
@@ -39,30 +33,22 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
         const val TAG = "Description"
     }
 
-    private var link: String? = null
-
-    private val validator: Validator by lazy { Validator(binding) }
-
     private val binding: FragmentAddDescriptionBinding by lazy {
         FragmentAddDescriptionBinding.inflate(LayoutInflater.from(context))
     }
-
-    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
-
     private val presenter: AddDescriptionFragmentPresenter by lazy { AddDescriptionFragmentPresenter() }
-
     private val linkAdapter: AutoRecyclerAdapter<String, LinkViewHolder> by lazy {
         AutoRecyclerAdapter<String, LinkViewHolder>(linkViewHolder).apply {
             setHasStableIds(true)
         }
     }
-
     private val linkViewHolder: OnCreateViewHolder<String, LinkViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             LinkViewHolder(ItemLinkBinding.inflate(layoutInflater, parent, false), presenter)
         }
     }
-
+    private val validator: Validator by lazy { Validator(binding) }
+    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
     private val sameLinkDialog by lazy {
         AlertDialog.Builder(context)
                 .setTitle(R.string.feedback_list_title)
@@ -71,6 +57,7 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
                 .setCancelable(true)
                 .create()
     }
+    private var link: String? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupView()
@@ -92,7 +79,6 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
 
     override fun onResume() {
         super.onResume()
-
         reportListener.changeActionButtonName(R.string.next)
         reportListener.updateNextFragmentReference(Fragments.THEME)
     }
@@ -120,7 +106,6 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
         linkAdapter.setList(externalLinks)
         updateReportExternalLinksList(externalLinks)
         changeAddLinkButton(presenter.verifyListSize())
-
     }
 
     override fun updateReportExternalLinksList(externalLinks: MutableList<String>) {
@@ -154,13 +139,13 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
         link?.let {
             presenter.addLink(it)
         }
+        binding.link.text.clear()
     }
 
     private fun changeAddLinkButton(status: Boolean) {
         binding.canAddLink = status
         binding.notifyPropertyChanged(BR.canAddLink)
     }
-
 
     private fun startTitleListeners() {
         val titleNotEmptyObservable = createEditTextObservable(binding.title)
@@ -177,7 +162,6 @@ class AddDescriptionFragment : BaseFragment(), AddDescriptionFragmentContract {
     }
 
     private fun startLinkListeners() {
-
         val validLinkObservable = RxTextView.textChangeEvents(binding.link)
         val linkNotEmptyObservable = RxTextView.textChangeEvents(binding.link)
 
