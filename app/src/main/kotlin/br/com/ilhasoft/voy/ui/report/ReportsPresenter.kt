@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report
 
-import android.os.Bundle
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Report
 

@@ -9,10 +9,10 @@ import android.os.Parcelable
  */
 data class Media(val uri: Uri? = Uri.EMPTY, val type: String = "") : Parcelable {
 
-    constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()), source.readString())
+    constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()),
+            source.readString())
 
     companion object {
-
         val TAG = "Media"
         val TYPE_IMAGE = "image"
         val TYPE_VIDEO = "video"
