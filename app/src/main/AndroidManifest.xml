@@ -45,6 +45,9 @@
         <activity
             android:name=".ui.addreport.thanks.ThanksActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="br.com.ilhasoft.support.media.view.MediaViewActivity"
+            android:theme="@style/MediaViewTheme"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

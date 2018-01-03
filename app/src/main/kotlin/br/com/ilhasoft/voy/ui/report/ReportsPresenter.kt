@@ -12,5 +12,4 @@ class ReportsPresenter : Presenter<ReportsContract>(ReportsContract::class.java)
     fun navigateToReportDetail(report: Report) {
         view.navigateToReportDetail(report)
     }
-
 }

@@ -89,7 +89,7 @@ class LoginActivity : BaseActivity(), LoginContract {
         val passwordObservable = createEditTextObservable(binding.password)
 
         Observables.combineLatest(usernameObservable, passwordObservable,
-                { username, password -> username.isNotEmpty() && password.isNotEmpty()})
+                { username, password -> username.isNotEmpty() && password.isNotEmpty() })
                 .subscribe({ binding.login.isEnabled = it },
                         { Log.e(TAG, "Error ", it) })
     }
