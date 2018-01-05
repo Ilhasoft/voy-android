@@ -59,4 +59,5 @@
 
     <string name="feedback_list_title">Hey!</string>
     <string name="feedback_list_message">You can\'t add the same link twice :(</string>
+    <string name="invalid_login">Invalid user or password</string>
 </resources>

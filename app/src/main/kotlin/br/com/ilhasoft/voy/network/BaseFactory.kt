@@ -10,15 +10,21 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Created by lucasbarros on 05/01/18.
  */
-abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>,
-                                        private var accessToken: String = "") {
+abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
 
-    private var mRetrofitBuilder: Retrofit.Builder
+    companion object {
+        var accessToken: String = ""
+    }
+
+    private var mRetrofitBuilder: Retrofit.Builder = createBaseRetrofit()
 
     private var mApi: ApiType? = null
 
-    init {
-        mRetrofitBuilder = createBaseRetrofit()
+    val api: ApiType by lazy {
+        val clientBuilder = createOkHttpClient()
+        clientBuilder.addInterceptor(AuthenticationInterceptor(accessToken))
+
+        mRetrofitBuilder.client(clientBuilder.build()).build().create<ApiType>(mClazz)
     }
 
     private fun createBaseRetrofit(): Retrofit.Builder {
@@ -26,16 +32,6 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>,
                 .baseUrl(Constants.API_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-    }
-
-    fun getApi(): ApiType? {
-        if (mApi == null) {
-            val clientBuilder = createOkHttpClient()
-            clientBuilder.addInterceptor(AuthenticationInterceptor(accessToken))
-
-            mApi = mRetrofitBuilder.client(clientBuilder.build()).build().create<ApiType>(mClazz)
-        }
-        return mApi
     }
 
     abstract fun createOkHttpClient(): OkHttpClient.Builder

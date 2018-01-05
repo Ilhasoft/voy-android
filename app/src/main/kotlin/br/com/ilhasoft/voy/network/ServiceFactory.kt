@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by lucasbarros on 05/01/18.
  */
-abstract class ServiceFactory<out ApiType>(clazz: Class<ApiType>, accessToken: String = "") :
-        BaseFactory<ApiType>(clazz, accessToken) {
+abstract class ServiceFactory<out ApiType>(clazz: Class<ApiType>) :
+        BaseFactory<ApiType>(clazz) {
 
     override fun createOkHttpClient(): OkHttpClient.Builder {
         val client = OkHttpClient.Builder()
