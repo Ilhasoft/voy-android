@@ -7,14 +7,14 @@ import android.widget.PopupMenu
 import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ItemCommentBinding
-import br.com.ilhasoft.voy.models.Comment
+import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.ui.comment.CommentsPresenter
 
 /**
  * Created by developer on 14/12/17.
  */
 class CommentViewHolder(val binding: ItemCommentBinding,
-                        val presenter: CommentsPresenter) : ViewHolder<Comment>(binding.root),
+                        val presenter: CommentsPresenter) : ViewHolder<ReportComment>(binding.root),
         View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private lateinit var popupMenu: PopupMenu
@@ -26,8 +26,8 @@ class CommentViewHolder(val binding: ItemCommentBinding,
         }
     }
 
-    override fun onBind(comment: Comment?) {
-        binding.comment = comment
+    override fun onBind(reportComment: ReportComment?) {
+        binding.reportComment = reportComment
         binding.executePendingBindings()
     }
 
@@ -37,11 +37,11 @@ class CommentViewHolder(val binding: ItemCommentBinding,
 
     override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
         R.id.edit -> {
-            presenter.onClickEditComment(binding.comment)
+            presenter.onClickEditComment(binding.reportComment)
             true
         }
         R.id.share -> {
-            presenter.onClickRemoveComment(binding.comment)
+            presenter.onClickRemoveComment(binding.reportComment)
             true
         }
         else -> false

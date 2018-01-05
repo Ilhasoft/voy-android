@@ -143,9 +143,9 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         addOnPageChangeListener(this@ReportDetailActivity)
     }
 
-    private fun getCarouselItems(): List<CarouselItem> = presenter.report.mediaList.map { it ->
+    private fun getCarouselItems(): List<CarouselItem> = mutableListOf()/*presenter.report.mediaList.map { it ->
         CarouselItem(CarouselFragment.newInstance(it))
-    }
+    }*/
 
     private fun setupToolbar(viewToolbar: ViewReportToolbarBinding) = with(viewToolbar) {
         setupPopupMenu(expandedMenu)

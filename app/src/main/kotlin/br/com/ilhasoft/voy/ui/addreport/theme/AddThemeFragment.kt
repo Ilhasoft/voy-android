@@ -63,7 +63,7 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         setupThemesList(themeDialogBinding.themes)
         AlertDialog.Builder(context).setView(themeDialogBinding.root)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
-                    binding.themes.text = presenter.getSelectedTheme()?.name
+                    binding.themes.text = /*presenter.getSelectedTheme()?.name*/""
                 }
                 .setNegativeButton(android.R.string.no) { _, _ ->
                     dismissDialog()

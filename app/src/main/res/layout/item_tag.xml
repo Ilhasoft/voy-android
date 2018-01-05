@@ -23,7 +23,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
-            android:text="@{tag.name}"
+            android:text="@{tag.tag}"
             android:textColor="@color/white_three"
             android:textSize="8sp"
             tools:ignore="SmallSp"

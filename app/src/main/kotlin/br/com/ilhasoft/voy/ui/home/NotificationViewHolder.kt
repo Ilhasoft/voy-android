@@ -15,7 +15,7 @@ class NotificationViewHolder(val binding: ItemNotificationBinding,
     }
 
     override fun onBind(notification: Notification) {
-        binding.notificationTitle.text = notification.title
         binding.notification = notification
+        binding.executePendingBindings()
     }
 }

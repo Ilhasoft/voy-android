@@ -11,24 +11,24 @@ class AddMediasFragmentPresenter :
     var report: Report? = null
 
     fun addMedia(uri: Uri) {
-        report?.mediaList?.apply {
+        /*report?.mediaList?.apply {
             add(Media(uri))
             verifyMediaListSize()
-        }
+        }*/
     }
 
     fun removeMedia(uri: Uri?) {
-        report?.mediaList?.apply {
+        /*report?.mediaList?.apply {
             remove(single { it.uri == uri })
             verifyMediaListSize()
-        }
+        }*/
     }
 
     fun verifyMediaListSize() {
-        report?.mediaList?.let {
+        /*report?.mediaList?.let {
             view.changeActionButtonStatus(it.size > 0)
             view.updateReportMedias(it)
-        }
+        }*/
     }
 
     fun setReportReference(report: Report) {

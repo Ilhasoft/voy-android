@@ -28,9 +28,9 @@ class ReportDetailPresenter : Presenter<ReportDetailContract>(ReportDetailContra
         view.swapPage(indicator)
     }
 
-    fun getIndicators(): Collection<Indicator> = report.mediaList.mapIndexed { index, it ->
+    fun getIndicators(): Collection<Indicator> = mutableListOf()/*report.mediaList.mapIndexed { index, it ->
         Indicator(it.uri, false, index)
-    }
+    }*/
 
     fun setReportReference(report: Report) {
         this.report = report

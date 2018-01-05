@@ -50,7 +50,7 @@
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:text="@{report.title}"
+                    android:text="@{report.name}"
                     android:textColor="@color/vivid_purple_two"
                     android:textSize="20sp"
                     tools:text="Pollution, a global problem" />
@@ -62,7 +62,7 @@
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:text="@{report.createdAt}"
+                    android:text="@{report.createdOn}"
                     android:textColor="@color/vivid_purple_two"
                     android:textSize="12sp"
                     tools:text="Aug 03, 2017" />
