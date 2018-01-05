@@ -9,6 +9,7 @@ import android.os.Parcelable
 data class Report(var title: String = "",
                   var createdAt: String = "",
                   var description: String = "",
+                  var status: Int = 0,
                   var theme: Theme? = null,
                   var mediaList: MutableList<Media> = mutableListOf(),
                   var externalLinks: MutableList<String> = mutableListOf(),
@@ -18,6 +19,7 @@ data class Report(var title: String = "",
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
+            parcel.readInt(),
             parcel.readParcelable(Theme::class.java.classLoader)) {
         parcel.readTypedList(mediaList, Media.CREATOR)
         parcel.readStringList(externalLinks)
@@ -28,6 +30,7 @@ data class Report(var title: String = "",
         parcel.writeString(title)
         parcel.writeString(createdAt)
         parcel.writeString(description)
+        parcel.writeInt(status)
         parcel.writeParcelable(theme, flags)
         parcel.writeList(mediaList)
         parcel.writeList(externalLinks)

@@ -15,7 +15,10 @@ import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.databinding.*
+import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
+import br.com.ilhasoft.voy.databinding.ItemTagBinding
+import br.com.ilhasoft.voy.databinding.ViewIndicatorBinding
+import br.com.ilhasoft.voy.databinding.ViewReportToolbarBinding
 import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
@@ -166,7 +169,6 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
         layoutManager = setupLayoutManager()
         addItemDecoration(setupItemDecoration())
         setHasFixedSize(true)
-        //tagsAdapter.addAll(resources.getStringArray(R.array.tags).map { it -> Tag(it) })
         adapter = tagsAdapter
     }
 

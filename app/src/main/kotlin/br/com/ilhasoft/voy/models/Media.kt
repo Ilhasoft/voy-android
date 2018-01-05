@@ -7,9 +7,11 @@ import android.os.Parcelable
 /**
  * Created by geral on 18/12/17.
  */
-data class Media(val uri: Uri? = Uri.EMPTY, val type: String = "") : Parcelable {
+data class Media(val uri: Uri? = Uri.EMPTY, val type: String = "", val url: String = "") : Parcelable {
 
-    constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()), source.readString())
+    constructor(source: Parcel) : this(source.readParcelable<Uri>(ClassLoader.getSystemClassLoader()),
+            source.readString(),
+            source.readString())
 
     companion object {
 
@@ -31,6 +33,7 @@ data class Media(val uri: Uri? = Uri.EMPTY, val type: String = "") : Parcelable 
         dest?.apply {
             writeParcelable(uri, flags)
             writeString(type)
+            writeString(url)
         }
     }
 

@@ -78,6 +78,7 @@ class AccountActivity : BaseActivity(), AccountContract {
     }
 
     override fun swapAvatar() {
+        binding.drawableId = presenter.getSelectedAvatar()
         avatarsAdapter.notifyDataSetChanged()
     }
 
@@ -85,6 +86,8 @@ class AccountActivity : BaseActivity(), AccountContract {
 
     private fun setupView() {
         binding.run {
+            //FIXME set the actual user avatar not a static reference
+            drawableId = R.drawable.ic_avatar12
             editingPhoto = false
             presenter = this@AccountActivity.presenter
             this@AccountActivity.presenter.setSelectedAvatar(drawableId)

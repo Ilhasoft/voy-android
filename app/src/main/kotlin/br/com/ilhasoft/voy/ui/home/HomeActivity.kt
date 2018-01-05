@@ -107,6 +107,7 @@ class HomeActivity : BaseActivity(), HomeContract {
             selectingMap = selectingMap?.not()
             viewToolbar?.map = map
             this@HomeActivity.presenter.setSelectedMap(map)
+
         }
         mapsAdapter.notifyDataSetChanged()
     }
@@ -118,22 +119,32 @@ class HomeActivity : BaseActivity(), HomeContract {
     private fun setupView() {
         binding.apply {
             selectingMap = false
-            viewToolbar?.run { setupToolbar(this) }
             setupRecyclerView(maps)
             setupTabs()
             setupDrawer()
             setupNotifications(notifications)
+            viewToolbar?.run { setupToolbar(this) }
         }
     }
 
     private fun setupToolbar(viewToolbar: ViewHomeToolbarBinding) = with(viewToolbar) {
         presenter = this@HomeActivity.presenter
+        hasNotification = notificationsAdapter.count() > 0
+        map = getFirstMapReference()
         this@HomeActivity.presenter.setSelectedMap(map)
     }
 
+    private fun getFirstMapReference(): Map? =
+            if (mapsAdapter.size > 0)
+                mapsAdapter[Map.INITIAL_POSITION]
+            else
+                Map("Select a Map")
+
+
     private fun setupRecyclerView(maps: RecyclerView) = with(maps) {
         layoutManager = setupLayoutManager()
-        setHasFixedSize(true)
+        //FIXME this commented line is throwing an exception related to the map views using the same id
+        //setHasFixedSize(true)
         adapter = mapsAdapter
     }
 
@@ -153,11 +164,11 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportsFragment.newInstance(getString(R.string.approved_fragment_title)),
+        val approved = NavigationItem(ReportsFragment.newInstance(ReportsFragment.APPROVED_STATUS),
                 getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportsFragment.newInstance(getString(R.string.pending_fragment_title)),
+        val pending = NavigationItem(ReportsFragment.newInstance(ReportsFragment.PENDING_STATUS),
                 getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportsFragment.newInstance(getString(R.string.rejected_fragment_title)),
+        val rejected = NavigationItem(ReportsFragment.newInstance(ReportsFragment.REJECTED_STATUS),
                 getString(R.string.rejected_fragment_title))
         return mutableListOf(approved, pending, rejected)
     }

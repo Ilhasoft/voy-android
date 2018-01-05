@@ -22,12 +22,15 @@ import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 class ReportsFragment : BaseFragment(), ReportsContract {
 
     companion object {
-        private const val EXTRA_TYPE = "type"
+        private const val EXTRA_STATUS = "status"
+        const val APPROVED_STATUS = 0
+        const val PENDING_STATUS = 1
+        const val REJECTED_STATUS = 2
 
         @JvmStatic
-        fun newInstance(type: String?): ReportsFragment {
+        fun newInstance(status: Int): ReportsFragment {
             val args = Bundle()
-            args.putString(EXTRA_TYPE, type)
+            args.putInt(EXTRA_STATUS, status)
             return createWithArguments(args)
         }
 
@@ -46,7 +49,7 @@ class ReportsFragment : BaseFragment(), ReportsContract {
             OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
-                    presenter)
+                    presenter, status)
         }
     }
     private val reportsAdapter:
@@ -55,7 +58,7 @@ class ReportsFragment : BaseFragment(), ReportsContract {
             setHasStableIds(true)
         }
     }
-    private val type: String? by lazy { arguments?.getString(EXTRA_TYPE) }
+    private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -94,28 +97,28 @@ class ReportsFragment : BaseFragment(), ReportsContract {
     private fun setupView() {
         binding.run {
             noReports = true
-            greetings = getGreetings(type)
-            createReportTip = getGreetingsTip(type)
+            greetings = getGreetings(status)
+            createReportTip = getGreetingsTip(status)
             presenter = this@ReportsFragment.presenter
         }
         setupRecyclerView(binding.reports)
     }
 
-    private fun getGreetings(type: String?): String {
-        type.let {
+    private fun getGreetings(status: Int): String {
+        status.let {
             return when {
-                it.equals(getString(R.string.approved_fragment_title), true) -> getString(R.string.approved_greetings)
-                it.equals(getString(R.string.pending_fragment_title), true) -> getString(R.string.pending_greetings)
+                it == APPROVED_STATUS -> getString(R.string.approved_greetings)
+                it == PENDING_STATUS -> getString(R.string.pending_greetings)
                 else -> getString(R.string.rejected_greetings)
             }
         }
     }
 
-    private fun getGreetingsTip(type: String?): String {
-        type.let {
+    private fun getGreetingsTip(status: Int): String {
+        status.let {
             return when {
-                it.equals(getString(R.string.approved_fragment_title), true) -> getString(R.string.approved_greetings_tip)
-                it.equals(getString(R.string.pending_fragment_title), true) -> getString(R.string.pending_greetings_tip)
+                it == APPROVED_STATUS -> getString(R.string.approved_greetings_tip)
+                it == PENDING_STATUS -> getString(R.string.pending_greetings_tip)
                 else -> getString(R.string.rejected_greetings_tip)
             }
         }
