@@ -121,7 +121,6 @@ class AddMediasFragment :
     }
 
     private fun onNewPhoto(uri: Uri) {
-        println(uri)
         imageViewSelected?.setMediaFromUri(uri)
         presenter.addMedia(uri)
     }

@@ -33,7 +33,8 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.android.synthetic.main.view_detail_viewpager.*
 
-class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
+class ReportDetailActivity : BaseActivity(), ReportDetailContract,
+        PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
 
     companion object {
         @JvmStatic
@@ -43,25 +44,18 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
     private val binding: ActivityReportDetailBinding by lazy {
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
     }
-
+    private val presenter: ReportDetailPresenter by lazy { ReportDetailPresenter() }
     private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, getCarouselItems()) }
-
     private val indicatorAdapter: AutoRecyclerAdapter<Indicator, IndicatorViewHolder> by lazy {
         AutoRecyclerAdapter<Indicator, IndicatorViewHolder>(indicatorViewHolder).apply {
             setHasStableIds(false)
         }
     }
-
     private val indicatorViewHolder: OnCreateViewHolder<Indicator, IndicatorViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             IndicatorViewHolder(ViewIndicatorBinding.inflate(layoutInflater, parent, false), presenter)
         }
     }
-
-    private val presenter: ReportDetailPresenter by lazy { ReportDetailPresenter() }
-
-    private lateinit var popupMenu: PopupMenu
-
     private val tagViewHolder:
             OnCreateViewHolder<Tag, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
@@ -74,6 +68,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
             setHasStableIds(true)
         }
     }
+    private lateinit var popupMenu: PopupMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,9 +131,9 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
             presenter = this@ReportDetailActivity.presenter
             report = presenter?.report
             viewToolbar?.run { setupToolbar(this) }
-            setupRecyclerView(tags)
             setupViewPager(viewPager)
             setupIndicatorRecyclerView(indicatorsList)
+            setupRecyclerView(tags)
         }
     }
 
@@ -151,7 +146,6 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract, PopupMenu.OnM
     private fun getCarouselItems(): List<CarouselItem> = presenter.report.mediaList.map { it ->
         CarouselItem(CarouselFragment.newInstance(it))
     }
-
 
     private fun setupToolbar(viewToolbar: ViewReportToolbarBinding) = with(viewToolbar) {
         setupPopupMenu(expandedMenu)

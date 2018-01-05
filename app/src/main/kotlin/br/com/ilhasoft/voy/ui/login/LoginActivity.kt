@@ -77,7 +77,8 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     private fun setupView() {
         binding.run {
-            credentials = if (BuildConfig.DEBUG) Credentials("voy","123456")
+            credentials = if (BuildConfig.DEBUG) Credentials(getString(R.string.username_dev),
+                    getString(R.string.password_dev))
             else this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }
@@ -88,7 +89,7 @@ class LoginActivity : BaseActivity(), LoginContract {
         val passwordObservable = createEditTextObservable(binding.password)
 
         Observables.combineLatest(usernameObservable, passwordObservable,
-                { username, password -> username.isNotEmpty() && password.isNotEmpty()})
+                { username, password -> username.isNotEmpty() && password.isNotEmpty() })
                 .subscribe({ binding.login.isEnabled = it },
                         { Log.e(TAG, "Error ", it) })
     }

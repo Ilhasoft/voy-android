@@ -7,7 +7,7 @@ import android.net.Uri
  */
 data class Indicator(var mediaUri: Uri? = Uri.EMPTY,
                      var selected: Boolean = false,
-                     var position: Int = INITIAL_POSITION){
+                     var position: Int = INITIAL_POSITION) {
 
     companion object {
         val INITIAL_POSITION = 0

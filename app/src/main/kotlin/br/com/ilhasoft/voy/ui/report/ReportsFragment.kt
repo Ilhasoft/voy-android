@@ -93,7 +93,6 @@ class ReportsFragment : BaseFragment(), ReportsContract {
     override fun navigateToReportDetail(report: Report) =
             startActivity(ReportDetailActivity.createIntent(context))
 
-
     private fun setupView() {
         binding.run {
             noReports = true
