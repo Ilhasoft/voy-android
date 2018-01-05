@@ -3,6 +3,7 @@ package br.com.ilhasoft.voy.network
 import android.content.Context
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.shared.Constants
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,7 +26,7 @@ interface VoyApiService {
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(context.getString(R.string.server_url))
+                    .baseUrl(Constants.API_BASE_URL)
                     .client(OkHttpClient.Builder()
                             .addNetworkInterceptor(networkInterceptor)
                             .build())
