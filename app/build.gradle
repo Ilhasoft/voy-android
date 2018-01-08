@@ -108,4 +108,6 @@ dependencies {
 
     compile "com.google.android:flexbox:${versions.flexboxLayout}"
 
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
+
 }

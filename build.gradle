@@ -15,7 +15,8 @@ buildscript {
             'glide'             : '4.3.1',
             'validator'         : '1.0.0',
             'circleImageView'   : '2.2.0',
-            'flexboxLayout'     : '0.3.1'
+            'flexboxLayout'     : '0.3.1',
+            'timber'            : '4.6.0'
     ]
     repositories {
         google()
