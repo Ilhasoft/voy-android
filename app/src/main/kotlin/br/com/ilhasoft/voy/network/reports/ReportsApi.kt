@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.network
+package br.com.ilhasoft.voy.network.reports
 
 import io.reactivex.Flowable
 import retrofit2.http.GET

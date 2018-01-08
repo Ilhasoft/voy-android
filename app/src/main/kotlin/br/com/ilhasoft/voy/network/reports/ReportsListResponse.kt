@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.network
+package br.com.ilhasoft.voy.network.reports
 
 import br.com.ilhasoft.voy.models.Report
 
