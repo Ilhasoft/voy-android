@@ -3,10 +3,14 @@ package br.com.ilhasoft.voy.ui.home
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Map
 import br.com.ilhasoft.voy.models.Notification
+import br.com.ilhasoft.voy.network.reports.ReportsService
+import br.com.ilhasoft.voy.shared.rx.RxHelper
+import timber.log.Timber
 
 class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
 
     private var selectedMap: Map? = null
+    val srv = ReportsService()
 
     fun onClickMyAccount() {
         view.navigateToMyAccount()
@@ -17,7 +21,14 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
     }
 
     fun onClickNotifications() {
-        view.showNotifications()
+        srv.getReport(1)
+                .compose(RxHelper.defaultSingleSchedulers())
+                .subscribe({
+                    val i = it.createdOn
+                } , {
+                    Timber.e(it)
+                })
+//        view.showNotifications()
     }
 
     fun onClickHeaderNavView() {

@@ -38,4 +38,20 @@ class ReportsService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         val request = CreateReportRequest(theme, location, description, name, status)
         return api.createReport(request)
     }
+
+    fun getReport(id: Int,
+                  theme: Int? = null,
+                  project: Int? = null,
+                  mapper: Int? = null,
+                  status: Int? = null) : Single<Report> {
+
+        val reportsRequest = mutableMapOf<String, Int?>()
+        reportsRequest.apply {
+            putIfNotNull("theme", theme)
+            putIfNotNull("project", project)
+            putIfNotNull("mapper", mapper)
+            putIfNotNull("status", status)
+        }
+        return api.getReport(id, reportsRequest)
+    }
 }
