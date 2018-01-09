@@ -1,7 +1,10 @@
 package br.com.ilhasoft.voy.network.reports
 
-import io.reactivex.Flowable
+import br.com.ilhasoft.voy.models.Report
+import io.reactivex.Single
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.QueryMap
 
 /**
@@ -10,5 +13,9 @@ import retrofit2.http.QueryMap
 interface ReportsApi {
 
     @GET("/api/reports/")
-    fun getReports(@QueryMap body: Map<String, Int?>) : Flowable<ReportsListResponse>
+    fun getReports(@QueryMap parameters: Map<String, Int?>): Single<ReportsListResponse>
+
+    @POST("/api/reports/")
+    fun createReport(@Body body: CreateReportRequest): Single<Report>
+
 }

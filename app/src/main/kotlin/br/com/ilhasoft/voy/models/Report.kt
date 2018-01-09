@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.models
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
@@ -8,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 /**
  * Created by developer on 01/12/17.
  */
-@SuppressLint("ParcelCreator")
+
 @Parcelize
 class Report(@SerializedName("id") var id: Int = 0,
              @SerializedName("theme") var theme: Int = 0,

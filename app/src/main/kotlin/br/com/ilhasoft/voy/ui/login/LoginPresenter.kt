@@ -7,6 +7,7 @@ import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationService
+import br.com.ilhasoft.voy.shared.rx.RxHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -28,8 +29,7 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
     fun onClickLogin(credentials: Credentials) {
         if (view.validate()) {
             authorizationService.loginWithCredentials(credentials)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(RxHelper.defaultSchedulers())
                     .subscribe({
                         preferences.put(TOKEN, it.token)
                         setTokenAndNavigateToHome(it.token)

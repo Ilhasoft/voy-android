@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 /**
  * Created by developer on 03/01/18.
  */
+
 @Parcelize
 class Location(@SerializedName("type") val type: String,
                @SerializedName("coordinates") val coordinates: ArrayList<Double>) : Parcelable

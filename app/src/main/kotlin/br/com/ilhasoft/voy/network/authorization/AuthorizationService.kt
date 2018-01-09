@@ -9,7 +9,5 @@ import io.reactivex.Single
  */
 class AuthorizationService : ServiceFactory<AuthorizationApi>(AuthorizationApi::class.java) {
 
-    fun loginWithCredentials(credentials: Credentials): Single<AuthorizationResponse> {
-        return api.loginWithCredentials(credentials)
-    }
+    fun loginWithCredentials(credentials: Credentials): Single<AuthorizationResponse> = api.loginWithCredentials(credentials)
 }
