@@ -18,8 +18,13 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
 
     private var mRetrofitBuilder: Retrofit.Builder = createBaseRetrofit()
 
+    val anonymousApi: ApiType by lazy {  mRetrofitBuilder.client(createOkHttpClient().build()).build().create<ApiType>(mClazz) }
+
     val api: ApiType by lazy {
-        mRetrofitBuilder.client(createOkHttpClient().build()).build().create<ApiType>(mClazz)
+        val clientBuilder = createOkHttpClient()
+        clientBuilder.addInterceptor(AuthenticationInterceptor())
+
+        mRetrofitBuilder.client(clientBuilder.build()).build().create<ApiType>(mClazz)
     }
 
     private fun createBaseRetrofit(): Retrofit.Builder {

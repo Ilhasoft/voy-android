@@ -17,7 +17,6 @@ abstract class ServiceFactory<out ApiType>(clazz: Class<ApiType>) :
     override fun createOkHttpClient(): OkHttpClient.Builder {
         val client = OkHttpClient.Builder()
                 .addInterceptor(DefaultHeaderInterceptor())
-                .addInterceptor(AuthenticationInterceptor())
                 .writeTimeout(4, TimeUnit.MINUTES)
                 .readTimeout(4, TimeUnit.MINUTES)
                 .connectTimeout(30, TimeUnit.SECONDS)
