@@ -16,7 +16,7 @@ interface MapperApi {
     fun getMappers(@QueryMap parameters: Map<String, Int?>): Flowable<MutableList<Mapper>>
 
     @GET("/api/mappers/{id}/")
-    fun getMapper(@Path("id") mapperId: String,
+    fun getMapper(@Path("id") mapperId: Int,
                   @QueryMap parameters: Map<String, Int?>): Single<Mapper>
 
 }

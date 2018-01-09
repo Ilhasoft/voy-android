@@ -11,15 +11,15 @@ import io.reactivex.Single
  */
 class MapperService : ServiceFactory<MapperApi>(MapperApi::class.java) {
 
-    fun getMappers(theme: Int? = null): Flowable<MutableList<Mapper>> {
+    fun getMappers(themeId: Int? = null): Flowable<MutableList<Mapper>> {
         val mappersRequest = mutableMapOf<String, Int?>()
-        mappersRequest.apply { putIfNotNull("theme", theme) }
+        mappersRequest.apply { putIfNotNull("theme", themeId) }
         return api.getMappers(mappersRequest)
     }
 
-    fun getMapper(mapperId: String, theme: Int? = null): Single<Mapper> {
+    fun getMapper(mapperId: Int, themeId: Int? = null): Single<Mapper> {
         val mapperRequest = mutableMapOf<String, Int?>()
-        mapperRequest.apply { putIfNotNull("theme", theme) }
+        mapperRequest.apply { putIfNotNull("theme", themeId) }
         return api.getMapper(mapperId, mapperRequest)
     }
 
