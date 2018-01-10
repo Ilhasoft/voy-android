@@ -1,27 +1,8 @@
 package br.com.ilhasoft.voy.models
 
-import android.os.Parcel
-import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 
 /**
  * Created by developer on 07/12/17.
  */
-data class Tag(var name: String = "") : Parcelable {
-
-    constructor(parcel: Parcel) : this(parcel.readString())
-
-    constructor() : this("")
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-    }
-
-    override fun describeContents(): Int = 0
-
-    companion object CREATOR : Parcelable.Creator<Tag> {
-        override fun createFromParcel(parcel: Parcel): Tag = Tag(parcel)
-
-        override fun newArray(size: Int): Array<Tag?> = arrayOfNulls(size)
-    }
-
-}
+data class Tag(@SerializedName("id") val id: Int, @SerializedName("tag") val tag: String)

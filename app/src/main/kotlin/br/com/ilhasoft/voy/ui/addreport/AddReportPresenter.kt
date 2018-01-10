@@ -43,7 +43,7 @@ class AddReportPresenter : Presenter<AddReportContract>(AddReportContract::class
     }
 
     fun updateReportMedias(mediaList: MutableList<Media>) {
-        report.mediaList = mediaList
+        /*report.mediaList = mediaList*/
     }
 
     fun updateNextFragmentReference(nextFragment: Fragments) {
@@ -51,7 +51,7 @@ class AddReportPresenter : Presenter<AddReportContract>(AddReportContract::class
     }
 
     fun updateExternalLinksList(externalLinks: MutableList<String>) {
-        report.externalLinks = externalLinks
+        /*report.externalLinks = externalLinks*/
     }
 
     fun onClickNavigateNext() {

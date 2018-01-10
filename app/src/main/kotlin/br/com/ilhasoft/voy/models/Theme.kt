@@ -1,38 +1,17 @@
 package br.com.ilhasoft.voy.models
 
-import android.os.Parcel
-import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 
 /**
  * Created by geral on 13/12/17.
  */
-data class Theme(val project: String = "",
-                 val name: String = "",
-                 val description: String = "",
-                 val color: String = "",
-                 val pin: String = "") : Parcelable {
-
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(project)
-        parcel.writeString(name)
-        parcel.writeString(description)
-        parcel.writeString(color)
-        parcel.writeString(pin)
-    }
-
-    override fun describeContents(): Int = 0
-
-    companion object CREATOR : Parcelable.Creator<Theme> {
-        override fun createFromParcel(parcel: Parcel): Theme = Theme(parcel)
-
-        override fun newArray(size: Int): Array<Theme?> = arrayOfNulls(size)
-    }
-
-}
+data class Theme(@SerializedName("id") val id: Int,
+                 @SerializedName("project") val project: String,
+                 @SerializedName("bounds") val bounds: Bound,
+                 @SerializedName("name") val name: String,
+                 @SerializedName("description") val description: String,
+                 @SerializedName("tags") val tags: ArrayList<String>,
+                 @SerializedName("color") val color: String,
+                 @SerializedName("pin") val pin: String,
+                 @SerializedName("reports_count") val reportsCount: Int,
+                 @SerializedName("created_on") val createdOn: String)

@@ -21,11 +21,10 @@ class ThemeViewHolder(val binding: ItemThemeBinding,
     override fun onBind(theme: Theme) {
         configThemeSelection(theme)
         binding.theme = theme
-        binding.title.text = theme.name
     }
 
     private fun configThemeSelection(theme: Theme?) {
-        binding.isSelected = presenter.getSelectedTheme() == theme
+        binding.isSelected = presenter.getSelectedTheme() == theme?.id
     }
 
 }

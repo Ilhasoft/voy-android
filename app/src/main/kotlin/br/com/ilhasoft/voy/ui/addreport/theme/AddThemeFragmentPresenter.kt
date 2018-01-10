@@ -18,24 +18,24 @@ class AddThemeFragmentPresenter : Presenter<AddThemeFragmentContract>(AddThemeFr
         view.swapTheme(theme)
     }
 
-    fun getSelectedTheme(): Theme? = report?.theme
+    fun getSelectedTheme(): Int = report?.theme!!
 
     fun setSelectedTheme(theme: Theme?) {
-        report?.theme = theme
+        report?.theme = theme?.id!!
         view.changeActionButtonStatus(true)
     }
 
     fun setSelectedTag(tag: Tag) {
-        report?.tagsList?.apply {
+        /*report?.tagsList?.apply {
             if (!contains(tag)) {
                 add(tag)
             } else {
                 remove(tag)
             }
-        }
+        }*/
     }
 
-    fun verifyTagSelected(tag: Tag): Boolean? = report?.tagsList?.contains(tag)
+    fun verifyTagSelected(tag: Tag): Boolean? = /*report?.tagsList?.contains(tag)*/false
 
     fun setReportReference(report: Report) {
         this.report = report

@@ -1,7 +1,7 @@
 package br.com.ilhasoft.voy.ui.comment
 
 import br.com.ilhasoft.support.core.mvp.Presenter
-import br.com.ilhasoft.voy.models.Comment
+import br.com.ilhasoft.voy.models.ReportComment
 
 class CommentsPresenter : Presenter<CommentsContract>(CommentsContract::class.java) {
 
@@ -9,16 +9,16 @@ class CommentsPresenter : Presenter<CommentsContract>(CommentsContract::class.ja
         view.navigateBack()
     }
 
-    fun onClickEditComment(comment: Comment?) {
-        view.navigateToEditComment(comment)
+    fun onClickEditComment(reportComment: ReportComment?) {
+        view.navigateToEditComment(reportComment)
     }
 
-    fun onClickRemoveComment(comment: Comment?) {
-        view.navigateToRemoveComment(comment)
+    fun onClickRemoveComment(reportComment: ReportComment?) {
+        view.navigateToRemoveComment(reportComment)
     }
 
-    fun onClickSendComment(comment: Comment?) {
-        view.sendComment(comment)
+    fun onClickSendComment(reportComment: ReportComment?) {
+        view.sendComment(reportComment)
     }
 
 }

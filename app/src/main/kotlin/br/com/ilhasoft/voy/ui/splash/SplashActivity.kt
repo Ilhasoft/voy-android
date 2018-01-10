@@ -6,7 +6,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivitySplashBinding
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.login.LoginActivity
-import rx.Observable
+import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
 class SplashActivity : BaseActivity() {

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -29,9 +28,9 @@
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
             android:layout_marginTop="10dp"
-            android:onClick="@{() -> presenter.swapPage(indicator)}"
             android:background="@{ isSelected ? @drawable/rounded_indicator_purple : @drawable/rounded_indicator_purple_25}"
             android:gravity="center"
+            android:onClick="@{() -> presenter.swapPage(indicator)}"
             android:textSize="12sp" />
 
     </FrameLayout>

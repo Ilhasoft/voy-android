@@ -40,7 +40,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="6dp"
-            android:text="@{tag.name}"
+            android:text="@{tag.tag}"
             android:textColor="@color/selector_tag_text"
             android:textSize="15sp"
             tools:ignore="SmallSp"

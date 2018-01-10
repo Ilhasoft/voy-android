@@ -10,7 +10,7 @@ class ReportDetailPresenter : Presenter<ReportDetailContract>(ReportDetailContra
     var report = Report()
         private set
 
-    var indicator = Indicator(Uri.EMPTY,true)
+    var indicator = Indicator(Uri.EMPTY, true)
 
     fun onClickNavigateBack() {
         view.navigateBack()
@@ -28,11 +28,11 @@ class ReportDetailPresenter : Presenter<ReportDetailContract>(ReportDetailContra
         view.swapPage(indicator)
     }
 
-    fun getIndicators(): Collection<Indicator> = report.mediaList.mapIndexed { index, it ->
-        Indicator(it.uri,false, index)
-    }
+    fun getIndicators(): Collection<Indicator> = mutableListOf()/*report.mediaList.mapIndexed { index, it ->
+        Indicator(it.uri, false, index)
+    }*/
 
-    fun setReportReference(report: Report){
+    fun setReportReference(report: Report) {
         this.report = report
     }
 

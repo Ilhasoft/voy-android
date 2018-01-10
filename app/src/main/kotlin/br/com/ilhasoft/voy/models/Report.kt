@@ -1,49 +1,33 @@
 package br.com.ilhasoft.voy.models
 
-import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by developer on 01/12/17.
  */
-data class Report(var title: String = "",
-                  var createdAt: String = "",
-                  var description: String = "",
-                  var status: Int = 0,
-                  var theme: Theme? = null,
-                  var mediaList: MutableList<Media> = mutableListOf(),
-                  var externalLinks: MutableList<String> = mutableListOf(),
-                  var tagsList: MutableList<Tag> = mutableListOf()) : Parcelable {
 
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readParcelable(Theme::class.java.classLoader)) {
-        parcel.readTypedList(mediaList, Media.CREATOR)
-        parcel.readStringList(externalLinks)
-        parcel.readTypedList(tagsList, Tag.CREATOR)
-    }
+@Parcelize
+class Report(@SerializedName("id") var id: Int = 0,
+             @SerializedName("theme") var theme: Int = 0,
+             @SerializedName("location") var location: Location? = null,
+             @SerializedName("can_receive_comments") var canReceiveComments: Boolean = false,
+             @SerializedName("editable") var editable: Boolean = false,
+             @SerializedName("visible") var visible: Boolean = false,
+             @SerializedName("created_on") var createdOn: String = "",
+             @SerializedName("description") var description: String = "",
+             @SerializedName("name") var name: String = "",
+             @SerializedName("tags") var tags: ArrayList<String>? = null,
+             @SerializedName("theme_color") var themeColor: String = "",
+             @SerializedName("pin") var pin: String = "",
+             @SerializedName("created_by") var createdBy: User? = null,
+             @SerializedName("last_image") var lastImage: LastImage? = null,
+             @SerializedName("status") var status: Int = 0) : Parcelable {
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(title)
-        parcel.writeString(createdAt)
-        parcel.writeString(description)
-        parcel.writeInt(status)
-        parcel.writeParcelable(theme, flags)
-        parcel.writeList(mediaList)
-        parcel.writeList(externalLinks)
-        parcel.writeList(tagsList)
-    }
-
-    override fun describeContents(): Int = 0
-
-    companion object CREATOR : Parcelable.Creator<Report> {
+    companion object {
+        @JvmStatic
         val TAG = "Report"
-        override fun createFromParcel(parcel: Parcel): Report = Report(parcel)
-
-        override fun newArray(size: Int): Array<Report?> = arrayOfNulls(size)
     }
 
 }

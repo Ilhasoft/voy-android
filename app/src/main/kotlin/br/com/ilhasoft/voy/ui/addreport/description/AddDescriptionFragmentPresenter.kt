@@ -12,21 +12,21 @@ class AddDescriptionFragmentPresenter :
         private set
 
     fun addLink(link: String) {
-        report?.externalLinks?.let {
+        /*report?.externalLinks?.let {
             if (!it.contains(link)) {
                 it.add(link)
                 view.updateAdapterList(it)
             } else {
                 view.displaySameListElementFeedback()
             }
-        }
+        }*/
     }
 
     fun removeLink(link: String) {
-        report?.externalLinks?.apply {
+        /*report?.externalLinks?.apply {
             remove(single { it == link })
             view.updateAdapterList(this)
-        }
+        }*/
     }
 
     fun setReportReference(report: Report?) {
@@ -34,6 +34,6 @@ class AddDescriptionFragmentPresenter :
     }
 
     fun verifyListSize(): Boolean =
-            report!!.externalLinks.size < LIST_MAX_SIZE
+            /*report!!.externalLinks.size < LIST_MAX_SIZE*/false
 
 }

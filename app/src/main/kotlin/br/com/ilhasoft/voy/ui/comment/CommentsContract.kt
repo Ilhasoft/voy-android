@@ -1,16 +1,16 @@
 package br.com.ilhasoft.voy.ui.comment
 
 import br.com.ilhasoft.support.core.mvp.BasicView
-import br.com.ilhasoft.voy.models.Comment
+import br.com.ilhasoft.voy.models.ReportComment
 
 interface CommentsContract : BasicView {
 
     fun navigateBack()
 
-    fun navigateToEditComment(comment: Comment?)
+    fun navigateToEditComment(reportComment: ReportComment?)
 
-    fun navigateToRemoveComment(comment: Comment?)
+    fun navigateToRemoveComment(reportComment: ReportComment?)
 
-    fun sendComment(comment: Comment?)
+    fun sendComment(reportComment: ReportComment?)
 
 }
