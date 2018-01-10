@@ -3,6 +3,7 @@ package br.com.ilhasoft.voy.network.comments
 import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.network.ServiceFactory
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 /**
@@ -27,5 +28,9 @@ class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
     // Use to partial update
     fun updateComment(commentId: Int, reportId: Int? = null, text: String? = null): Single<ReportComment> {
         return api.partialUpdateComment(commentId, reportId, CreateCommentsRequest(text, reportId))
+    }
+
+    fun deleteComment(commentId: Int, reportId: Int? = null): Single<Void> {
+        return api.deleteComment(commentId, reportId)
     }
 }

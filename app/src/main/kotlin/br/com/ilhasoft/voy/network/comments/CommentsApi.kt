@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.network.comments
 
 import br.com.ilhasoft.voy.models.ReportComment
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import retrofit2.http.*
 
@@ -28,4 +29,8 @@ interface CommentsApi {
     fun partialUpdateComment(@Path("id") id: Int,
                       @Query("report") reportId: Int?,
                       @Body body: CreateCommentsRequest): Single<ReportComment>
+
+    // FIXME: Server with error (returning "undefined")
+    @DELETE("/api/report-comments/{id}/")
+    fun deleteComment(@Path("id") id: Int, @Query("report") reportId: Int?): Single<Void>
 }
