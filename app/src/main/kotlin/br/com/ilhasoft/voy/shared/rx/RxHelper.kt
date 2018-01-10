@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
  */
 object RxHelper {
 
-    fun <Type> defaultSchedulers() = SingleTransformer<Type, Type> {
+    fun <Type> defaultSingleSchedulers() = SingleTransformer<Type, Type> {
         it.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
