@@ -16,6 +16,6 @@ interface TagApi {
     fun getTags(@QueryMap parameters: Map<String, Int?>): Flowable<MutableList<Tag>>
 
     @GET("/api/tags/{id}/")
-    fun getTag(@Path("id") tagId: String): Single<Tag>
+    fun getTag(@Path("id") tagId: Int): Single<Tag>
 
 }
