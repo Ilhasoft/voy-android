@@ -17,6 +17,18 @@ interface ReportsApi {
                   @QueryMap parameters: Map<String, Int?>): Single<Report>
 
     @POST("/api/reports/")
-    fun createReport(@Body body: CreateReportRequest): Single<Report>
+    fun saveReport(@Body body: CreateReportRequest): Single<Report>
 
+    // FIXME: Server with error (returning error 500)
+    @PUT("/api/reports/{id}/")
+    fun updateReport(@Path("id") id: Int,
+                     @QueryMap parameters: Map<String, Int?>,
+                     @Body body: CreateReportRequest): Single<Report>
+
+    // TODO: implement update patch
+
+    // FIXME: Server with error (returning undefined)
+    @DELETE("/api/reports/{id}/")
+    fun deleteReport(@Path("id") id: Int,
+                     @QueryMap parameters: Map<String, Int?>): Single<Void>
 }
