@@ -18,4 +18,9 @@ interface CommentsApi {
 
     @POST("/api/report-comments/")
     fun saveComment(@Body body: CreateCommentsRequest): Single<ReportComment>
+
+    @PUT("/api/report-comments/{id}/")
+    fun updateComment(@Path("id") id: Int,
+                      @Query("report") reportId: Int?,
+                      @Body body: CreateCommentsRequest): Single<ReportComment>
 }
