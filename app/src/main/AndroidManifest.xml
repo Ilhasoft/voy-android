@@ -47,7 +47,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="br.com.ilhasoft.support.media.view.MediaViewActivity"
-            android:theme="@style/MediaViewTheme"/>
+            android:theme="@style/MediaViewTheme" />
+
+        <activity android:name=".ui.report.detail.carousel.VideoViewActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

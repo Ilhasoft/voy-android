@@ -16,6 +16,7 @@ abstract class BaseActivity : AppCompatActivity(), BasicView {
     private val progressDialog: IndeterminateProgressDialog by lazy {
         val dialog = IndeterminateProgressDialog(this)
         dialog.setMessage(getString(R.string.wait))
+        dialog.setCancelable(false)
         dialog
     }
 
