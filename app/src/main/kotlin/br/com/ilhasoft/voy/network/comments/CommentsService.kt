@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.network.comments
 
 import br.com.ilhasoft.voy.models.ReportComment
+import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.ServiceFactory
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -14,4 +15,8 @@ class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
 
     fun getComment(commentId: Int, reportId: Int? = null): Single<ReportComment> = api.getComment(commentId, reportId)
 
+    fun saveComment(text: String, createdBy: User?, reportId: Int): Single<ReportComment> {
+        val requestBody = CreateCommentsRequest(text, createdBy, reportId)
+        return api.saveComment(requestBody)
+    }
 }
