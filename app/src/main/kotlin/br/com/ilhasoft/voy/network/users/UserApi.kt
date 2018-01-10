@@ -15,6 +15,6 @@ interface UserApi {
     fun getUsers(): Flowable<MutableList<User>>
 
     @GET("/api/users/{id}/")
-    fun getUser(@Path("id") userId: String): Single<User>
+    fun getUser(@Path("id") userId: Int): Single<User>
 
 }
