@@ -19,7 +19,13 @@ class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
         return api.saveComment(requestBody)
     }
 
+    // Use to complete update
     fun updateComment(commentId: Int, reportId: Int, text: String): Single<ReportComment> {
         return api.updateComment(commentId, reportId, CreateCommentsRequest(text, reportId))
+    }
+
+    // Use to partial update
+    fun updateComment(commentId: Int, reportId: Int? = null, text: String? = null): Single<ReportComment> {
+        return api.partialUpdateComment(commentId, reportId, CreateCommentsRequest(text, reportId))
     }
 }

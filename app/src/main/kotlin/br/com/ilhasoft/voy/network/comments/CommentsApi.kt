@@ -23,4 +23,9 @@ interface CommentsApi {
     fun updateComment(@Path("id") id: Int,
                       @Query("report") reportId: Int?,
                       @Body body: CreateCommentsRequest): Single<ReportComment>
+
+    @PATCH("/api/report-comments/{id}/")
+    fun partialUpdateComment(@Path("id") id: Int,
+                      @Query("report") reportId: Int?,
+                      @Body body: CreateCommentsRequest): Single<ReportComment>
 }
