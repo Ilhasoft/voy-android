@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.ui.report
+package br.com.ilhasoft.voy.ui.report.fragment
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -19,18 +19,18 @@ import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
-class ReportsFragment : BaseFragment(), ReportsContract {
+class ReportFragment : BaseFragment(), ReportContract {
 
     companion object {
         private const val EXTRA_STATUS = "status"
         private const val EXTRA_THEME_ID = "themeId"
         private const val EXTRA_THEME_COLOR = "themeColor"
-        const val APPROVED_STATUS = 0
-        const val PENDING_STATUS = 1
-        const val NOT_APPROVED_STATUS = 2
+        const val APPROVED_STATUS = 1
+        const val PENDING_STATUS = 2
+        const val NOT_APPROVED_STATUS = 3
 
         @JvmStatic
-        fun newInstance(status: Int, themeId: Int, themeColor: String): ReportsFragment {
+        fun newInstance(status: Int, themeId: Int, themeColor: String): ReportFragment {
             val args = Bundle()
             args.putInt(EXTRA_STATUS, status)
             args.putInt(EXTRA_THEME_ID, themeId)
@@ -38,8 +38,8 @@ class ReportsFragment : BaseFragment(), ReportsContract {
             return createWithArguments(args)
         }
 
-        private fun createWithArguments(args: Bundle): ReportsFragment {
-            val fragment = ReportsFragment()
+        private fun createWithArguments(args: Bundle): ReportFragment {
+            val fragment = ReportFragment()
             fragment.arguments = args
             return fragment
         }
@@ -48,21 +48,20 @@ class ReportsFragment : BaseFragment(), ReportsContract {
     private val binding: FragmentReportsBinding by lazy {
         FragmentReportsBinding.inflate(LayoutInflater.from(context))
     }
-    private val presenter: ReportsPresenter by lazy { ReportsPresenter() }
-    private val reportViewHolder:
-            OnCreateViewHolder<Report, ReportViewHolder> by lazy {
+    private val presenter: ReportPresenter by lazy { ReportPresenter() }
+    private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
                     presenter, status)
         }
     }
-    private val reportsAdapter:
-            AutoRecyclerAdapter<Report, ReportViewHolder> by lazy {
+    private val reportsAdapter: AutoRecyclerAdapter<Report, ReportViewHolder> by lazy {
         AutoRecyclerAdapter(mutableListOf(), reportViewHolder).apply {
             setHasStableIds(true)
         }
     }
     private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
+    private val themeId: Int by lazy { arguments.getInt(EXTRA_STATUS) }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -90,8 +89,6 @@ class ReportsFragment : BaseFragment(), ReportsContract {
         presenter.detachView()
     }
 
-    override fun navigateBack() {}
-
     override fun navigateToAddReport() {
         startActivity(AddReportActivity.createIntent(context))
     }
@@ -99,21 +96,31 @@ class ReportsFragment : BaseFragment(), ReportsContract {
     override fun navigateToReportDetail(report: Report) =
             startActivity(ReportDetailActivity.createIntent(context))
 
+    override fun getTheme(): Int? = themeId
+
+    override fun getStatus(): Int? = status
+
+    override fun fillReportsAdapter(reports: List<Report>) {
+        binding.noReports = false
+        reportsAdapter.addAll(reports)
+        reportsAdapter.notifyDataSetChanged()
+    }
+
     private fun setupView() {
         binding.run {
             noReports = true
             greetings = getGreetings(status)
             createReportTip = getGreetingsTip(status)
-            presenter = this@ReportsFragment.presenter
+            presenter = this@ReportFragment.presenter
         }
         setupRecyclerView(binding.reports)
     }
 
     private fun getGreetings(status: Int): String {
         status.let {
-            return when {
-                it == APPROVED_STATUS -> getString(R.string.approved_greetings)
-                it == PENDING_STATUS -> getString(R.string.pending_greetings)
+            return when (it) {
+                APPROVED_STATUS -> getString(R.string.approved_greetings)
+                PENDING_STATUS -> getString(R.string.pending_greetings)
                 else -> getString(R.string.rejected_greetings)
             }
         }
@@ -121,9 +128,9 @@ class ReportsFragment : BaseFragment(), ReportsContract {
 
     private fun getGreetingsTip(status: Int): String {
         status.let {
-            return when {
-                it == APPROVED_STATUS -> getString(R.string.approved_greetings_tip)
-                it == PENDING_STATUS -> getString(R.string.pending_greetings_tip)
+            return when (it) {
+                APPROVED_STATUS -> getString(R.string.approved_greetings_tip)
+                PENDING_STATUS -> getString(R.string.pending_greetings_tip)
                 else -> getString(R.string.rejected_greetings_tip)
             }
         }

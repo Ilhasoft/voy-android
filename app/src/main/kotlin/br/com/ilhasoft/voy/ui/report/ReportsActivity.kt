@@ -8,10 +8,10 @@ import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
 import br.com.ilhasoft.voy.databinding.ViewReportsToolbarBinding
-import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
+import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 
 /**
  * Created by developer on 11/01/18.
@@ -70,10 +70,6 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         finish()
     }
 
-    override fun navigateToAddReport() {}
-
-    override fun navigateToReportDetail(report: Report) {}
-
     private fun setupView() {
         binding.apply {
             viewToolbar?.run { setupToolbar(this) }
@@ -99,11 +95,11 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportsFragment.newInstance(ReportsFragment.APPROVED_STATUS,
+        val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS,
                 themeId, themeColor), getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportsFragment.newInstance(ReportsFragment.PENDING_STATUS,
+        val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS,
                 themeId, themeColor), getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportsFragment.newInstance(ReportsFragment.NOT_APPROVED_STATUS,
+        val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS,
                 themeId, themeColor), getString(R.string.not_approved_fragment_title))
         return mutableListOf(approved, pending, rejected)
     }

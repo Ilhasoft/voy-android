@@ -8,21 +8,21 @@ import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
-import br.com.ilhasoft.voy.ui.report.ReportsFragment
-import br.com.ilhasoft.voy.ui.report.ReportsPresenter
+import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
+import br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter
 
 /**
  * Created by developer on 01/12/17.
  */
 class ReportViewHolder(val binding: ItemReportBinding,
-                       val presenter: ReportsPresenter, status: Int) : ViewHolder<Report>(binding.root),
+                       val presenter: ReportPresenter, status: Int) : ViewHolder<Report>(binding.root),
         View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private lateinit var popupMenu: PopupMenu
 
     init {
         binding.presenter = presenter
-        binding.pending = status == ReportsFragment.PENDING_STATUS
+        binding.pending = status == ReportFragment.PENDING_STATUS
     }
 
     override fun onBind(report: Report) {
