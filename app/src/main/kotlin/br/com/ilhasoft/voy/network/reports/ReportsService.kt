@@ -16,7 +16,7 @@ class ReportsService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
                    theme: Int? = null,
                    project: Int? = null,
                    mapper: Int? = null,
-                   status: Int? = null): Single<ReportsListResponse> {
+                   status: Int? = null): Single<Response<Report>> {
 
         val reportsRequest = mutableMapOf<String, Int?>()
         reportsRequest.apply {

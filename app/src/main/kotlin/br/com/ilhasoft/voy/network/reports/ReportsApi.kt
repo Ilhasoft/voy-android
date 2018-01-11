@@ -13,7 +13,7 @@ import retrofit2.http.QueryMap
 interface ReportsApi {
 
     @GET("/api/reports/")
-    fun getReports(@QueryMap parameters: Map<String, Int?>): Single<ReportsListResponse>
+    fun getReports(@QueryMap parameters: Map<String, Int?>): Single<Response<Report>>
 
     @POST("/api/reports/")
     fun createReport(@Body body: CreateReportRequest): Single<Report>
