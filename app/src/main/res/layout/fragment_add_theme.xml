@@ -2,14 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="presenter"
-            type="br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragmentPresenter" />
-
-    </data>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,47 +15,16 @@
             android:layout_marginTop="20dp"
             android:fontFamily="sans-serif-black"
             android:lineSpacingExtra="2sp"
-            android:text="@string/themes_and_tags"
+            android:text="@string/add_tags"
             android:textColor="@color/bright_sky_blue"
             android:textSize="35sp"
-            android:textStyle="normal"
-            tools:text="Themes\nand tags" />
-
-        <Button
-            android:id="@+id/themes"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/listPreferredItemHeight"
-            android:layout_gravity="start"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/btn_themes_white"
-            android:drawableEnd="@drawable/ic_arrow_down"
-            android:drawableRight="@drawable/ic_arrow_down"
-            android:onClick="@{() -> presenter.onClickThemes()}"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:text="@string/select_theme"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            tools:listitem="@layout/support_simple_spinner_dropdown_item" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:fontFamily="sans-serif"
-            android:gravity="center_horizontal"
-            android:text="@string/add_tags"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            tools:text="Add Tags" />
+            android:textStyle="normal" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/tagsList"
+            android:id="@+id/tags"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"
             tools:listitem="@layout/item_tag_theme" />
 
     </LinearLayout>
