@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.ui.home.adapter
+package br.com.ilhasoft.voy.ui.report.adapter
 
 import android.support.v4.app.Fragment
 

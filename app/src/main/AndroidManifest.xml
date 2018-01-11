@@ -31,6 +31,9 @@
             android:name=".ui.home.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.report.ReportsActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.report.detail.ReportDetailActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.ui.home.adapter
+package br.com.ilhasoft.voy.ui.report.adapter
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -8,8 +8,8 @@ import android.support.v4.view.PagerAdapter
 /**
  * Created by developer on 28/11/17.
  */
-class HomeAdapter(fragmentManager: FragmentManager,
-                  private val navigationItems: MutableList<NavigationItem>) :
+class ReportsAdapter(fragmentManager: FragmentManager,
+                     private val navigationItems: MutableList<NavigationItem>) :
         FragmentPagerAdapter(fragmentManager) {
 
     override fun getItemPosition(item: Any?): Int = PagerAdapter.POSITION_NONE

@@ -12,7 +12,7 @@
 
     <string name="approved_fragment_title">Approved</string>
     <string name="pending_fragment_title">Pending</string>
-    <string name="rejected_fragment_title">Rejected</string>
+    <string name="not_approved_fragment_title">Not Approved</string>
     <string name="approved_greetings">Hello!</string>
     <string name="approved_greetings_tip">You have not\ncreated any report yet</string>
     <string name="pending_greetings">Great!</string>

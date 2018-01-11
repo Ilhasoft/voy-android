@@ -7,7 +7,7 @@
         <item name="tabIndicatorHeight">2dp</item>
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabTextAppearance">@style/TabTextAppearance</item>
-        <item name="tabSelectedTextColor">@color/bright_sky_blue</item>
+        <item name="tabSelectedTextColor">@color/black</item>
     </style>
 
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
@@ -29,7 +29,8 @@
         <item name="colorControlActivated">@android:color/transparent</item>
     </style>
 
-    <style name="MediaViewTheme" parent="MediaViewThemeBase"/>
+    <style name="MediaViewTheme" parent="MediaViewThemeBase" />
+
     <style name="MediaViewThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="android:textColorPrimary">@android:color/white</item>

@@ -23,14 +23,18 @@ class ReportsFragment : BaseFragment(), ReportsContract {
 
     companion object {
         private const val EXTRA_STATUS = "status"
+        private const val EXTRA_THEME_ID = "themeId"
+        private const val EXTRA_THEME_COLOR = "themeColor"
         const val APPROVED_STATUS = 0
         const val PENDING_STATUS = 1
-        const val REJECTED_STATUS = 2
+        const val NOT_APPROVED_STATUS = 2
 
         @JvmStatic
-        fun newInstance(status: Int): ReportsFragment {
+        fun newInstance(status: Int, themeId: Int, themeColor: String): ReportsFragment {
             val args = Bundle()
             args.putInt(EXTRA_STATUS, status)
+            args.putInt(EXTRA_THEME_ID, themeId)
+            args.putString(EXTRA_THEME_COLOR, themeColor)
             return createWithArguments(args)
         }
 
@@ -85,6 +89,8 @@ class ReportsFragment : BaseFragment(), ReportsContract {
         super.onDestroy()
         presenter.detachView()
     }
+
+    override fun navigateBack() {}
 
     override fun navigateToAddReport() {
         startActivity(AddReportActivity.createIntent(context))

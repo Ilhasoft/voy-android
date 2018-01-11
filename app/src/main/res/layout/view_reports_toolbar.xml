@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="themeName"
+            type="String" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.report.ReportsPresenter" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            style="@style/RippleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:onClick="@{() -> presenter.onClickNavigateBack()}"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center|start"
+            android:maxLines="1"
+            android:text="@{themeName}"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Santa Catarina" />
+
+    </LinearLayout>
+
+</layout>

@@ -18,10 +18,11 @@ import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.ui.account.AccountActivity
-import br.com.ilhasoft.voy.ui.home.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.holder.NotificationViewHolder
 import br.com.ilhasoft.voy.ui.home.holder.ProjectViewHolder
+import br.com.ilhasoft.voy.ui.home.holder.ThemeViewHolder
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 
 class HomeActivity : BaseActivity(), HomeContract {
 
@@ -130,13 +131,10 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    override fun navigateToNotificationDetail() {
+    override fun navigateToNotificationDetail() {}
 
-    }
-
-    override fun navigateToThemeReports(theme: Theme?) {
-
-    }
+    override fun navigateToThemeReports(theme: Theme?) =
+            startActivity(ReportsActivity.createIntent(this, theme?.id, theme?.name, theme?.color))
 
     private fun setupView() {
         binding.apply {

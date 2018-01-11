@@ -5,6 +5,8 @@ import br.com.ilhasoft.voy.models.Report
 
 interface ReportsContract : BasicView {
 
+    fun navigateBack()
+
     fun navigateToAddReport()
 
     fun navigateToReportDetail(report: Report)

@@ -5,6 +5,10 @@ import br.com.ilhasoft.voy.models.Report
 
 class ReportsPresenter : Presenter<ReportsContract>(ReportsContract::class.java) {
 
+    fun onClickNavigateBack() {
+        view?.navigateBack()
+    }
+
     fun onClickAddReport() {
         view.navigateToAddReport()
     }
