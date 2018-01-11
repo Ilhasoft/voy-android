@@ -41,7 +41,6 @@
     <string name="title_hint">Title</string>
     <string name="description_hint">Description</string>
     <string name="add_link">Add Link</string>
-    <string name="themes_and_tags">Themes\nand Tags</string>
     <string name="add_tags">Add Tags</string>
     <string name="themes">Themes</string>
     <string name="cancel">Cancel</string>
@@ -60,4 +59,7 @@
     <string name="feedback_list_title">Hey!</string>
     <string name="feedback_list_message">You can\'t add the same link twice :(</string>
     <string name="invalid_login">Invalid user or password</string>
+
+    <string name="themes_quantity">You are within %d themes</string>
+    <string name="color_hex">#%s</string>
 </resources>

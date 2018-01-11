@@ -23,11 +23,10 @@
         android:fitsSystemWindows="false"
         tools:openDrawer="end">
 
-        <android.support.design.widget.CoordinatorLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white_three"
-            android:fitsSystemWindows="true"
             android:orientation="vertical"
             tools:context=".ui.home.HomeActivity">
 
@@ -50,7 +49,35 @@
 
             </android.support.design.widget.AppBarLayout>
 
-        </android.support.design.widget.CoordinatorLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_bg_no_report"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/themesIndicator"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textSize="18sp"
+                    tools:text="You are in on 4 themes" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/themes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="16dp"
+                    tools:listitem="@layout/item_theme" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <android.support.design.widget.NavigationView
             android:id="@+id/navigationView"

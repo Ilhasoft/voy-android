@@ -11,15 +11,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
+import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
-import br.com.ilhasoft.voy.databinding.ItemMapBinding
-import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
-import br.com.ilhasoft.voy.databinding.ViewHomeToolbarBinding
+import br.com.ilhasoft.voy.databinding.*
 import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
+import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.ui.account.AccountActivity
+import br.com.ilhasoft.voy.ui.home.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.base.BaseActivity
+import br.com.ilhasoft.voy.ui.home.holder.NotificationViewHolder
 import br.com.ilhasoft.voy.ui.home.holder.ProjectViewHolder
 
 class HomeActivity : BaseActivity(), HomeContract {
@@ -51,6 +52,16 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
     private val notificationsAdapter: AutoRecyclerAdapter<Notification, NotificationViewHolder> by lazy {
         AutoRecyclerAdapter(mutableListOf(), notificationViewHolder).apply {
+            setHasStableIds(true)
+        }
+    }
+    private val themeViewHolder: OnCreateViewHolder<Theme, ThemeViewHolder> by lazy {
+        OnCreateViewHolder { layoutInflater, parent, _ ->
+            ThemeViewHolder(ItemThemeBinding.inflate(layoutInflater, parent, false), presenter)
+        }
+    }
+    private val themesAdapter: AutoRecyclerAdapter<Theme, ThemeViewHolder> by lazy {
+        AutoRecyclerAdapter<Theme, ThemeViewHolder>(themeViewHolder).apply {
             setHasStableIds(true)
         }
     }
@@ -90,6 +101,12 @@ class HomeActivity : BaseActivity(), HomeContract {
         projectsAdapter.notifyDataSetChanged()
     }
 
+    override fun fillThemesAdapter(themes: MutableList<Theme>) {
+        binding.themesIndicator.text = getString(R.string.themes_quantity, themes.size)
+        themesAdapter.addAll(themes)
+        themesAdapter.notifyDataSetChanged()
+    }
+
     override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
 
     override fun selectProject() {
@@ -117,13 +134,18 @@ class HomeActivity : BaseActivity(), HomeContract {
 
     }
 
+    override fun navigateToThemeReports(theme: Theme?) {
+
+    }
+
     private fun setupView() {
         binding.apply {
             selectingProject = false
             viewToolbar?.run { setupToolbar(this) }
-            setupProjectsRecyclerView(projects)
             setupDrawer()
-            setupNotifications(notifications)
+            setupProjectsRecyclerView(projects)
+            setupNotificationsRecyclerView(notifications)
+            setupThemesRecyclerView(themes)
         }
     }
 
@@ -133,26 +155,36 @@ class HomeActivity : BaseActivity(), HomeContract {
         this@HomeActivity.presenter.setSelectedProject(project)
     }
 
+    private fun setupDrawer() {
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
     private fun setupProjectsRecyclerView(projects: RecyclerView) = with(projects) {
         layoutManager = setupLayoutManager()
         setHasFixedSize(true)
         adapter = projectsAdapter
     }
 
-    private fun setupLayoutManager(): RecyclerView.LayoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
-    private fun setupDrawer() {
-        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-    }
-
-    private fun setupNotifications(recyclerView: RecyclerView) = with(recyclerView) {
+    private fun setupNotificationsRecyclerView(notifications: RecyclerView) = with(notifications) {
         layoutManager = setupLayoutManager()
         addItemDecoration(setupItemDecoration())
         adapter = notificationsAdapter
     }
 
+    private fun setupThemesRecyclerView(themes: RecyclerView) = with(themes) {
+        layoutManager = setupLayoutManager()
+        setHasFixedSize(true)
+        addItemDecoration(setupThemesItemDecoration())
+        adapter = themesAdapter
+    }
+
+    private fun setupLayoutManager(): RecyclerView.LayoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
     private fun setupItemDecoration(): RecyclerView.ItemDecoration? =
             DividerItemDecoration(this@HomeActivity, DividerItemDecoration.VERTICAL)
+
+    private fun setupThemesItemDecoration(): RecyclerView.ItemDecoration? =
+            SpaceItemDecoration(0, 0, 0, 32)
 
 }
