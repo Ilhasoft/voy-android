@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="map"
-            type="br.com.ilhasoft.voy.models.Map" />
+            name="project"
+            type="br.com.ilhasoft.voy.models.Project" />
 
         <variable
             name="isSelected"
@@ -24,8 +24,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:onClick="@{() -> presenter.onClickMap(map)}"
-        android:text="@{map.name}"
+        android:onClick="@{() -> presenter.onClickProject(project)}"
+        android:text="@{project.name}"
         android:textColor="@{isSelected ? @color/vivid_purple : @color/black}"
         android:textSize="14sp"
         tools:text="São Paulo"

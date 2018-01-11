@@ -9,7 +9,6 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
@@ -17,14 +16,11 @@ import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
 import br.com.ilhasoft.voy.databinding.ItemMapBinding
 import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
 import br.com.ilhasoft.voy.databinding.ViewHomeToolbarBinding
-import br.com.ilhasoft.voy.models.Map
 import br.com.ilhasoft.voy.models.Notification
+import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
-import br.com.ilhasoft.voy.ui.home.adapter.HomeAdapter
-import br.com.ilhasoft.voy.ui.home.adapter.NavigationItem
-import br.com.ilhasoft.voy.ui.home.holder.MapViewHolder
-import br.com.ilhasoft.voy.ui.report.ReportsFragment
+import br.com.ilhasoft.voy.ui.home.holder.ProjectViewHolder
 
 class HomeActivity : BaseActivity(), HomeContract {
 
@@ -37,13 +33,13 @@ class HomeActivity : BaseActivity(), HomeContract {
         DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
     }
     private val presenter: HomePresenter by lazy { HomePresenter() }
-    private val mapViewHolder: OnCreateViewHolder<Map, MapViewHolder> by lazy {
+    private val projectViewHolder: OnCreateViewHolder<Project, ProjectViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
-            MapViewHolder(ItemMapBinding.inflate(layoutInflater, parent, false), presenter)
+            ProjectViewHolder(ItemMapBinding.inflate(layoutInflater, parent, false), presenter)
         }
     }
-    private val mapsAdapter: AutoRecyclerAdapter<Map, MapViewHolder> by lazy {
-        AutoRecyclerAdapter(mutableListOf(), mapViewHolder).apply {
+    private val projectsAdapter: AutoRecyclerAdapter<Project, ProjectViewHolder> by lazy {
+        AutoRecyclerAdapter(mutableListOf(), projectViewHolder).apply {
             setHasStableIds(true)
         }
     }
@@ -88,10 +84,25 @@ class HomeActivity : BaseActivity(), HomeContract {
         }
     }
 
+    override fun fillProjectsAdapter(projects: MutableList<Project>) {
+        binding.viewToolbar?.project = projects.first()
+        projectsAdapter.addAll(projects)
+        projectsAdapter.notifyDataSetChanged()
+    }
+
     override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
 
-    override fun selectMap() {
-        binding.selectingMap = binding.selectingMap?.not()
+    override fun selectProject() {
+        binding.selectingProject = binding.selectingProject?.not()
+    }
+
+    override fun swapProject(project: Project?) {
+        binding.run {
+            selectingProject = selectingProject?.not()
+            viewToolbar?.project = project
+            this@HomeActivity.presenter.setSelectedProject(project)
+        }
+        projectsAdapter.notifyDataSetChanged()
     }
 
     override fun showNotifications() {
@@ -102,91 +113,46 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    override fun swapMap(map: Map?) {
-        binding.run {
-            selectingMap = selectingMap?.not()
-            viewToolbar?.map = map
-            this@HomeActivity.presenter.setSelectedMap(map)
-
-        }
-        mapsAdapter.notifyDataSetChanged()
-    }
-
     override fun navigateToNotificationDetail() {
 
     }
 
     private fun setupView() {
         binding.apply {
-            selectingMap = false
-            setupRecyclerView(maps)
-            setupTabs()
+            selectingProject = false
+            viewToolbar?.run { setupToolbar(this) }
+            setupProjectsRecyclerView(projects)
             setupDrawer()
             setupNotifications(notifications)
-            viewToolbar?.run { setupToolbar(this) }
         }
     }
 
     private fun setupToolbar(viewToolbar: ViewHomeToolbarBinding) = with(viewToolbar) {
-        presenter = this@HomeActivity.presenter
         hasNotification = notificationsAdapter.count() > 0
-        map = getFirstMapReference()
-        this@HomeActivity.presenter.setSelectedMap(map)
+        presenter = this@HomeActivity.presenter
+        this@HomeActivity.presenter.setSelectedProject(project)
     }
 
-    private fun getFirstMapReference(): Map? =
-            if (mapsAdapter.size > 0)
-                mapsAdapter[Map.INITIAL_POSITION]
-            else
-                Map("Select a Map")
-
-
-    private fun setupRecyclerView(maps: RecyclerView) = with(maps) {
+    private fun setupProjectsRecyclerView(projects: RecyclerView) = with(projects) {
         layoutManager = setupLayoutManager()
-        //FIXME this commented line is throwing an exception related to the map views using the same id
-        //setHasFixedSize(true)
-        adapter = mapsAdapter
+        setHasFixedSize(true)
+        adapter = projectsAdapter
     }
 
     private fun setupLayoutManager(): RecyclerView.LayoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
-    private fun setupTabs() {
-        val adapter = HomeAdapter(supportFragmentManager, createNavigationItems())
-        binding.apply {
-            presenter = this@HomeActivity.presenter
-            viewPager.let {
-                it.adapter = adapter
-                it.offscreenPageLimit = adapter.count
-            }
-            tabLayout.setupWithViewPager(binding.viewPager)
-        }
-    }
-
-    private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportsFragment.newInstance(ReportsFragment.APPROVED_STATUS),
-                getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportsFragment.newInstance(ReportsFragment.PENDING_STATUS),
-                getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportsFragment.newInstance(ReportsFragment.REJECTED_STATUS),
-                getString(R.string.rejected_fragment_title))
-        return mutableListOf(approved, pending, rejected)
-    }
 
     private fun setupDrawer() {
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     private fun setupNotifications(recyclerView: RecyclerView) = with(recyclerView) {
-        layoutManager = setLayoutManager()
-        addItemDecoration(setItemDecoration())
+        layoutManager = setupLayoutManager()
+        addItemDecoration(setupItemDecoration())
         adapter = notificationsAdapter
     }
 
-    private fun setLayoutManager(): RecyclerView.LayoutManager? =
-            LinearLayoutManager(this@HomeActivity, LinearLayout.VERTICAL, false)
-
-    private fun setItemDecoration(): RecyclerView.ItemDecoration? =
+    private fun setupItemDecoration(): RecyclerView.ItemDecoration? =
             DividerItemDecoration(this@HomeActivity, DividerItemDecoration.VERTICAL)
 
 }

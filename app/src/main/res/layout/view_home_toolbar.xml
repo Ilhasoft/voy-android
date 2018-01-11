@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="map"
-            type="br.com.ilhasoft.voy.models.Map" />
+            name="project"
+            type="br.com.ilhasoft.voy.models.Project" />
 
         <variable
             name="hasNotification"
@@ -37,20 +37,20 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.1" />
+            android:layout_weight="0.05" />
 
         <TextView
             android:id="@+id/maps"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
+            android:layout_weight="0.5"
             android:drawableEnd="@drawable/ic_arrow_down"
             android:drawableRight="@drawable/ic_arrow_down"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:onClick="@{() -> presenter.onClickSelectMap()}"
-            android:text="@{map.name}"
+            android:onClick="@{() -> presenter.onClickSelectProject()}"
+            android:text="@{project.name}"
             android:textColor="@color/vivid_purple"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -59,7 +59,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.1" />
+            android:layout_weight="0.05" />
 
         <ImageView
             android:id="@+id/notification"
@@ -68,7 +68,7 @@
             android:layout_weight="0.2"
             android:onClick="@{() -> presenter.onClickNotifications()}"
             android:padding="16dp"
-            android:src="@{ hasNotification ? @drawable/ic_notification_pendent : @drawable/ic_notification }" />
+            android:src="@{hasNotification ? @drawable/ic_notification_pendent : @drawable/ic_notification}" />
 
     </LinearLayout>
 
