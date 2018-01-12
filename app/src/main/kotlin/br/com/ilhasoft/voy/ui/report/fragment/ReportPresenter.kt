@@ -4,7 +4,6 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportsService
 import br.com.ilhasoft.voy.shared.rx.RxHelper
-import timber.log.Timber
 
 class ReportPresenter : Presenter<ReportContract>(ReportContract::class.java) {
 
@@ -18,19 +17,12 @@ class ReportPresenter : Presenter<ReportContract>(ReportContract::class.java) {
     }
 
     private fun loadReportsData() {
-        if (getTheme() == 1) {
-            reportService.getReports(theme = getTheme(), status = getStatus())
-                    .compose(RxHelper.defaultSingleSchedulers())
-                    .subscribe({
-                        fillReportsAdapter(it.results)
-                        println(it)
-                    }, {
-                        Timber.d(it.localizedMessage)
-                    })
-        }
+        reportService.getReports(page = 1, page_size = 50, theme = getThemeId(), status = getStatus())
+                .compose(RxHelper.defaultSingleSchedulers())
+                .subscribe({ fillReportsAdapter(it.results) }, {})
     }
 
-    private fun getTheme(): Int? = view?.getTheme()
+    private fun getThemeId(): Int? = view?.getThemeId()
 
     private fun getStatus(): Int? = view?.getStatus()
 
@@ -38,12 +30,16 @@ class ReportPresenter : Presenter<ReportContract>(ReportContract::class.java) {
         view?.fillReportsAdapter(reports)
     }
 
+    fun navigateToReportDetail(report: Report) {
+        view.navigateToReportDetail(report)
+    }
+
     fun onClickAddReport() {
         view.navigateToAddReport()
     }
 
-    fun navigateToReportDetail(report: Report) {
-        view.navigateToReportDetail(report)
+    fun onClickEditReport(report: Report?) {
+        view?.navigateToEditReport(report)
     }
 
 }

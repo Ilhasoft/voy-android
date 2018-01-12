@@ -24,17 +24,15 @@ class ReportFragment : BaseFragment(), ReportContract {
     companion object {
         private const val EXTRA_STATUS = "status"
         private const val EXTRA_THEME_ID = "themeId"
-        private const val EXTRA_THEME_COLOR = "themeColor"
         const val APPROVED_STATUS = 1
         const val PENDING_STATUS = 2
         const val NOT_APPROVED_STATUS = 3
 
         @JvmStatic
-        fun newInstance(status: Int, themeId: Int, themeColor: String): ReportFragment {
+        fun newInstance(status: Int, themeId: Int): ReportFragment {
             val args = Bundle()
             args.putInt(EXTRA_STATUS, status)
             args.putInt(EXTRA_THEME_ID, themeId)
-            args.putString(EXTRA_THEME_COLOR, themeColor)
             return createWithArguments(args)
         }
 
@@ -52,7 +50,7 @@ class ReportFragment : BaseFragment(), ReportContract {
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
-                    presenter, status)
+                    presenter)
         }
     }
     private val reportsAdapter: AutoRecyclerAdapter<Report, ReportViewHolder> by lazy {
@@ -61,7 +59,7 @@ class ReportFragment : BaseFragment(), ReportContract {
         }
     }
     private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
-    private val themeId: Int by lazy { arguments.getInt(EXTRA_STATUS) }
+    private val themeId: Int by lazy { arguments.getInt(EXTRA_THEME_ID) }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -89,31 +87,39 @@ class ReportFragment : BaseFragment(), ReportContract {
         presenter.detachView()
     }
 
-    override fun navigateToAddReport() {
-        startActivity(AddReportActivity.createIntent(context))
+    override fun getThemeId(): Int? = themeId
+
+    override fun getStatus(): Int? = status
+
+    override fun fillReportsAdapter(reports: List<Report>) {
+        reports.let {
+            binding.noReports = it.isNotEmpty().not()
+            if (it.isNotEmpty()) {
+                reportsAdapter.addAll(it)
+                reportsAdapter.notifyDataSetChanged()
+            } else {
+                binding.run {
+                    greetings = getGreetings(status)
+                    createReportTip = getGreetingsTip(status)
+                }
+            }
+        }
     }
 
     override fun navigateToReportDetail(report: Report) =
             startActivity(ReportDetailActivity.createIntent(context))
 
-    override fun getTheme(): Int? = themeId
-
-    override fun getStatus(): Int? = status
-
-    override fun fillReportsAdapter(reports: List<Report>) {
-        binding.noReports = false
-        reportsAdapter.addAll(reports)
-        reportsAdapter.notifyDataSetChanged()
+    override fun navigateToAddReport() {
+        startActivity(AddReportActivity.createIntent(context))
     }
+
+    override fun navigateToEditReport(report: Report?) {}
 
     private fun setupView() {
         binding.run {
-            noReports = true
-            greetings = getGreetings(status)
-            createReportTip = getGreetingsTip(status)
+            setupRecyclerView(reports)
             presenter = this@ReportFragment.presenter
         }
-        setupRecyclerView(binding.reports)
     }
 
     private fun getGreetings(status: Int): String {
