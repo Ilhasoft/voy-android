@@ -25,7 +25,7 @@ interface ReportsApi {
                      @QueryMap parameters: Map<String, Int?>,
                      @Body body: CreateReportRequest): Single<Report>
 
-    // TODO: implement update patch
+    // TODO: implement partial update
 
     // FIXME: Server with error (returning undefined)
     @DELETE("/api/reports/{id}/")
