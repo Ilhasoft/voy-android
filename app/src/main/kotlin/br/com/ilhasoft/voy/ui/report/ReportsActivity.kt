@@ -96,11 +96,11 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
         val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS,
-                themeId, themeColor), getString(R.string.approved_fragment_title))
+                themeId), getString(R.string.approved_fragment_title))
         val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS,
-                themeId, themeColor), getString(R.string.pending_fragment_title))
+                themeId), getString(R.string.pending_fragment_title))
         val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS,
-                themeId, themeColor), getString(R.string.not_approved_fragment_title))
+                themeId), getString(R.string.not_approved_fragment_title))
         return mutableListOf(approved, pending, rejected)
     }
 
