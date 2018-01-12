@@ -3,6 +3,7 @@ package br.com.ilhasoft.voy.models
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import java.text.SimpleDateFormat
 
 /**
  * Created by developer on 01/12/17.
@@ -28,6 +29,14 @@ class Report(@SerializedName("id") var id: Int = 0,
     companion object {
         @JvmStatic
         val TAG = "Report"
+    }
+
+    //TODO Use custom converter Gson
+    fun formattedDate(): String {
+        val inputDate = SimpleDateFormat("yyyy-MM-dd")
+        val outputDate = SimpleDateFormat("MMM dd, yyyy")
+        val dateFormat = inputDate.parse(createdOn)
+        return outputDate.format(dateFormat)
     }
 
 }
