@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.network
 
 import br.com.ilhasoft.voy.network.interceptors.AuthenticationInterceptor
+import br.com.ilhasoft.voy.network.interceptors.ContentTypeHeaderInterceptor
 import br.com.ilhasoft.voy.shared.Constants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -25,6 +26,15 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
     val api: ApiType by lazy {
         val clientBuilder = createOkHttpClient()
         clientBuilder.addInterceptor(AuthenticationInterceptor())
+                .addInterceptor(ContentTypeHeaderInterceptor())
+
+        mRetrofitBuilder.client(clientBuilder.build()).build().create<ApiType>(mClazz)
+    }
+
+    val apiFile: ApiType by lazy {
+        val clientBuilder = createOkHttpClient()
+        clientBuilder.addInterceptor(AuthenticationInterceptor())
+                .addInterceptor(ContentTypeHeaderInterceptor("multipart/form-data"))
 
         mRetrofitBuilder.client(clientBuilder.build()).build().create<ApiType>(mClazz)
     }

@@ -16,7 +16,7 @@ class ReportsService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
                    theme: Int? = null,
                    project: Int? = null,
                    mapper: Int? = null,
-                   status: Int? = null): Single<ReportsListResponse> {
+                   status: Int? = null): Single<Response<Report>> {
 
         val reportsRequest = mutableMapOf<String, Int?>()
         reportsRequest.apply {
@@ -30,12 +30,66 @@ class ReportsService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         return api.getReports(reportsRequest)
     }
 
+    fun getReport(id: Int,
+                  theme: Int? = null,
+                  project: Int? = null,
+                  mapper: Int? = null,
+                  status: Int? = null): Single<Report> {
+
+        val reportsRequest = mutableMapOf<String, Int?>()
+        reportsRequest.apply {
+            putIfNotNull("theme", theme)
+            putIfNotNull("project", project)
+            putIfNotNull("mapper", mapper)
+            putIfNotNull("status", status)
+        }
+        return api.getReport(id, reportsRequest)
+    }
+
     fun createReport(theme: Int,
                      location: Location,
                      description: String?,
                      name: String,
                      status: Int?): Single<Report> {
         val request = CreateReportRequest(theme, location, description, name, status)
-        return api.createReport(request)
+        return api.saveReport(request)
+    }
+
+    fun updateReport(id: Int,
+                     theme: Int,
+                     project: Int? = null,
+                     mapper: Int? = null,
+                     status: Int? = null,
+                     location: Location,
+                     newDescription: String?,
+                     newName: String): Single<Report> {
+
+        val parameters = mutableMapOf<String, Int?>()
+        parameters.apply {
+            putIfNotNull("theme", theme)
+            putIfNotNull("project", project)
+            putIfNotNull("mapper", mapper)
+            putIfNotNull("status", status)
+        }
+
+        val requestBody = CreateReportRequest(theme, location, newDescription, newName, status)
+
+        return api.updateReport(id, parameters, requestBody)
+    }
+
+    fun deleteReport(id: Int,
+               theme: Int? = null,
+               project: Int? = null,
+               mapper: Int? = null,
+               status: Int? = null): Single<Void> {
+
+        val reportsRequest = mutableMapOf<String, Int?>()
+        reportsRequest.apply {
+            putIfNotNull("theme", theme)
+            putIfNotNull("project", project)
+            putIfNotNull("mapper", mapper)
+            putIfNotNull("status", status)
+        }
+        return api.deleteReport(id, reportsRequest)
     }
 }
