@@ -12,7 +12,7 @@
             type="br.com.ilhasoft.voy.models.Report" />
 
         <variable
-            name="pending"
+            name="approved"
             type="Boolean" />
 
         <variable
@@ -32,16 +32,11 @@
         app:cardElevation="2dp"
         tools:cardBackgroundColor="@color/black_12">
 
-        <ImageView
-            android:id="@+id/expanded_menu"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_gravity="top|end"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="12dp"
-            android:src="@{report.status == 0 ? @drawable/ic_status_resend : @drawable/ic_status_waiting}"
-            android:visibility="@{pending ? View.VISIBLE : View.GONE }" />
+        <View
+            android:id="@+id/themeIndicator"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -66,7 +61,7 @@
                 android:layout_below="@+id/image"
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
-                android:text="@{report.createdOn}"
+                android:text="@{report.formattedDate()}"
                 android:textColor="@color/black"
                 android:textSize="10sp"
                 tools:ignore="SmallSp"
@@ -102,6 +97,16 @@
                 tools:text="Lorem ipsu m dolor sit amet, coed iscingelit, sed doet, conseadipisci" />
 
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/expanded_menu"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="12dp"
+            android:visibility="@{approved ? View.GONE : View.VISIBLE }" />
 
     </android.support.v7.widget.CardView>
 
