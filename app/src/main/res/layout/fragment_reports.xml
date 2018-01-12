@@ -19,6 +19,10 @@
             type="String" />
 
         <variable
+            name="reportsQuantity"
+            type="Integer" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter" />
 
@@ -95,15 +99,33 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/reports"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="48dp"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:visibility="@{noReports ? View.GONE : View.VISIBLE}"
-            tools:listitem="@layout/item_report" />
+            android:orientation="vertical"
+            android:visibility="@{noReports ? View.GONE : View.VISIBLE}">
+
+            <TextView
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@{@string/reports_quantity(reportsQuantity)}"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                tools:text="You have 3 reports" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/reports"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="48dp"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                tools:listitem="@layout/item_report" />
+
+        </LinearLayout>
 
         <Button
             android:layout_width="match_parent"

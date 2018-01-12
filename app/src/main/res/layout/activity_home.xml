@@ -11,6 +11,10 @@
             type="Boolean" />
 
         <variable
+            name="themesQuantity"
+            type="Integer" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.home.HomePresenter" />
 
@@ -56,12 +60,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/themesIndicator"
                     style="@style/Base.Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
+                    android:text="@{@string/themes_quantity(themesQuantity)}"
                     android:textAllCaps="false"
                     android:textSize="18sp"
                     tools:text="You are in on 4 themes" />

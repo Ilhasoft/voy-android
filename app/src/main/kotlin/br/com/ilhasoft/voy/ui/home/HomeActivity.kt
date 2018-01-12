@@ -103,7 +103,7 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
 
     override fun fillThemesAdapter(themes: MutableList<Theme>) {
-        binding.themesIndicator.text = getString(R.string.themes_quantity, themes.size)
+        binding.themesQuantity = themes.size
         themesAdapter.addAll(themes)
         themesAdapter.notifyDataSetChanged()
     }

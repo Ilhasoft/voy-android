@@ -95,6 +95,7 @@ class ReportFragment : BaseFragment(), ReportContract {
         reports.let {
             binding.noReports = it.isNotEmpty().not()
             if (it.isNotEmpty()) {
+                binding.reportsQuantity = it.size
                 reportsAdapter.addAll(it)
                 reportsAdapter.notifyDataSetChanged()
             } else {
