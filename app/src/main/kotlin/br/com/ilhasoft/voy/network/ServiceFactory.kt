@@ -1,9 +1,6 @@
 package br.com.ilhasoft.voy.network
 
 import br.com.ilhasoft.voy.BuildConfig
-import br.com.ilhasoft.voy.network.interceptors.AuthenticationInterceptor
-import br.com.ilhasoft.voy.network.interceptors.DefaultHeaderInterceptor
-import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
@@ -16,7 +13,6 @@ abstract class ServiceFactory<out ApiType>(clazz: Class<ApiType>) :
 
     override fun createOkHttpClient(): OkHttpClient.Builder {
         val client = OkHttpClient.Builder()
-                .addInterceptor(DefaultHeaderInterceptor())
                 .writeTimeout(4, TimeUnit.MINUTES)
                 .readTimeout(4, TimeUnit.MINUTES)
                 .connectTimeout(30, TimeUnit.SECONDS)

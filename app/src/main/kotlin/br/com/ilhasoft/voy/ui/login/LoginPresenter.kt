@@ -1,13 +1,13 @@
 package br.com.ilhasoft.voy.ui.login
 
-import android.util.Log
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationService
-import br.com.ilhasoft.voy.shared.rx.RxHelper
+import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import timber.log.Timber
 
 class LoginPresenter(private val preferences: Preferences) : Presenter<LoginContract>(LoginContract::class.java) {
 
@@ -32,7 +32,7 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
                         preferences.put(TOKEN, it.token)
                         setTokenAndNavigateToHome(it.token)
                     }, {
-                        Log.e(LoginPresenter::class.toString(), it.localizedMessage)
+                        Timber.e(it)
                         view.showMessage(R.string.invalid_login)
                     })
         }

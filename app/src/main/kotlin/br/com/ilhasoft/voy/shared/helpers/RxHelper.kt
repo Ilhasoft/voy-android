@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.shared.rx
+package br.com.ilhasoft.voy.shared.helpers
 
 import io.reactivex.FlowableTransformer
 import io.reactivex.SingleTransformer
