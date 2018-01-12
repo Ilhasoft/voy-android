@@ -5,6 +5,7 @@ import br.com.ilhasoft.voy.network.ServiceFactory
 import br.com.ilhasoft.voy.network.reports.Response
 import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
 import br.com.ilhasoft.voy.shared.helpers.RetrofitHelper
+import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
 import java.io.File
@@ -52,6 +53,23 @@ class FilesService : ServiceFactory<FilesApi>(FilesApi::class.java) {
         val requestFile = RetrofitHelper.prepareFilePart("file", file, mimeType)
 
         return apiFile.saveFile(requestMap, requestFile)
+    }
+
+    fun deleteFile(fileId: Int,
+                   theme: Int? = null,
+                   report: Int? = null,
+                   project: Int? = null,
+                   media_type: String? = null): Single<Void> {
+
+        val requestMap = mutableMapOf<String, Any?>()
+        requestMap.apply {
+            putIfNotNull("theme", theme)
+            putIfNotNull("report", report)
+            putIfNotNull("project", project)
+            putIfNotNull("media_type", media_type)
+        }
+
+        return api.deleteFile(fileId, requestMap)
     }
 
 }

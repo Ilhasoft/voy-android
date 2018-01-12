@@ -17,7 +17,11 @@ interface FilesApi {
 
     @Multipart
     @POST("/api/report-files/")
-    fun saveFile(@PartMap map: Map<String, @JvmSuppressWildcards RequestBody>,
+    fun saveFile(@PartMap map: Map<String, RequestBody>,
                  @Part file: MultipartBody.Part): Single<ReportFile>
+
+    // FIXME: Server error (returning "undefined")
+    @DELETE("/api/report-files/{id}/")
+    fun deleteFile(@Path("id") id: Int, @QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Single<Void>
 
 }
