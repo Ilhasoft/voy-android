@@ -1,15 +1,14 @@
 package br.com.ilhasoft.voy.ui.report
 
 import br.com.ilhasoft.support.core.mvp.Presenter
-import br.com.ilhasoft.voy.models.Report
 
+/**
+ * Created by developer on 11/01/18.
+ */
 class ReportsPresenter : Presenter<ReportsContract>(ReportsContract::class.java) {
 
-    fun onClickAddReport() {
-        view.navigateToAddReport()
+    fun onClickNavigateBack() {
+        view?.navigateBack()
     }
 
-    fun navigateToReportDetail(report: Report) {
-        view.navigateToReportDetail(report)
-    }
 }

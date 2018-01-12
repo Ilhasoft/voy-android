@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.ui.addreport.theme
+package br.com.ilhasoft.voy.ui.addreport.tag
 
 import android.databinding.BaseObservable
 import android.databinding.Bindable

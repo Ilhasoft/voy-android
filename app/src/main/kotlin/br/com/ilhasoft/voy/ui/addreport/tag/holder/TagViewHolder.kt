@@ -1,10 +1,10 @@
-package br.com.ilhasoft.voy.ui.addreport.theme.holder
+package br.com.ilhasoft.voy.ui.addreport.tag.holder
 
 import android.view.View
 import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
 import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
 import br.com.ilhasoft.voy.models.Tag
-import br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragmentPresenter
+import br.com.ilhasoft.voy.ui.addreport.tag.AddThemeFragmentPresenter
 
 /**
  * Created by geral on 11/12/17.

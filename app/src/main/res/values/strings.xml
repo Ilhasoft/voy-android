@@ -12,7 +12,7 @@
 
     <string name="approved_fragment_title">Approved</string>
     <string name="pending_fragment_title">Pending</string>
-    <string name="rejected_fragment_title">Rejected</string>
+    <string name="not_approved_fragment_title">Not Approved</string>
     <string name="approved_greetings">Hello!</string>
     <string name="approved_greetings_tip">You have not\ncreated any report yet</string>
     <string name="pending_greetings">Great!</string>
@@ -41,7 +41,6 @@
     <string name="title_hint">Title</string>
     <string name="description_hint">Description</string>
     <string name="add_link">Add Link</string>
-    <string name="themes_and_tags">Themes\nand Tags</string>
     <string name="add_tags">Add Tags</string>
     <string name="themes">Themes</string>
     <string name="cancel">Cancel</string>
@@ -60,4 +59,8 @@
     <string name="feedback_list_title">Hey!</string>
     <string name="feedback_list_message">You can\'t add the same link twice :(</string>
     <string name="invalid_login">Invalid user or password</string>
+
+    <string name="themes_quantity">You are within %d themes</string>
+    <string name="color_hex">#%s</string>
+    <string name="reports_quantity">You have %d reports</string>
 </resources>

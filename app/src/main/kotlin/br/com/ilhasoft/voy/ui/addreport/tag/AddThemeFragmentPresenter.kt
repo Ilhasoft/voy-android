@@ -1,29 +1,13 @@
-package br.com.ilhasoft.voy.ui.addreport.theme
+package br.com.ilhasoft.voy.ui.addreport.tag
 
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.Tag
-import br.com.ilhasoft.voy.models.Theme
 
 class AddThemeFragmentPresenter : Presenter<AddThemeFragmentContract>(AddThemeFragmentContract::class.java) {
 
     var report: Report? = null
         private set
-
-    fun onClickThemes() {
-        view.showThemesDialog()
-    }
-
-    fun onClickTheme(theme: Theme?) {
-        view.swapTheme(theme)
-    }
-
-    fun getSelectedTheme(): Int = report?.theme!!
-
-    fun setSelectedTheme(theme: Theme?) {
-        report?.theme = theme?.id!!
-        view.changeActionButtonStatus(true)
-    }
 
     fun setSelectedTag(tag: Tag) {
         /*report?.tagsList?.apply {
