@@ -14,4 +14,6 @@ class UserService : ServiceFactory<UserApi>(UserApi::class.java) {
 
     fun getUser(userId: Int): Single<User> = api.getUser(userId)
 
+    fun getUser(): Flowable<List<User>> = api.getUser(accessToken)
+
 }
