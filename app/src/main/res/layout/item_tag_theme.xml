@@ -14,11 +14,11 @@
 
         <variable
             name="presenter"
-            type="br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragmentPresenter" />
+            type="br.com.ilhasoft.voy.ui.addreport.tag.AddThemeFragmentPresenter" />
 
         <variable
             name="tagSelectionController"
-            type="br.com.ilhasoft.voy.ui.addreport.theme.TagSelectionController" />
+            type="br.com.ilhasoft.voy.ui.addreport.tag.TagSelectionController" />
 
 
     </data>

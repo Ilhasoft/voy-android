@@ -1,29 +1,19 @@
-package br.com.ilhasoft.voy.ui.addreport.theme
+package br.com.ilhasoft.voy.ui.addreport.tag
 
-import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.databinding.DialogThemesBinding
 import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
 import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
-import br.com.ilhasoft.voy.databinding.ItemThemeBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.Tag
-import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
-import br.com.ilhasoft.voy.ui.addreport.theme.holder.TagViewHolder
-import br.com.ilhasoft.voy.ui.addreport.theme.holder.ThemeViewHolder
+import br.com.ilhasoft.voy.ui.addreport.tag.holder.TagViewHolder
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 import com.google.android.flexbox.FlexDirection
@@ -55,34 +45,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         }
     }
 
-    private val themeDialogBinding: DialogThemesBinding by lazy {
-        DialogThemesBinding.inflate(LayoutInflater.from(context), null, false)
-    }
-
-    private val dialog by lazy {
-        setupThemesList(themeDialogBinding.themes)
-        AlertDialog.Builder(context).setView(themeDialogBinding.root)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    binding.themes.text = /*presenter.getSelectedTheme()?.name*/""
-                }
-                .setNegativeButton(R.string.cancel) { _, _ ->
-                    dismissDialog()
-                }
-                .create()
-    }
-
-    private val themesAdapter: AutoRecyclerAdapter<Theme, ThemeViewHolder> by lazy {
-        AutoRecyclerAdapter<Theme, ThemeViewHolder>(themesViewHolder).apply {
-            setHasStableIds(true)
-        }
-    }
-
-    private val themesViewHolder: OnCreateViewHolder<Theme, ThemeViewHolder> by lazy {
-        OnCreateViewHolder { layoutInflater, parent, _ ->
-            ThemeViewHolder(ItemThemeBinding.inflate(layoutInflater, parent, false), presenter)
-        }
-    }
-
     private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,7 +55,6 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupTagsList(binding.tagsList)
         presenter.attachView(this)
     }
 
@@ -122,37 +83,21 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         presenter.detachView()
     }
 
-    override fun showThemesDialog() {
-        dialog.show()
-        dialog.getButton(Dialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(context, R.color.cool_grey))
-    }
-
-    override fun swapTheme(theme: Theme?) {
-        presenter.setSelectedTheme(theme)
-        themesAdapter.notifyDataSetChanged()
-    }
-
     override fun changeActionButtonStatus(status: Boolean) {
         reportListener.changeActionButtonStatus(status)
     }
 
-    override fun notifyTagsListChange() {
+    override fun notifyTagsChange() {
         tagsAdapter.notifyDataSetChanged()
     }
 
-    private fun dismissDialog() {
-        if (dialog.isShowing) dialog.dismiss()
-    }
-
     fun setupView() {
-        binding.run {
-            presenter = this@AddThemeFragment.presenter
-        }
+        binding.run { setupTagsRecyclerView(tags) }
     }
 
-    private fun setupTagsList(tagsList: RecyclerView) = with(tagsList) {
+    private fun setupTagsRecyclerView(tags: RecyclerView) = with(tags) {
         layoutManager = setupLayoutManager()
+        setHasFixedSize(true)
         adapter = tagsAdapter
     }
 
@@ -161,18 +106,5 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
         layoutManager.justifyContent = JustifyContent.FLEX_START
         return layoutManager
     }
-
-    private fun setupThemesList(themes: RecyclerView) = with(themes) {
-        layoutManager = setupLayoutManagerThemes()
-        addItemDecoration(setItemDecoration())
-        adapter = themesAdapter
-    }
-
-    private fun setupLayoutManagerThemes(): RecyclerView.LayoutManager? =
-            LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-
-    private fun setItemDecoration(): RecyclerView.ItemDecoration? =
-            DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-
 
 }

@@ -8,7 +8,7 @@ import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.ui.addreport.description.AddDescriptionFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
-import br.com.ilhasoft.voy.ui.addreport.theme.AddThemeFragment
+import br.com.ilhasoft.voy.ui.addreport.tag.AddThemeFragment
 
 /**
  * Created by lucasbarros on 23/11/17.
