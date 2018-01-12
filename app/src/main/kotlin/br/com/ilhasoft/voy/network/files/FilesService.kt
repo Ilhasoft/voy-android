@@ -4,7 +4,10 @@ import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.network.ServiceFactory
 import br.com.ilhasoft.voy.network.reports.Response
 import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
+import br.com.ilhasoft.voy.shared.helpers.RetrofitHelper
 import io.reactivex.Single
+import okhttp3.RequestBody
+import java.io.File
 
 /**
  * Created by lucasbarros on 11/01/18.
@@ -29,6 +32,26 @@ class FilesService : ServiceFactory<FilesApi>(FilesApi::class.java) {
         }
 
         return api.getFiles(request)
+    }
+
+    fun saveFile(title: String,
+                 description: String,
+                 media_type: String,
+                 file: File,
+                 mimeType: String,
+                 report: Int): Single<ReportFile> {
+
+        val requestMap = mutableMapOf<String, RequestBody>()
+        requestMap.apply {
+            putIfNotNull("title", RetrofitHelper.createPartFromString(title))
+            putIfNotNull("description", RetrofitHelper.createPartFromString(description))
+            putIfNotNull("media_type", RetrofitHelper.createPartFromString(media_type))
+            putIfNotNull("report_id", RetrofitHelper.createPartFromString(report.toString()))
+        }
+
+        val requestFile = RetrofitHelper.prepareFilePart("file", file, mimeType)
+
+        return apiFile.saveFile(requestMap, requestFile)
     }
 
 }
