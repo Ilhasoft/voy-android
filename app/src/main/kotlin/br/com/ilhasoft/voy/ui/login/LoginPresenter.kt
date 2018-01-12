@@ -6,7 +6,7 @@ import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationService
-import br.com.ilhasoft.voy.shared.rx.RxHelper
+import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import timber.log.Timber
 
 class LoginPresenter(private val preferences: Preferences) : Presenter<LoginContract>(LoginContract::class.java) {

@@ -10,7 +10,7 @@ import retrofit2.http.*
 interface ReportsApi {
 
     @GET("/api/reports/")
-    fun getReports(@QueryMap parameters: Map<String, Int?>): Single<ReportsListResponse>
+    fun getReports(@QueryMap parameters: Map<String, Int?>): Single<Response<Report>>
 
     @GET("/api/reports/{id}/")
     fun getReport(@Path("id") id: Int,

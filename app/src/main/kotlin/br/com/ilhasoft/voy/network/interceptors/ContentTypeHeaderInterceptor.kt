@@ -7,14 +7,14 @@ import java.io.IOException
 /**
  * Created by lucasbarros on 05/01/18.
  */
-class DefaultHeaderInterceptor : Interceptor {
+class ContentTypeHeaderInterceptor(private val contentType: String = "application/json") : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
 
         val requestBuilder = original.newBuilder()
-                .header("Content-Type", "application/json")
+                .header("Content-Type", contentType)
 
         val request = requestBuilder.build()
         return chain.proceed(request)
