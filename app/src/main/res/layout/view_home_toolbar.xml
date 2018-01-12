@@ -9,6 +9,10 @@
             type="br.com.ilhasoft.voy.models.Map" />
 
         <variable
+            name="hasNotification"
+            type="Boolean" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.home.HomePresenter" />
 
@@ -64,7 +68,7 @@
             android:layout_weight="0.2"
             android:onClick="@{() -> presenter.onClickNotifications()}"
             android:padding="16dp"
-            android:src="@drawable/ic_notification" />
+            android:src="@{ hasNotification ? @drawable/ic_notification_pendent : @drawable/ic_notification }" />
 
     </LinearLayout>
 

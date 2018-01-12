@@ -15,6 +15,6 @@ interface ProjectApi {
     fun getProjects(): Flowable<MutableList<Project>>
 
     @GET("/api/projects/{id}/")
-    fun getProject(@Path("id") projectId: String): Single<Project>
+    fun getProject(@Path("id") projectId: Int): Single<Project>
 
 }

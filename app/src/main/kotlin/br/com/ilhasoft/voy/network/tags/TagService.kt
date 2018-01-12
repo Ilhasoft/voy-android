@@ -11,15 +11,15 @@ import io.reactivex.Single
  */
 class TagService : ServiceFactory<TagApi>(TagApi::class.java) {
 
-    fun getTags(theme: Int? = null, project: Int? = null): Flowable<MutableList<Tag>> {
+    fun getTags(project: Int = 0, theme: Int = 0): Flowable<MutableList<Tag>> {
         val tagsRequest = mutableMapOf<String, Int?>()
         tagsRequest.apply {
-            putIfNotNull("theme", theme)
             putIfNotNull("project", project)
+            putIfNotNull("theme", theme)
         }
         return api.getTags(tagsRequest)
     }
 
-    fun getTag(tagId: String): Single<Tag> = api.getTag(tagId)
+    fun getTag(tagId: Int): Single<Tag> = api.getTag(tagId)
 
 }

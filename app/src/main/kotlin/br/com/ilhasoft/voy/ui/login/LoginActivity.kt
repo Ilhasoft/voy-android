@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import br.com.ilhasoft.support.validation.Validator
+import br.com.ilhasoft.voy.BuildConfig
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
@@ -77,9 +78,10 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     private fun setupView() {
         binding.run {
-//            credentials = if (BuildConfig.DEBUG) Credentials("voy", "Un1c3f@@")
-//            else
-            credentials = this@LoginActivity.credentials
+            credentials = if (BuildConfig.DEBUG)
+                Credentials(getString(R.string.username_dev), getString(R.string.password_dev))
+            else
+                this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }
     }

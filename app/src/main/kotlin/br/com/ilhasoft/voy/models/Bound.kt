@@ -6,4 +6,4 @@ import com.google.gson.annotations.SerializedName
  * Created by developer on 05/01/18.
  */
 data class Bound(@SerializedName("type") val type: String,
-                 @SerializedName("coordinates") val coordinates: ArrayList<ArrayList<Double>>)
+                 @SerializedName("coordinates") val coordinates: ArrayList<ArrayList<ArrayList<Double>>>)

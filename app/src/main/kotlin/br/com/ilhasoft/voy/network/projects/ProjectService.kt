@@ -12,6 +12,6 @@ class ProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java) {
 
     fun getProjects(): Flowable<MutableList<Project>> = api.getProjects()
 
-    fun getProject(projectId: String): Single<Project> = api.getProject(projectId)
+    fun getProject(projectId: Int): Single<Project> = api.getProject(projectId)
 
 }

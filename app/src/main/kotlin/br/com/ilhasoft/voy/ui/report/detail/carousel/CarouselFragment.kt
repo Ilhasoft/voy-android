@@ -1,21 +1,16 @@
 package br.com.ilhasoft.voy.ui.report.detail.carousel
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-
-import android.view.ViewGroup
 import android.view.View
-import br.com.ilhasoft.support.media.view.*
+import android.view.ViewGroup
+import br.com.ilhasoft.support.media.view.MediaViewOptions
 import br.com.ilhasoft.support.media.view.models.ImageMedia
-import br.com.ilhasoft.support.media.view.models.VideoMedia
 import br.com.ilhasoft.voy.GlideApp
-
 import br.com.ilhasoft.voy.databinding.FragmentCarouselBinding
 import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.ui.base.BaseFragment
+
 
 class CarouselFragment : BaseFragment(), CarouselContract {
 
@@ -35,11 +30,7 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         }
     }
 
-    private var mediaModel: MediaModel? = null
-
     private var media: Media? = null
-
-    private val listener by lazy { Listener() }
 
     private val binding: FragmentCarouselBinding by lazy {
         FragmentCarouselBinding.inflate(LayoutInflater.from(context))
@@ -79,16 +70,12 @@ class CarouselFragment : BaseFragment(), CarouselContract {
 
     override fun displayMedia(media: Media?) {
         media?.apply {
-            mediaModel =
-                    if (type == Media.TYPE_VIDEO)
-                        //change to handle url and video thumbnail
-                        VideoMedia(uri.toString(), "https://ilhacloud-dev.s3.amazonaws.com/clickcondo/files/c83b5950a01e73dafa327779dced93bf_JPEG_20161205_175619_1472840156.jpg")
-                    else
-                        ImageMedia(uri.toString())
-
-            startActivity(MediaViewOptions(mediaModel)
-                    .setOnClickMediaListener(listener)
-                    .createIntent(context))
+            if (type == Media.TYPE_VIDEO) {
+                //FIXME handle unsupported media files type and codec (3gp, mp4 codec)
+                startActivity(VideoViewActivity.createIntent(context).putExtra("url", url))
+            } else {
+                startActivity(MediaViewOptions(ImageMedia(url)).createIntent(context))
+            }
         }
     }
 
@@ -99,27 +86,13 @@ class CarouselFragment : BaseFragment(), CarouselContract {
             media?.apply {
                 if (type == Media.TYPE_VIDEO)
                     play.visibility = View.VISIBLE
-
+                //TODO implement database query for local uris before requesting from url
                 GlideApp.with(context)
-                        .load(uri)
+                        .load(url)
                         .centerCrop()
                         .into(image)
             }
         }
     }
-
-    private fun isVideo(uri: Uri?): Boolean {
-        val mimeType = context.contentResolver.getType(uri)
-        return mimeType != null && mimeType.startsWith("video")
-    }
-
-    class Listener : OnClickMediaListener {
-
-        override fun onClick(mediaViewFragment: MediaViewFragment, mediaModel: MediaModel) {
-            mediaViewFragment.startActivity(Intent(Intent.ACTION_VIEW, mediaModel.uri))
-        }
-
-    }
-
 
 }

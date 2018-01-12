@@ -101,8 +101,6 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="48dp"
             android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:paddingTop="4dp"
             android:visibility="@{noReports ? View.GONE : View.VISIBLE}"
             tools:listitem="@layout/item_report" />

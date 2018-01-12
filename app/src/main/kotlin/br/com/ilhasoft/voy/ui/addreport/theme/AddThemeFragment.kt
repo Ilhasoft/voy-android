@@ -65,7 +65,7 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     binding.themes.text = /*presenter.getSelectedTheme()?.name*/""
                 }
-                .setNegativeButton(android.R.string.no) { _, _ ->
+                .setNegativeButton(R.string.cancel) { _, _ ->
                     dismissDialog()
                 }
                 .create()
@@ -86,7 +86,7 @@ class AddThemeFragment : BaseFragment(), AddThemeFragmentContract {
     private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        reportListener.changeActionButtonName(R.string.send)
+        reportListener.changeActionButtonName(R.string.send_report)
         setupView()
         return binding.root
     }
