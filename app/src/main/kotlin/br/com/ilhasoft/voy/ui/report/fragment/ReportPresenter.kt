@@ -3,7 +3,7 @@ package br.com.ilhasoft.voy.ui.report.fragment
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportsService
-import br.com.ilhasoft.voy.shared.rx.RxHelper
+import br.com.ilhasoft.voy.shared.helpers.RxHelper
 
 class ReportPresenter : Presenter<ReportContract>(ReportContract::class.java) {
 

@@ -6,7 +6,7 @@ import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.projects.ProjectService
 import br.com.ilhasoft.voy.network.themes.ThemeService
-import br.com.ilhasoft.voy.shared.rx.RxHelper
+import br.com.ilhasoft.voy.shared.helpers.RxHelper
 
 class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
 
