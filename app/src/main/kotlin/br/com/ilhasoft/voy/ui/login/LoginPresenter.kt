@@ -6,6 +6,7 @@ import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationService
+import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import timber.log.Timber
 
@@ -13,34 +14,38 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
 
     companion object {
         private const val TOKEN = "token"
+        private const val USER_ID = "userId"
     }
 
     private var authorizationService: AuthorizationService = AuthorizationService()
+    private var userService = UserService()
 
     override fun attachView(view: LoginContract) {
         super.attachView(view)
         if (preferences.contains(TOKEN)) {
-            setTokenAndNavigateToHome(preferences.getString(TOKEN))
+            BaseFactory.accessToken = preferences.getString(TOKEN)
+            view.navigateToHome()
         }
     }
 
     fun onClickLogin(credentials: Credentials) {
         if (view.validate()) {
             authorizationService.loginWithCredentials(credentials)
-                    .compose(RxHelper.defaultSingleSchedulers())
-                    .subscribe({
+                    .doOnNext({
                         preferences.put(TOKEN, it.token)
-                        setTokenAndNavigateToHome(it.token)
+                        BaseFactory.accessToken = it.token
+                    })
+                    .concatMap { userService.getUser() }
+                    .compose(RxHelper.defaultFlowableSchedulers())
+                    .subscribe({
+                        if (it.isNotEmpty()) {
+                            preferences.put(USER_ID, it[0].id)
+                            view.navigateToHome()
+                        }
                     }, {
                         Timber.e(it)
                         view.showMessage(R.string.invalid_login)
                     })
         }
     }
-
-    private fun setTokenAndNavigateToHome(token: String) {
-        BaseFactory.accessToken = token
-        view.navigateToHome()
-    }
-
 }

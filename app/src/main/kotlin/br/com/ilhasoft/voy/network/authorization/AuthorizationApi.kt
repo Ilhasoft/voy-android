@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.network.authorization
 
 import br.com.ilhasoft.voy.models.Credentials
+import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -11,5 +12,5 @@ import retrofit2.http.POST
 interface AuthorizationApi {
 
     @POST("get_auth_token/")
-    fun loginWithCredentials(@Body body: Credentials): Single<AuthorizationResponse>
+    fun loginWithCredentials(@Body body: Credentials): Flowable<AuthorizationResponse>
 }
