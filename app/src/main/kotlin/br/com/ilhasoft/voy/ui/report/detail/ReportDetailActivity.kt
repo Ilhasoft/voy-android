@@ -5,6 +5,7 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -123,8 +124,14 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     override fun navigateBack() = onBackPressed()
 
+    //TODO Show respective message from issue reported
     override fun showReportAlert() {
-
+        AlertDialog.Builder(this)
+                .setTitle(getString(R.string.issues_related_report))
+                .setMessage("This is a generic message to warning you that something is wrong with this report")
+                .setPositiveButton(getString(R.string.edit_report_label).toUpperCase(), { _, _ -> })
+                .setNegativeButton(getString(R.string.close_dialog_label).toUpperCase(), { _, _ -> })
+                .show()
     }
 
     override fun showPopupMenu() {
