@@ -15,4 +15,12 @@ class User(@SerializedName("id") val id: Int,
            @SerializedName("avatar") val avatar: String,
            @SerializedName("username") val username: String,
            @SerializedName("is_mapper") val isMapper: Boolean,
-           @SerializedName("is_admin") val isAdmin: Boolean) : Parcelable
+           @SerializedName("is_admin") val isAdmin: Boolean) : Parcelable {
+
+    companion object {
+        @JvmStatic
+        val TOKEN = "token"
+        @JvmStatic
+        val ID = "id"
+    }
+}
