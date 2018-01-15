@@ -1,38 +1,20 @@
 package br.com.ilhasoft.voy.ui.addreport.medias
 
 import android.net.Uri
+import br.com.ilhasoft.support.core.mvp.BasicView
 import br.com.ilhasoft.support.core.mvp.Presenter
-import br.com.ilhasoft.voy.models.Media
-import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
 
-class AddMediasFragmentPresenter :
-        Presenter<AddMediasFragmentContract>(AddMediasFragmentContract::class.java) {
-
-    var report: Report? = null
+class AddMediasFragmentPresenter(private val reportViewModel: ReportViewModel) :
+        Presenter<BasicView>(BasicView::class.java) {
 
     fun addMedia(uri: Uri) {
-        /*report?.mediaList?.apply {
-            add(Media(uri))
-            verifyMediaListSize()
-        }*/
+        reportViewModel.addUri(uri)
     }
 
     fun removeMedia(uri: Uri?) {
-        /*report?.mediaList?.apply {
-            remove(single { it.uri == uri })
-            verifyMediaListSize()
-        }*/
+        uri?.let {
+            reportViewModel.removeUri(it)
+        }
     }
-
-    fun verifyMediaListSize() {
-        /*report?.mediaList?.let {
-            view.changeActionButtonStatus(it.size > 0)
-            view.updateReportMedias(it)
-        }*/
-    }
-
-    fun setReportReference(report: Report) {
-        this.report = report
-    }
-
 }

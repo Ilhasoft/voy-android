@@ -1,5 +1,7 @@
 package br.com.ilhasoft.voy.ui.addreport
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
@@ -7,7 +9,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
-import br.com.ilhasoft.voy.models.Fragments
+import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
 import br.com.ilhasoft.voy.ui.addreport.thanks.ThanksActivity
@@ -31,19 +33,24 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val model = ViewModelProviders.of(this).get(ReportViewModel::class.java)
+        model.nextEnable.observe(this,
+                Observer {
+                    it?.let {
+                        changeActionButtonStatus(it)
+                    }
+                })
         setupView()
         setupToolbar()
-        presenter.run {
-            attachView(this@AddReportActivity)
-            startFragmentByReference(Fragments.MEDIAS)
-        }
+        presenter.attachView(this@AddReportActivity)
     }
 
     override fun displayFragment(fragment: Fragment, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment, tag)
 
-        if (tag != AddMediasFragment.TAG)
+//        if (tag != AddMediasFragment.TAG)
+        if (fragment !is AddMediasFragment)
             transaction.addToBackStack(tag)
 
         transaction.commit()
@@ -61,7 +68,7 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
         presenter.updateReportMedias(mediaList)
     }
 
-    override fun updateNextFragmentReference(nextFragment: Fragments) {
+    override fun updateNextFragmentReference(nextFragment: AddReportFragmentType) {
         presenter.updateNextFragmentReference(nextFragment)
     }
 

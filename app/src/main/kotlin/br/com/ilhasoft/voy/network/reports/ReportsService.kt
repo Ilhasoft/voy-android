@@ -46,11 +46,11 @@ class ReportsService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         return api.getReport(id, reportsRequest)
     }
 
-    fun createReport(theme: Int,
-                     location: Location,
-                     description: String?,
-                     name: String,
-                     status: Int?): Single<Report> {
+    fun saveReport(theme: Int,
+                   location: Location,
+                   description: String?,
+                   name: String,
+                   status: Int?): Single<Report> {
         val request = CreateReportRequest(theme, location, description, name, status)
         return api.saveReport(request)
     }
