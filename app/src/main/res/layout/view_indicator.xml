@@ -30,8 +30,8 @@
             android:layout_marginTop="10dp"
             android:background="@{ isSelected ? @drawable/rounded_indicator_purple : @drawable/rounded_indicator_purple_25}"
             android:gravity="center"
-            android:onClick="@{() -> presenter.swapPage(indicator)}"
             android:textSize="12sp" />
+        <!--android:onClick="@{() -> presenter.swapPage(indicator)}"-->
 
     </FrameLayout>
 
