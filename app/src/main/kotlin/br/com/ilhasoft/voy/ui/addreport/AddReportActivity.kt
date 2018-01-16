@@ -33,11 +33,17 @@ class AddReportActivity : BaseActivity(), AddReportContract, OnReportChangeListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val model = ViewModelProviders.of(this).get(ReportViewModel::class.java)
-        model.nextEnable.observe(this,
+        val reportViewModel = ViewModelProviders.of(this).get(ReportViewModel::class.java)
+        reportViewModel.buttonEnable.observe(this,
                 Observer {
                     it?.let {
                         changeActionButtonStatus(it)
+                    }
+                })
+        reportViewModel.buttonTitle.observe(this,
+                Observer {
+                    it?.let {
+                        changeActionButtonName(it)
                     }
                 })
         setupView()

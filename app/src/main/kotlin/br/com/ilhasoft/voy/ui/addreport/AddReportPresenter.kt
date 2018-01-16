@@ -33,7 +33,7 @@ class AddReportPresenter : Presenter<AddReportContract>(AddReportContract::class
     }
 
     fun updateExternalLinksList(externalLinks: MutableList<String>) {
-        /*report.externalLinks = externalLinks*/
+        /*report.links = links*/
     }
 
     fun onClickNavigateNext() {

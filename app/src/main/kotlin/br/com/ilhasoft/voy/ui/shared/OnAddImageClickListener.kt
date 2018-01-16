@@ -10,6 +10,6 @@ import br.com.ilhasoft.voy.shared.widget.AddImageView
 interface OnAddImageClickListener {
 
     fun onClickAddImage(addImageView: AddImageView)
-    fun onClickRemove(uri: Uri?)
+    fun onClickRemove(uri: Uri)
 
 }

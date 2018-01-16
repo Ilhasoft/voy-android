@@ -36,11 +36,9 @@ class AddMediasFragment :
         FragmentAddMediasBinding.inflate(LayoutInflater.from(context))
     }
 
-    private val model: ReportViewModel by lazy {
+    private val reportViewModel: ReportViewModel by lazy {
         ViewModelProviders.of(activity).get(ReportViewModel::class.java)
     }
-
-    private val presenter: AddMediasFragmentPresenter by lazy { AddMediasFragmentPresenter(model) }
 
     private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
     private val delegate: MediaSelectorDelegate by lazy {
@@ -60,29 +58,12 @@ class AddMediasFragment :
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setupImages()
-        presenter.attachView(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.start()
     }
 
     override fun onResume() {
         super.onResume()
-        model.isNextEnable(AddReportFragmentType.MEDIAS)
+        reportViewModel.setButtonEnable(reportViewModel.medias.isNotEmpty())
         reportListener.updateNextFragmentReference(AddReportFragmentType.DESCRIPTION)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.stop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -101,8 +82,8 @@ class AddMediasFragment :
         getMedia()
     }
 
-    override fun onClickRemove(uri: Uri?) {
-        presenter.removeMedia(uri)
+    override fun onClickRemove(uri: Uri) {
+        reportViewModel.removeUri(uri)
     }
 
     private fun getMedia() {
@@ -110,13 +91,7 @@ class AddMediasFragment :
                 or MediaSelectorDelegate.VIDEO)
     }
 
-    private fun setupView() {
-        binding.run {
-            presenter = this@AddMediasFragment.presenter
-        }
-    }
-
-    private fun setupImages() = with(binding) {
+    private fun setupView() = with(binding) {
         image1.setImageListener(this@AddMediasFragment)
         image2.setImageListener(this@AddMediasFragment)
         image3.setImageListener(this@AddMediasFragment)
@@ -125,7 +100,7 @@ class AddMediasFragment :
 
     private fun onNewPhoto(uri: Uri) {
         imageViewSelected?.setMediaFromUri(uri)
-        presenter.addMedia(uri)
+        reportViewModel.addUri(uri)
     }
 
 }
