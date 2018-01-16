@@ -105,6 +105,7 @@
                 android:layout_gravity="bottom"
                 android:layout_marginTop="16dp"
                 android:background="@color/white"
+                android:clickable="@{report.canReceiveComments}"
                 android:drawableLeft="@drawable/ic_message_baloon"
                 android:drawablePadding="-124dp"
                 android:drawableStart="@drawable/ic_message_baloon"
