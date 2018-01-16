@@ -1,14 +1,19 @@
 package br.com.ilhasoft.voy.ui.report.detail
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.PopupMenu
@@ -113,12 +118,17 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     //TODO Show respective message from issue reported
     override fun showReportAlert() {
-        AlertDialog.Builder(this)
+        val spannable = SpannableString("This is a generic message to warning you that something is wrong with this report")
+        spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.darkish_pink)),
+                0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val dialog = AlertDialog.Builder(this)
                 .setTitle(getString(R.string.issues_related_report))
-                .setMessage("This is a generic message to warning you that something is wrong with this report")
+                .setMessage(spannable)
                 .setPositiveButton(getString(R.string.edit_report_label).toUpperCase(), { _, _ -> })
                 .setNegativeButton(getString(R.string.close_dialog_label).toUpperCase(), { _, _ -> })
                 .show()
+        dialog.getButton(Dialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.charcoal_grey))
     }
 
     override fun showPopupMenu() = popupMenu.show()
