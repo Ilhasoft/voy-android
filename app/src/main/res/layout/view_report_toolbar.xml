@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
-            name="drawableId"
-            type="Integer" />
+            name="themeName"
+            type="String" />
+
+        <variable
+            name="showReportAlert"
+            type="Boolean" />
 
         <variable
             name="presenter"
@@ -21,34 +26,55 @@
         android:background="@color/colorPrimary"
         android:orientation="horizontal">
 
-        <ImageButton
-            style="@style/RippleButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical|start"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:onClick="@{() -> presenter.onClickNavigateBack()}"
-            android:src="@drawable/ic_arrow_back" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1">
 
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            app:drawableRes="@{drawableId}"
-            tools:src="@drawable/ic_default_img_profile" />
+            <ImageButton
+                style="@style/RippleButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.20"
+                android:onClick="@{() -> presenter.onClickNavigateBack()}"
+                android:src="@drawable/ic_arrow_back" />
 
-        <ImageButton
-            android:id="@+id/expanded_menu"
-            style="@style/RippleButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:onClick="@{() -> presenter.onClickPopupMenu()}"
-            android:src="@drawable/ic_expanded_menu" />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.50"
+                android:ellipsize="end"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:text="@{themeName}"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Santa Catarina" />
+
+            <ImageButton
+                style="@style/RippleButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.15"
+                android:onClick="@{() -> presenter.onClickReportAlert()}"
+                android:src="@drawable/ic_report_rejected"
+                android:visibility="@{showReportAlert ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/expanded_menu"
+                style="@style/RippleButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.15"
+                android:onClick="@{() -> presenter.onClickPopupMenu()}"
+                android:src="@drawable/ic_expanded_menu" />
+
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

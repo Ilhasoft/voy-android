@@ -20,11 +20,11 @@
             android:layout_height="wrap_content" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/indicatorsList"
+            android:id="@+id/indicators"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            tools:listitem="@layout/view_indicator"
+            tools:listitem="@layout/item_indicator"
             tools:visibility="visible" />
 
     </LinearLayout>

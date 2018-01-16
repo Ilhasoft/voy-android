@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="tag"
-            type="br.com.ilhasoft.voy.models.Tag" />
+            type="String" />
 
     </data>
 
-    <FrameLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_vivid_purple_two">
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        tools:cardBackgroundColor="@color/vivid_purple">
 
         <TextView
             android:layout_width="wrap_content"
@@ -23,12 +27,12 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
-            android:text="@{tag.tag}"
+            android:text="@{tag}"
             android:textColor="@color/white_three"
             android:textSize="8sp"
             tools:ignore="SmallSp"
             tools:text="Accessibility" />
 
-    </FrameLayout>
+    </android.support.v7.widget.CardView>
 
 </layout>
