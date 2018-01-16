@@ -6,7 +6,7 @@
 
         <variable
             name="media"
-            type="br.com.ilhasoft.voy.models.Media" />
+            type="br.com.ilhasoft.voy.models.ReportFile" />
 
         <variable
             name="presenter"

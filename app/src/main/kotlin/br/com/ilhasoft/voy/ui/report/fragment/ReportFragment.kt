@@ -110,7 +110,7 @@ class ReportFragment : BaseFragment(), ReportContract {
 
     //TODO pass projectID to query
     override fun navigateToReportDetail(report: Report) =
-            startActivity(ReportDetailActivity.createIntent(context, report.id, report.theme, status))
+            startActivity(ReportDetailActivity.createIntent(context, report.theme, report.id, status))
 
     override fun navigateToAddReport() {
         startActivity(AddReportActivity.createIntent(context))

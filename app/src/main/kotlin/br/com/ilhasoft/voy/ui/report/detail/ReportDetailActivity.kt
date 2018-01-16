@@ -5,7 +5,9 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -16,32 +18,37 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
+import br.com.ilhasoft.voy.databinding.ItemIndicatorBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
 import br.com.ilhasoft.voy.databinding.ViewReportToolbarBinding
+import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
+import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
+import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
 import br.com.ilhasoft.voy.ui.report.detail.holder.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
 class ReportDetailActivity : BaseActivity(), ReportDetailContract,
-        PopupMenu.OnMenuItemClickListener/*, ViewPager.OnPageChangeListener*/ {
+        PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
 
     companion object {
         @JvmStatic
-        private val REPORT_ID = "reportId"
-        @JvmStatic
         private val THEME_ID = "themeId"
+        @JvmStatic
+        private val REPORT_ID = "reportId"
         @JvmStatic
         private val REPORT_STATUS = "status"
 
         @JvmStatic
-        fun createIntent(context: Context, reportId: Int, themeId: Int, status: Int): Intent {
+        fun createIntent(context: Context, themeId: Int, reportId: Int, status: Int): Intent {
             val intent = Intent(context, ReportDetailActivity::class.java)
-            intent.putExtra(REPORT_ID, reportId)
             intent.putExtra(THEME_ID, themeId)
+            intent.putExtra(REPORT_ID, reportId)
             intent.putExtra(REPORT_STATUS, status)
             return intent
         }
@@ -53,17 +60,17 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private val presenter: ReportDetailPresenter by lazy {
         ReportDetailPresenter(SharedPreferences(this))
     }
-    /*private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, getCarouselItems()) }
+    private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, presenter.getCarouselItems()) }
     private val indicatorViewHolder: OnCreateViewHolder<Indicator, IndicatorViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
-            IndicatorViewHolder(ViewIndicatorBinding.inflate(layoutInflater, parent, false), presenter)
+            IndicatorViewHolder(ItemIndicatorBinding.inflate(layoutInflater, parent, false), presenter)
         }
     }
     private val indicatorAdapter: AutoRecyclerAdapter<Indicator, IndicatorViewHolder> by lazy {
         AutoRecyclerAdapter<Indicator, IndicatorViewHolder>(indicatorViewHolder).apply {
             setHasStableIds(false)
         }
-    }*/
+    }
     private val tagViewHolder:
             OnCreateViewHolder<String, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
@@ -102,26 +109,6 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         presenter.detachView()
     }
 
-    override fun getReportId(): Int = reportDetailId
-
-    override fun getThemeId(): Int? = themeId
-
-    override fun getReportStatus(): Int? = reportStatus
-
-    override fun getThemeColor(): String? = binding.report?.themeColor
-
-    override fun showReportData(report: Report) {
-        binding.viewToolbar?.name?.setTextColor(Color.parseColor(getString(R.string.color_hex,
-                report.themeColor)))
-        binding.name.setTextColor(Color.parseColor(getString(R.string.color_hex,
-                report.themeColor)))
-        binding.report = report
-        report.tags?.let {
-            tagsAdapter.addAll(it)
-            tagsAdapter.notifyDataSetChanged()
-        }
-    }
-
     override fun navigateBack() = onBackPressed()
 
     //TODO Show respective message from issue reported
@@ -134,11 +121,38 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
                 .show()
     }
 
-    override fun showPopupMenu() {
-        popupMenu.show()
-    }
+    override fun showPopupMenu() = popupMenu.show()
 
     override fun navigateToCommentReport() = startActivity(CommentsActivity.createIntent(this))
+
+    override fun swapPage(indicator: Indicator) {
+        binding.viewMedias?.viewPager?.setCurrentItem(indicator.position, true)
+    }
+
+    override fun getReportId(): Int = reportDetailId
+
+    override fun getThemeId(): Int? = themeId
+
+    override fun getReportStatus(): Int? = reportStatus
+
+    override fun getThemeColor(): String? = binding.report?.themeColor
+
+    override fun showReportData(report: Report) {
+        report.let {
+            binding.run {
+                viewToolbar?.name?.setTextColor(Color.parseColor(getString(R.string.color_hex,
+                        it.themeColor)))
+                name.setTextColor(Color.parseColor(getString(R.string.color_hex,
+                        it.themeColor)))
+            }
+            binding.report = it
+            setupMediasView()
+            it.tags?.let {
+                tagsAdapter.addAll(it)
+                tagsAdapter.notifyDataSetChanged()
+            }
+        }
+    }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
         R.id.edit -> true
@@ -146,46 +160,24 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         else -> false
     }
 
-    /*override fun swapPage(indicator: Indicator) {
-        binding.run {
-            viewPager.setCurrentItem(indicator.position, true)
-        }
-    }
+    override fun onPageScrollStateChanged(state: Int) {}
 
-    override fun onPageScrollStateChanged(state: Int) {
-
-    }
-
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-    }
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
     override fun onPageSelected(position: Int) {
         indicatorAdapter.single { it -> it.selected }.selected = false
         indicatorAdapter[position].selected = true
         presenter.indicator = indicatorAdapter[position]
         indicatorAdapter.notifyDataSetChanged()
-    }*/
+    }
 
     private fun setupView() {
         binding.run {
             viewToolbar?.run { setupToolbar(this) }
-            /*setupViewPager(viewPager)
-            setupIndicatorRecyclerView(indicatorsList)*/
             setupRecyclerView(tags)
             presenter = this@ReportDetailActivity.presenter
         }
     }
-
-    /*private fun setupViewPager(viewPager: WrapContentViewPager) = with(viewPager) {
-        adapter = carouselAdapter
-        offscreenPageLimit = carouselAdapter.count
-        addOnPageChangeListener(this@ReportDetailActivity)
-    }
-
-    private fun getCarouselItems(): List<CarouselItem> = mutableListOf()*//*presenter.report.mediaList.map { it ->
-        CarouselItem(CarouselFragment.newInstance(it))
-    }*/
 
     private fun setupToolbar(viewToolbar: ViewReportToolbarBinding) = with(viewToolbar) {
         setupPopupMenu(expandedMenu)
@@ -216,15 +208,30 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         return SpaceItemDecoration(0, 0, 2 * space, space)
     }
 
-    /*private fun setupIndicatorRecyclerView(indicatorsList: RecyclerView) = with(indicatorsList) {
+    private fun setupMediasView() {
+        binding.viewMedias?.run {
+            setupViewPager(viewPager)
+            setupIndicatorRecyclerView(indicators)
+        }
+    }
+
+    private fun setupViewPager(viewPager: WrapContentViewPager) = with(viewPager) {
+        addOnPageChangeListener(this@ReportDetailActivity)
+        offscreenPageLimit = carouselAdapter.count
+        adapter = carouselAdapter
+    }
+
+    private fun setupIndicatorRecyclerView(indicatorsList: RecyclerView) = with(indicatorsList) {
         layoutManager = setupIndicatorLayoutManager()
         setHasFixedSize(true)
-        indicatorAdapter.addAll(presenter.getIndicators())
-        indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
+        presenter.getIndicators()?.let {
+            indicatorAdapter.addAll(it)
+            indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
+        }
         adapter = indicatorAdapter
     }
 
     private fun setupIndicatorLayoutManager(): RecyclerView.LayoutManager? =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)*/
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
 }

@@ -45,9 +45,9 @@
                     android:orientation="vertical"
                     android:paddingBottom="28dp">
 
-                    <!--<include
-                        android:id="@+id/viewMediaList"
-                        layout="@layout/view_detail_viewpager" />-->
+                    <include
+                        android:id="@+id/viewMedias"
+                        layout="@layout/view_detail_viewpager" />
 
                     <TextView
                         android:id="@+id/name"

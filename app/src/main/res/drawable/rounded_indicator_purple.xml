@@ -2,14 +2,16 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/vivid_purple_two"/>
+            <solid android:color="@color/greyish_brown" />
         </shape>
     </item>
     <item>
-        <selector android:exitFadeDuration="400" android:enterFadeDuration="400">
+        <selector
+            android:enterFadeDuration="400"
+            android:exitFadeDuration="400">
             <item android:state_pressed="true">
                 <shape android:shape="oval">
-                    <solid android:color="@color/vivid_purple_two"/>
+                    <solid android:color="@color/greyish_brown" />
                 </shape>
             </item>
         </selector>
