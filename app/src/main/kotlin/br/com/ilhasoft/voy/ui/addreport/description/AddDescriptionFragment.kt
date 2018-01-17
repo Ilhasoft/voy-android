@@ -86,13 +86,11 @@ class AddDescriptionFragment : BaseFragment() {
     }
 
     private fun linkRemoved(link: String) {
-//        linkAdapter.remove(link)
-        linkAdapter.notifyDataSetChanged()
+        linkAdapter.remove(link)
     }
 
     private fun linkAdded(link: String) {
-//        linkAdapter.add(0, link)
-        linkAdapter.notifyDataSetChanged()
+        linkAdapter.add(0, link)
         binding.link.text.clear()
     }
 
@@ -118,9 +116,9 @@ class AddDescriptionFragment : BaseFragment() {
 
     private fun setupLinkList() = with(binding.linkList) {
         layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-//        linkAdapter.setList(reportViewModel.links)
         adapter = linkAdapter.apply {
-            setList(reportViewModel.links)
+            clear()
+            addAll(reportViewModel.links)
         }
     }
 
