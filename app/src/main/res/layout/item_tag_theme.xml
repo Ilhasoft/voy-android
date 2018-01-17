@@ -6,20 +6,11 @@
 
         <variable
             name="clicked"
-            type="Boolean" />
+            type="boolean" />
 
         <variable
             name="tag"
             type="br.com.ilhasoft.voy.models.Tag" />
-
-        <variable
-            name="presenter"
-            type="br.com.ilhasoft.voy.ui.addreport.tag.AddThemeFragmentPresenter" />
-
-        <variable
-            name="tagSelectionController"
-            type="br.com.ilhasoft.voy.ui.addreport.tag.TagSelectionController" />
-
 
     </data>
 

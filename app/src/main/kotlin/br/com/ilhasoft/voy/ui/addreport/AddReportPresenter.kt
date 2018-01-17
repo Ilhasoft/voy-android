@@ -8,7 +8,7 @@ import br.com.ilhasoft.voy.models.Media
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.ui.addreport.description.AddDescriptionFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
-import br.com.ilhasoft.voy.ui.addreport.tag.AddThemeFragment
+import br.com.ilhasoft.voy.ui.addreport.tag.AddTagsFragment
 
 /**
  * Created by lucasbarros on 23/11/17.
@@ -49,7 +49,7 @@ class AddReportPresenter : Presenter<AddReportContract>(AddReportContract::class
             when (it) {
                 AddReportFragmentType.MEDIAS -> startFragment(AddMediasFragment(), AddMediasFragment.TAG, AddReportFragmentType.DESCRIPTION)
                 AddReportFragmentType.DESCRIPTION -> startFragment(AddDescriptionFragment(), AddDescriptionFragment.TAG, AddReportFragmentType.THEME)
-                AddReportFragmentType.THEME -> startFragment(AddThemeFragment(), AddThemeFragment.TAG, AddReportFragmentType.SEND)
+                AddReportFragmentType.THEME -> startFragment(AddTagsFragment(), AddTagsFragment.TAG, AddReportFragmentType.SEND)
                 else -> sendReport()
             }
         }
