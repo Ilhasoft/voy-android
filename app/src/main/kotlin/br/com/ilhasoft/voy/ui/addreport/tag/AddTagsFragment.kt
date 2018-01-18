@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
+import br.com.ilhasoft.voy.databinding.FragmentAddTagBinding
 import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
@@ -26,8 +26,8 @@ class AddTagsFragment : BaseFragment() {
         const val TAG = "Theme"
     }
 
-    private val binding: FragmentAddThemeBinding by lazy {
-        FragmentAddThemeBinding.inflate(LayoutInflater.from(context))
+    private val binding: FragmentAddTagBinding by lazy {
+        FragmentAddTagBinding.inflate(LayoutInflater.from(context))
     }
 
     private val reportViewModel by lazy { ViewModelProviders.of(activity).get(ReportViewModel::class.java) }
