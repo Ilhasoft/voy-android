@@ -15,27 +15,21 @@ import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentAddDescriptionBinding
 import br.com.ilhasoft.voy.databinding.ItemLinkBinding
-import br.com.ilhasoft.voy.models.AddReportFragmentType
-import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
 import br.com.ilhasoft.voy.ui.base.BaseFragment
-import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
-class AddDescriptionFragment : BaseFragment() {
-
-    companion object {
-        const val TAG = "Description"
-    }
+class AddTitleFragment : BaseFragment() {
 
     private val binding: FragmentAddDescriptionBinding by lazy {
         FragmentAddDescriptionBinding.inflate(LayoutInflater.from(context))
     }
 
     private val reportViewModel by lazy { ViewModelProviders.of(activity).get(ReportViewModel::class.java) }
+
     private lateinit var compositeDisposable: CompositeDisposable
 
     private val validator: Validator by lazy { Validator(binding) }
@@ -58,8 +52,6 @@ class AddDescriptionFragment : BaseFragment() {
                 .setCancelable(true)
                 .create()
     }
-        private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
-
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupView()
@@ -88,15 +80,6 @@ class AddDescriptionFragment : BaseFragment() {
         )
     }
 
-    private fun linkRemoved(link: String) {
-        linkAdapter.remove(link)
-    }
-
-    private fun linkAdded(link: String) {
-        linkAdapter.add(0, link)
-        binding.link.text.clear()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.dispose()
@@ -106,13 +89,11 @@ class AddDescriptionFragment : BaseFragment() {
         super.onResume()
         reportViewModel.setButtonEnable(reportViewModel.name?.isNotBlank() == true)
         reportViewModel.setButtonTitle(R.string.next)
-
-        reportListener.updateNextFragmentReference(AddReportFragmentType.THEME)
     }
 
     private fun setupView() {
         binding.run {
-            reportViewModel = this@AddDescriptionFragment.reportViewModel
+            reportViewModel = this@AddTitleFragment.reportViewModel
             hasLinks = true
         }
         setupLinkList()
@@ -141,6 +122,15 @@ class AddDescriptionFragment : BaseFragment() {
                     && validator.validate()
             binding.addLink.isEnabled = validLink
         }
+    }
+
+    private fun linkRemoved(link: String) {
+        linkAdapter.remove(link)
+    }
+
+    private fun linkAdded(link: String) {
+        linkAdapter.add(0, link)
+        binding.link.text.clear()
     }
 
     private fun createEditTextObservable(editText: EditText) = RxTextView.textChanges(editText)

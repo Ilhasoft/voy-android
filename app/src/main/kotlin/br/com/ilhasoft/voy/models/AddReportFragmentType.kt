@@ -5,7 +5,6 @@ package br.com.ilhasoft.voy.models
  */
 enum class AddReportFragmentType {
     MEDIAS,
-    DESCRIPTION,
-    THEME,
-    SEND
+    TITLE,
+    TAG
 }

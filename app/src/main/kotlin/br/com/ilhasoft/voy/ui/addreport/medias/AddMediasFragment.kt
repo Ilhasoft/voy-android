@@ -9,28 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
-import br.com.ilhasoft.voy.models.AddReportFragmentType
-import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.shared.widget.AddImageView
-import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.shared.OnAddImageClickListener
-import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 
 class AddMediasFragment :
         BaseFragment(),
         OnAddImageClickListener {
-
-    companion object {
-        const val TAG = "Medias"
-        private const val ARG_REPORT = "report"
-        fun newInstance(report: Report): AddMediasFragment {
-            return AddMediasFragment().apply {
-                arguments = Bundle().also { it.putParcelable(ARG_REPORT, report) }
-            }
-        }
-    }
 
     private val binding: FragmentAddMediasBinding by lazy {
         FragmentAddMediasBinding.inflate(LayoutInflater.from(context))
@@ -40,7 +26,6 @@ class AddMediasFragment :
         ViewModelProviders.of(activity).get(ReportViewModel::class.java)
     }
 
-    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
     private val delegate: MediaSelectorDelegate by lazy {
         val listener = MediaSelectorDelegate.OnLoadMediaListener {
             it?.let { onNewPhoto(it) }
@@ -63,7 +48,6 @@ class AddMediasFragment :
     override fun onResume() {
         super.onResume()
         reportViewModel.setButtonEnable(reportViewModel.medias.isNotEmpty())
-        reportListener.updateNextFragmentReference(AddReportFragmentType.DESCRIPTION)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

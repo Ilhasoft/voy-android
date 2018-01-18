@@ -22,8 +22,10 @@
 
             <include
                 android:id="@+id/toolbar"
-                layout="@layout/view_medias_toolbar"
+                layout="@layout/view_toolbar"
                 app:actionName="@{@string/next}"
+                app:onActionClick="@{() -> presenter.onClickNavigateNext()}"
+                app:onBackClick="@{() -> presenter.onClickNavigateBack()}"
                 app:title="@{@string/add_report_title_label}" />
 
         </android.support.design.widget.AppBarLayout>
@@ -31,7 +33,7 @@
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

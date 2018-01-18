@@ -13,8 +13,12 @@
             type="String" />
 
         <variable
-            name="presenter"
-            type="br.com.ilhasoft.voy.ui.account.AccountPresenter" />
+            name="onActionClick"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onBackClick"
+            type="android.view.View.OnClickListener" />
 
     </data>
 
@@ -25,14 +29,14 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/button_back"
+            android:id="@+id/btn_back"
             style="@style/RippleButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical|start"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:onClick="@{() -> presenter.onClickNavigateBack()}"
+            android:onClick="@{onBackClick}"
             android:src="@drawable/ic_arrow_back" />
 
         <TextView
@@ -49,14 +53,14 @@
             tools:text="Add Report" />
 
         <Button
-            android:id="@+id/button_action"
+            android:id="@+id/btn_action"
             style="@style/RippleButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
-            android:onClick="@{() -> presenter.onClickSaveMyAccount()}"
+            android:onClick="@{onActionClick}"
             android:text="@{actionName}"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/selector_action_button_text"
             android:textSize="18sp"
             android:textStyle="normal"
             tools:text="Next" />

@@ -22,10 +22,6 @@ import com.google.android.flexbox.JustifyContent
 
 class AddTagsFragment : BaseFragment() {
 
-    companion object {
-        const val TAG = "Theme"
-    }
-
     private val binding: FragmentAddTagBinding by lazy {
         FragmentAddTagBinding.inflate(LayoutInflater.from(context))
     }
