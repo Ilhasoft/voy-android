@@ -30,6 +30,8 @@ class ReportViewModel : ViewModel() {
     private var tagsFromSever = MutableLiveData<MutableList<Tag>>()
 
     private val tagService by lazy { TagService() }
+
+    var themeId: Int = 1
     var name: String? = null
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
@@ -76,12 +78,21 @@ class ReportViewModel : ViewModel() {
 
     fun getAllTags(): LiveData<MutableList<Tag>> {
         if (tagsFromSever.value == null || tagsFromSever.value?.isEmpty() == true) {
-            tagService.getTags(1)
+            tagService.getTags(themeId)
                     .compose(RxHelper.defaultFlowableSchedulers())
                     .subscribe({ tagsFromSever.value = it }, { Timber.e(it) })
         }
         return tagsFromSever
     }
 
+    fun addTag(tag: Tag) {
+        tags.add(tag)
+    }
+
+    fun removeTag(tag: Tag) {
+        tags.remove(tag)
+    }
+
+    fun isTagSelected(tag: Tag): Boolean = tags.contains(tag)
 
 }

@@ -15,8 +15,11 @@ import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentAddDescriptionBinding
 import br.com.ilhasoft.voy.databinding.ItemLinkBinding
+import br.com.ilhasoft.voy.models.AddReportFragmentType
+import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
 import br.com.ilhasoft.voy.ui.base.BaseFragment
+import br.com.ilhasoft.voy.ui.shared.OnReportChangeListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -55,7 +58,7 @@ class AddDescriptionFragment : BaseFragment() {
                 .setCancelable(true)
                 .create()
     }
-    //    private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
+        private val reportListener: OnReportChangeListener by lazy { activity as AddReportActivity }
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -103,7 +106,8 @@ class AddDescriptionFragment : BaseFragment() {
         super.onResume()
         reportViewModel.setButtonEnable(reportViewModel.name?.isNotBlank() == true)
         reportViewModel.setButtonTitle(R.string.next)
-//        reportListener.updateNextFragmentReference(AddReportFragmentType.THEME)
+
+        reportListener.updateNextFragmentReference(AddReportFragmentType.THEME)
     }
 
     private fun setupView() {

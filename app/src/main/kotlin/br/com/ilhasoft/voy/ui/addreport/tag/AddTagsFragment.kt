@@ -14,7 +14,6 @@ import br.com.ilhasoft.voy.databinding.FragmentAddThemeBinding
 import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
-import br.com.ilhasoft.voy.ui.addreport.tag.holder.TagViewHolder
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -40,7 +39,7 @@ class AddTagsFragment : BaseFragment() {
     }
     private val tagsViewHolder: OnCreateViewHolder<Tag, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
-            TagViewHolder(ItemTagThemeBinding.inflate(layoutInflater, parent, false), AddThemeFragmentPresenter())
+            TagViewHolder(ItemTagThemeBinding.inflate(layoutInflater, parent, false), reportViewModel)
         }
     }
 
@@ -55,7 +54,7 @@ class AddTagsFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         reportViewModel.setButtonEnable(true)
-        reportViewModel.setButtonTitle(R.string.send)
+        reportViewModel.setButtonTitle(R.string.send_report)
     }
 
     private fun setTags(tagsList: List<Tag>) {
