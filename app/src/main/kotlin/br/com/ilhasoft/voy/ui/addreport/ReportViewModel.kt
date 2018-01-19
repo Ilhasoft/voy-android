@@ -7,6 +7,7 @@ import android.net.Uri
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.network.tags.TagService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 
@@ -31,7 +32,7 @@ class ReportViewModel : ViewModel() {
 
     private val tagService by lazy { TagService() }
 
-    var themeId: Int = 1
+    var themeId: Int = ReportsActivity.themeId
     var name: String? = null
     var description: String? = null
     val links by lazy { mutableListOf<String>() }

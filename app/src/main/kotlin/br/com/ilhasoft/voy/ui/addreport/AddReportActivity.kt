@@ -35,7 +35,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
     private val presenter by lazy { AddReportPresenter(reportViewModel) }
 
     private val addMediasFragment by lazy { AddMediasFragment() }
-    private val addDescriptionFragment by lazy { AddTitleFragment() }
+    private val addTitleFragment by lazy { AddTitleFragment() }
     private val addTagsFragment by lazy { AddTagsFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +48,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
     override fun navigateToNext(type: AddReportFragmentType) {
         when (type) {
             AddReportFragmentType.MEDIAS -> displayFragment(addMediasFragment)
-            AddReportFragmentType.TITLE -> displayFragment(addDescriptionFragment)
+            AddReportFragmentType.TITLE -> displayFragment(addTitleFragment)
             else -> displayFragment(addTagsFragment)
         }
     }
@@ -59,13 +59,16 @@ class AddReportActivity : BaseActivity(), AddReportContract {
     }
 
     override fun navigateBack() {
-        super.onBackPressed()
+        if (getVisibleFragmentType() == AddReportFragmentType.MEDIAS)
+            finish()
+        else
+            super.onBackPressed()
     }
 
     override fun getVisibleFragmentType(): AddReportFragmentType {
         return when {
             addMediasFragment.isVisible -> AddReportFragmentType.MEDIAS
-            addDescriptionFragment.isVisible -> AddReportFragmentType.TITLE
+            addTitleFragment.isVisible -> AddReportFragmentType.TITLE
             else -> AddReportFragmentType.TAG
         }
     }

@@ -22,6 +22,6 @@ interface HomeContract : BasicView {
 
     fun navigateToNotificationDetail()
 
-    fun navigateToThemeReports(theme: Theme?)
+    fun navigateToThemeReports(theme: Theme)
 
 }

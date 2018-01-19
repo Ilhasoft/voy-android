@@ -19,20 +19,21 @@ import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 class ReportsActivity : BaseActivity(), ReportsContract {
 
     companion object {
-        @JvmStatic
-        private val THEME_ID = "themeId"
-        @JvmStatic
-        private val THEME_NAME = "themeName"
-        @JvmStatic
-        private val THEME_COLOR = "themeColor"
+        var themeId = 0
 
         @JvmStatic
-        fun createIntent(context: Context, themeId: Int?,
-                         themeName: String?, themeColor: String?): Intent {
+        private val EXTRA_THEME_NAME = "themeName"
+        @JvmStatic
+        private val EXTRA_THEME_COLOR = "themeColor"
+
+        @JvmStatic
+        fun createIntent(context: Context, themeId: Int,
+                         themeName: String, themeColor: String): Intent {
+            ReportsActivity.themeId = themeId
+
             val intent = Intent(context, ReportsActivity::class.java)
-            intent.putExtra(THEME_ID, themeId)
-            intent.putExtra(THEME_NAME, themeName)
-            intent.putExtra(THEME_COLOR, themeColor)
+            intent.putExtra(EXTRA_THEME_NAME, themeName)
+            intent.putExtra(EXTRA_THEME_COLOR, themeColor)
             return intent
         }
     }
@@ -41,9 +42,8 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         DataBindingUtil.setContentView<ActivityReportsBinding>(this, R.layout.activity_reports)
     }
     private val presenter: ReportsPresenter by lazy { ReportsPresenter() }
-    private val themeId: Int by lazy { intent.extras.getInt(THEME_ID) }
-    private val themeName: String by lazy { intent.extras.getString(THEME_NAME) }
-    private val themeColor: String by lazy { intent.extras.getString(THEME_COLOR) }
+    private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
+    private val themeColor: String by lazy { intent.extras.getString(EXTRA_THEME_COLOR) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,12 +95,12 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS,
-                themeId), getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS,
-                themeId), getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS,
-                themeId), getString(R.string.not_approved_fragment_title))
+        val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS),
+                getString(R.string.approved_fragment_title))
+        val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS),
+                getString(R.string.pending_fragment_title))
+        val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS),
+                getString(R.string.not_approved_fragment_title))
         return mutableListOf(approved, pending, rejected)
     }
 

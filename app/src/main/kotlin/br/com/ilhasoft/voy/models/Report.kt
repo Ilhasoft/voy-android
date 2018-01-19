@@ -26,11 +26,6 @@ class Report(@SerializedName("id") var id: Int = 0,
              @SerializedName("last_image") var lastImage: LastImage? = null,
              @SerializedName("status") var status: Int = 0) : Parcelable {
 
-    companion object {
-        @JvmStatic
-        val TAG = "Report"
-    }
-
     //TODO Use custom converter Gson
     fun formattedDate(): String {
         val inputDate = SimpleDateFormat("yyyy-MM-dd")

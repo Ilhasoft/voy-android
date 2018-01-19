@@ -4,6 +4,7 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportsService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 
 class ReportPresenter : Presenter<ReportContract>(ReportContract::class.java) {
 
@@ -17,12 +18,10 @@ class ReportPresenter : Presenter<ReportContract>(ReportContract::class.java) {
     }
 
     private fun loadReportsData() {
-        reportService.getReports(page = 1, page_size = 50, theme = getThemeId(), status = getStatus())
+        reportService.getReports(page = 1, page_size = 50, theme = ReportsActivity.themeId, status = getStatus())
                 .compose(RxHelper.defaultSingleSchedulers())
                 .subscribe({ fillReportsAdapter(it.results) }, {})
     }
-
-    private fun getThemeId(): Int? = view?.getThemeId()
 
     private fun getStatus(): Int? = view?.getStatus()
 
