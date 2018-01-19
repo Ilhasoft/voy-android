@@ -72,14 +72,9 @@ class CommentsActivity : BaseActivity(), CommentsContract {
 
     private fun setupView() {
         binding.run {
-            viewToolbar?.run { setupToolbar(this) }
             setupRecyclerView(comments)
             presenter = this@CommentsActivity.presenter
         }
-    }
-
-    private fun setupToolbar(viewToolbar: ViewCommentsToolbarBinding) = with(viewToolbar) {
-        presenter = this@CommentsActivity.presenter
     }
 
     private fun setupRecyclerView(comments: RecyclerView) = with(comments) {

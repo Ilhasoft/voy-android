@@ -92,9 +92,6 @@ class AccountActivity : BaseActivity(), AccountContract {
             drawableId = R.drawable.ic_avatar12
             editingPhoto = false
             presenter = this@AccountActivity.presenter
-            toolbar?.run {
-                presenter = this@AccountActivity.presenter
-            }
             setupAdapter()
             setupRecyclerView(avatars)
         }
