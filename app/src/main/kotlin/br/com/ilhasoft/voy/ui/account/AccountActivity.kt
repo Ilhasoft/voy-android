@@ -14,6 +14,7 @@ import br.com.ilhasoft.support.recyclerview.decorations.LinearSpaceItemDecoratio
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAccountBinding
 import br.com.ilhasoft.voy.databinding.ItemAvatarBinding
+import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.login.LoginActivity
 
@@ -29,7 +30,7 @@ class AccountActivity : BaseActivity(), AccountContract {
     private val binding: ActivityAccountBinding by lazy {
         DataBindingUtil.setContentView<ActivityAccountBinding>(this, R.layout.activity_account)
     }
-    private val presenter: AccountPresenter by lazy { AccountPresenter() }
+    private val presenter: AccountPresenter by lazy { AccountPresenter(SharedPreferences(this)) }
     private val avatarViewHolder:
             OnCreateViewHolder<Int, AvatarViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
@@ -48,6 +49,7 @@ class AccountActivity : BaseActivity(), AccountContract {
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
+        presenter.setSelectedAvatar(binding.drawableId)
     }
 
     override fun onStart() {
@@ -90,10 +92,6 @@ class AccountActivity : BaseActivity(), AccountContract {
             drawableId = R.drawable.ic_avatar12
             editingPhoto = false
             presenter = this@AccountActivity.presenter
-            this@AccountActivity.presenter.setSelectedAvatar(drawableId)
-            toolbar?.run {
-                presenter = this@AccountActivity.presenter
-            }
             setupAdapter()
             setupRecyclerView(avatars)
         }

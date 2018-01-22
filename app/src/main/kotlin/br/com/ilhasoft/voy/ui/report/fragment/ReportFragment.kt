@@ -14,6 +14,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
@@ -45,7 +46,7 @@ class ReportFragment : BaseFragment(), ReportContract {
     private val binding: FragmentReportsBinding by lazy {
         FragmentReportsBinding.inflate(LayoutInflater.from(context))
     }
-    private val presenter: ReportPresenter by lazy { ReportPresenter() }
+    private val presenter: ReportPresenter by lazy { ReportPresenter(SharedPreferences(context)) }
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
@@ -103,8 +104,9 @@ class ReportFragment : BaseFragment(), ReportContract {
         }
     }
 
+    //TODO pass projectID to query
     override fun navigateToReportDetail(report: Report) =
-            startActivity(ReportDetailActivity.createIntent(context))
+            startActivity(ReportDetailActivity.createIntent(context, report.theme, report.id, status))
 
     override fun navigateToAddReport() {
         startActivity(AddReportActivity.createIntent(context))

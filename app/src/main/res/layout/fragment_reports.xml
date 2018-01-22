@@ -110,6 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="@{@string/reports_quantity(reportsQuantity)}"
                 android:textAllCaps="false"

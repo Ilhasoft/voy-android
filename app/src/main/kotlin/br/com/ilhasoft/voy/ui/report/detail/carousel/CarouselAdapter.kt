@@ -8,14 +8,14 @@ import android.support.v4.view.PagerAdapter
 /**
  * Created by jones on 1/1/18.
  */
-class CarouselAdapter (fragmentManager: FragmentManager,
-                       private val carouselItem: List<CarouselItem>) :
+class CarouselAdapter(fragmentManager: FragmentManager,
+                      private val carouselItem: List<CarouselItem>?) :
         FragmentPagerAdapter(fragmentManager) {
 
     override fun getItemPosition(item: Any?): Int = PagerAdapter.POSITION_NONE
 
-    override fun getItem(position: Int): Fragment = carouselItem[position].fragment
+    override fun getItem(position: Int): Fragment = carouselItem?.get(position)!!.fragment
 
-    override fun getCount(): Int = carouselItem.size
+    override fun getCount(): Int = carouselItem!!.size
 
 }

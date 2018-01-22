@@ -8,18 +8,16 @@ import br.com.ilhasoft.support.media.view.MediaViewOptions
 import br.com.ilhasoft.support.media.view.models.ImageMedia
 import br.com.ilhasoft.voy.GlideApp
 import br.com.ilhasoft.voy.databinding.FragmentCarouselBinding
-import br.com.ilhasoft.voy.models.Media
+import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.ui.base.BaseFragment
-
 
 class CarouselFragment : BaseFragment(), CarouselContract {
 
-
     companion object {
         @JvmStatic
-        fun newInstance(media: Media?): CarouselFragment {
+        fun newInstance(media: ReportFile?): CarouselFragment {
             val args = Bundle()
-            args.putParcelable(Media.TAG, media)
+            args.putParcelable(ReportFile.TAG, media)
             return createWithArguments(args)
         }
 
@@ -30,7 +28,7 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         }
     }
 
-    private var media: Media? = null
+    private var media: ReportFile? = null
 
     private val binding: FragmentCarouselBinding by lazy {
         FragmentCarouselBinding.inflate(LayoutInflater.from(context))
@@ -49,7 +47,7 @@ class CarouselFragment : BaseFragment(), CarouselContract {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        media = arguments.getParcelable(Media.TAG)
+        media = arguments.getParcelable(ReportFile.TAG)
         setupView()
     }
 
@@ -68,13 +66,13 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         presenter.detachView()
     }
 
-    override fun displayMedia(media: Media?) {
+    override fun displayMedia(media: ReportFile?) {
         media?.apply {
-            if (type == Media.TYPE_VIDEO) {
+            if (mediaType == ReportFile.TYPE_VIDEO) {
                 //FIXME handle unsupported media files type and codec (3gp, mp4 codec)
-                startActivity(VideoViewActivity.createIntent(context).putExtra("url", url))
+                startActivity(VideoViewActivity.createIntent(context).putExtra("url", file))
             } else {
-                startActivity(MediaViewOptions(ImageMedia(url)).createIntent(context))
+                startActivity(MediaViewOptions(ImageMedia(file)).createIntent(context))
             }
         }
     }
@@ -84,11 +82,11 @@ class CarouselFragment : BaseFragment(), CarouselContract {
             presenter = this@CarouselFragment.presenter
             media = this@CarouselFragment.media
             media?.apply {
-                if (type == Media.TYPE_VIDEO)
+                if (mediaType == ReportFile.TYPE_VIDEO)
                     play.visibility = View.VISIBLE
                 //TODO implement database query for local uris before requesting from url
                 GlideApp.with(context)
-                        .load(url)
+                        .load(file)
                         .centerCrop()
                         .into(image)
             }

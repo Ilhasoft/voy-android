@@ -34,6 +34,8 @@
                 android:id="@+id/toolbar"
                 layout="@layout/view_toolbar"
                 app:actionName="@{@string/save}"
+                app:onActionClick="@{() -> presenter.onClickSaveMyAccount()}"
+                app:onBackClick="@{() -> presenter.onClickNavigateBack()}"
                 app:title="@{@string/title_activity_account}" />
 
         </android.support.design.widget.AppBarLayout>

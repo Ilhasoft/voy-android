@@ -64,5 +64,9 @@
     <string name="color_hex">#%s</string>
     <string name="reports_quantity">You have %d reports</string>
 
+    <string name="issues_related_report">Issues reported in your report</string>
+    <string name="edit_report_label">Edit Report</string>
+    <string name="close_dialog_label">Close</string>
+
     <string name="report">Report</string>
 </resources>
