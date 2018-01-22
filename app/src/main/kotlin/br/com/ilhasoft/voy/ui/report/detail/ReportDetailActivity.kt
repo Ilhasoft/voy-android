@@ -180,7 +180,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         layoutManager = setupIndicatorLayoutManager()
         setHasFixedSize(true)
         indicatorAdapter.addAll(presenter.getIndicators())
-        indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
+        if (indicatorAdapter.isNotEmpty())
+            indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
         adapter = indicatorAdapter
     }
 

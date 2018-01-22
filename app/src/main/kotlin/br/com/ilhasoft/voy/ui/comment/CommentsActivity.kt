@@ -11,7 +11,6 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityCommentsBinding
 import br.com.ilhasoft.voy.databinding.ItemCommentBinding
-import br.com.ilhasoft.voy.databinding.ViewCommentsToolbarBinding
 import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.holder.CommentViewHolder
@@ -72,23 +71,15 @@ class CommentsActivity : BaseActivity(), CommentsContract {
 
     private fun setupView() {
         binding.run {
-            viewToolbar?.run { setupToolbar(this) }
             setupRecyclerView(comments)
             presenter = this@CommentsActivity.presenter
         }
     }
 
-    private fun setupToolbar(viewToolbar: ViewCommentsToolbarBinding) = with(viewToolbar) {
-        presenter = this@CommentsActivity.presenter
-    }
-
     private fun setupRecyclerView(comments: RecyclerView) = with(comments) {
-        layoutManager = setupLayoutManager()
+        layoutManager = LinearLayoutManager(this@CommentsActivity, LinearLayoutManager.VERTICAL, false)
         setHasFixedSize(true)
         adapter = commentsAdapter
     }
-
-    private fun setupLayoutManager(): RecyclerView.LayoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
 }
