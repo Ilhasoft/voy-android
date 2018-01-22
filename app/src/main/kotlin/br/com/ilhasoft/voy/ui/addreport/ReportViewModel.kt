@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
+import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.network.tags.TagService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
@@ -32,8 +33,9 @@ class ReportViewModel : ViewModel() {
 
     private val tagService by lazy { TagService() }
 
+    var report = Report()
     var themeId: Int = ReportsActivity.themeId
-    var name: String? = null
+    var name: String = ""
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
     var medias = mutableListOf<Uri>()

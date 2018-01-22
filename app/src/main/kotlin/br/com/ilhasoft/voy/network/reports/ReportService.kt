@@ -51,8 +51,9 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
                    location: Location,
                    description: String?,
                    name: String,
-                   tags: List<String>): Single<Report> {
-        val request = CreateReportRequest(theme, location, description, name, tags)
+                   tags: List<String>,
+                   urls: List<String>?): Single<Report> {
+        val request = CreateReportRequest(theme, location, description, name, tags, urls)
         return api.saveReport(request)
     }
 

@@ -5,11 +5,13 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
 import br.com.ilhasoft.voy.models.AddReportFragmentType
+import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.addreport.description.AddTitleFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
 import br.com.ilhasoft.voy.ui.addreport.tag.AddTagsFragment
@@ -72,6 +74,10 @@ class AddReportActivity : BaseActivity(), AddReportContract {
             else -> AddReportFragmentType.TAG
         }
     }
+
+    override fun getFileFromUri(uri: Uri) = FileHelper.createFileFromUri(this, uri)
+
+    override fun getMimeTypeFromUri(uri: Uri) = FileHelper.getMimeTypeFromUri(this, uri)
 
     private fun setupView() {
         binding.apply {

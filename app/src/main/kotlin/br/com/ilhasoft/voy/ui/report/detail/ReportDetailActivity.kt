@@ -192,6 +192,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private fun setupToolbar() = binding.viewToolbar?.let {
         setupPopupMenu(it.expandedMenu)
         it.titleColor = ReportsActivity.themeColor
+        it.enableDividerLine = true
     }
 
     private fun setupPopupMenu(expandedMenu: ImageButton) {

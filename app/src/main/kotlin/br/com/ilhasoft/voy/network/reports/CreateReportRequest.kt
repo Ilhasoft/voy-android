@@ -10,5 +10,6 @@ data class CreateReportRequest(
         var location: Location,
         var description: String?,
         var name: String,
-        var tags: List<String>?
+        var tags: List<String>,
+        var urls: List<String>? = null
 )
