@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
-import br.com.ilhasoft.voy.databinding.ViewReportsToolbarBinding
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
@@ -20,20 +19,19 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
     companion object {
         var themeId = 0
+        var themeColor: Int = 0
 
         @JvmStatic
         private val EXTRA_THEME_NAME = "themeName"
-        @JvmStatic
-        private val EXTRA_THEME_COLOR = "themeColor"
 
         @JvmStatic
         fun createIntent(context: Context, themeId: Int,
                          themeName: String, themeColor: String): Intent {
             ReportsActivity.themeId = themeId
+            ReportsActivity.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
-            intent.putExtra(EXTRA_THEME_COLOR, themeColor)
             return intent
         }
     }
@@ -43,7 +41,6 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
     private val presenter: ReportsPresenter by lazy { ReportsPresenter() }
     private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
-    private val themeColor: String by lazy { intent.extras.getString(EXTRA_THEME_COLOR) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,15 +69,15 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
     private fun setupView() {
         binding.apply {
-            viewToolbar?.run { setupToolbar(this) }
+            setUpToolBar()
+            presenter = this@ReportsActivity.presenter
             setupTabs()
         }
     }
 
-    private fun setupToolbar(viewToolbar: ViewReportsToolbarBinding) = with(viewToolbar) {
-        name.setTextColor(Color.parseColor(getString(R.string.color_hex, this@ReportsActivity.themeColor)))
-        themeName = this@ReportsActivity.themeName
-        presenter = this@ReportsActivity.presenter
+    private fun setUpToolBar() = binding.viewToolbar?.let {
+        it.title = this@ReportsActivity.themeName
+        it.titleColor = ReportsActivity.themeColor
     }
 
     private fun setupTabs() {

@@ -63,4 +63,6 @@
     <string name="themes_quantity">You are within %d themes</string>
     <string name="color_hex">#%s</string>
     <string name="reports_quantity">You have %d reports</string>
+
+    <string name="report">Report</string>
 </resources>

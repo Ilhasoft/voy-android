@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -25,7 +26,10 @@
 
             <include
                 android:id="@+id/viewToolbar"
-                layout="@layout/view_report_toolbar" />
+                layout="@layout/view_reports_toolbar"
+                app:onClickBack="@{() -> presenter.onClickNavigateBack()}"
+                app:onClickPopMenu="@{() -> presenter.onClickPopupMenu()}"
+                app:title="@{@string/report}" />
 
         </android.support.design.widget.AppBarLayout>
 

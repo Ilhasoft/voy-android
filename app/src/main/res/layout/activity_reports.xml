@@ -3,6 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.report.ReportsPresenter" />
+
+    </data>
+
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +27,8 @@
 
             <include
                 android:id="@+id/viewToolbar"
-                layout="@layout/view_reports_toolbar" />
+                layout="@layout/view_reports_toolbar"
+                app:onClickBack="@{() -> presenter.onClickNavigateBack()}" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabLayout"

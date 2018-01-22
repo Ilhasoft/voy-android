@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="themeName"
+            name="title"
             type="String" />
 
         <variable
-            name="presenter"
-            type="br.com.ilhasoft.voy.ui.report.ReportsPresenter" />
+            name="titleColor"
+            type="int" />
+
+        <variable
+            name="onClickPopMenu"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onClickBack"
+            type="android.view.View.OnClickListener" />
 
     </data>
 
@@ -27,20 +36,33 @@
             android:layout_gravity="center_vertical|start"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
-            android:onClick="@{() -> presenter.onClickNavigateBack()}"
+            android:onClick="@{onClickBack}"
             android:src="@drawable/ic_arrow_back" />
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:ellipsize="end"
-            android:gravity="center|start"
+            android:gravity="center_vertical|start"
             android:maxLines="1"
-            android:text="@{themeName}"
+            android:text="@{title}"
+            android:textColor="@{titleColor}"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:text="Santa Catarina" />
+
+        <ImageButton
+            android:id="@+id/expanded_menu"
+            style="@style/RippleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:onClick="@{onClickPopMenu}"
+            android:src="@drawable/ic_expanded_menu"
+            app:visible="@{onClickPopMenu == null? false : true}" />
 
     </LinearLayout>
 
