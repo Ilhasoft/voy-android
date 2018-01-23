@@ -40,12 +40,8 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel) :
 
     private fun saveReport() {
         val location = Location("point", arrayListOf(-127.33, 24.903))
-        reportService.saveReport(reportViewModel.themeId,
-                location,
-                reportViewModel.description,
-                reportViewModel.name,
-                reportViewModel.tags.map { it.tag },
-                reportViewModel.links)
+        reportService.saveReport(reportViewModel.themeId, location, reportViewModel.description,
+                reportViewModel.name, reportViewModel.tags.map { it.tag }, reportViewModel.links)
                 .flatMapObservable {
                     reportViewModel.report = it
                     Observable.fromIterable(reportViewModel.medias)
@@ -53,12 +49,8 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel) :
                 .flatMapSingle {
                     val file = getFile(it)
                     val mimeType = getMimeType(it)
-                    fileService.saveFile(file.nameWithoutExtension,
-                            file.name,
-                            "",
-                            file,
-                            mimeType,
-                            reportViewModel.report.id)
+                    fileService.saveFile(file.nameWithoutExtension, file.name, file,
+                            mimeType, reportViewModel.report.id)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -66,8 +58,9 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel) :
                 .doOnTerminate { view.dismissLoading() }
                 .doOnComplete { view.navigateToThanks() }
                 .subscribe({
-                    //TODO: add on file array and add last image if media_type is image
-                    reportViewModel.report.lastImage = it
+                    reportViewModel.report.files.add(it)
+                    if (it.mediaType == "image")
+                        reportViewModel.report.lastImage = it
                 }, {
                     Timber.e(it)
                 })
