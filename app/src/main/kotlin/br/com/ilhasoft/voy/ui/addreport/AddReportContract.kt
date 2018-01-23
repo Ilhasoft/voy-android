@@ -15,4 +15,5 @@ interface AddReportContract : BasicView {
     fun getVisibleFragmentType(): AddReportFragmentType
     fun getFileFromUri(uri: Uri): File
     fun getMimeTypeFromUri(uri: Uri): String
+    fun checkLocation()
 }

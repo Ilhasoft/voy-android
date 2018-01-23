@@ -11,7 +11,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-
 /**
  * Created by lucasbarros on 23/11/17.
  */
@@ -23,6 +22,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel) :
 
     override fun attachView(view: AddReportContract) {
         super.attachView(view)
+        view.checkLocation()
         view.navigateToNext(AddReportFragmentType.MEDIAS)
     }
 
