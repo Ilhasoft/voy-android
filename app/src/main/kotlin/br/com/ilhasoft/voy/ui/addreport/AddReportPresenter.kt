@@ -20,9 +20,12 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel) :
     private val reportService = ReportService()
     private val fileService = FilesService()
 
+    private lateinit var userLocation: Location
+
+    var requestingUpdates = false
+
     override fun attachView(view: AddReportContract) {
         super.attachView(view)
-        view.checkLocation()
         view.navigateToNext(AddReportFragmentType.MEDIAS)
     }
 
@@ -39,8 +42,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel) :
     }
 
     private fun saveReport() {
-        val location = Location("point", arrayListOf(-127.33, 24.903))
-        reportService.saveReport(reportViewModel.themeId, location, reportViewModel.description,
+        reportService.saveReport(reportViewModel.themeId, userLocation, reportViewModel.description,
                 reportViewModel.name, reportViewModel.tags.map { it.tag }, reportViewModel.links)
                 .flatMapObservable {
                     reportViewModel.report = it
@@ -69,5 +71,23 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel) :
     private fun getFile(uri: Uri) = view.getFileFromUri(uri)
 
     private fun getMimeType(uri: Uri) = view.getMimeTypeFromUri(uri)
+
+    fun onLocationLoaded(location: android.location.Location) {
+//        view.showMessage("lat: ${location.latitude} long: ${location.longitude}")
+        view.dismissLoadLocationDialog()
+        userLocation = Location("point", arrayListOf(location.longitude, location.latitude))
+    }
+
+    fun resume() {
+        if (!requestingUpdates) {
+            requestingUpdates = true
+            view.checkLocation()
+        }
+    }
+
+    fun pause() {
+        requestingUpdates = false
+        view.stopGettingLocation()
+    }
 
 }

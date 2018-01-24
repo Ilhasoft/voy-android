@@ -16,4 +16,6 @@ interface AddReportContract : BasicView {
     fun getFileFromUri(uri: Uri): File
     fun getMimeTypeFromUri(uri: Uri): String
     fun checkLocation()
+    fun dismissLoadLocationDialog()
+    fun stopGettingLocation()
 }
