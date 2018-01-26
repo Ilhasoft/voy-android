@@ -18,4 +18,5 @@ interface AddReportContract : BasicView {
     fun checkLocation()
     fun dismissLoadLocationDialog()
     fun stopGettingLocation()
+    fun showOutsideDialog()
 }

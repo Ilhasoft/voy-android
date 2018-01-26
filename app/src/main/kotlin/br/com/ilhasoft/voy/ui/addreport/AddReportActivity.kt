@@ -38,9 +38,13 @@ class AddReportActivity : BaseActivity(), AddReportContract {
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS: Int = 100
+        private const val EXTRA_BOUNDS: String = "themeBounds"
 
         @JvmStatic
-        fun createIntent(context: Context, themeBounds: Bound? = null): Intent = Intent(context, AddReportActivity::class.java)
+        fun createIntent(context: Context, themeBounds: Bound? = null): Intent =
+                Intent(context, AddReportActivity::class.java).apply {
+                    putExtra(EXTRA_BOUNDS, themeBounds)
+                }
     }
 
     private val binding by lazy {
@@ -51,7 +55,9 @@ class AddReportActivity : BaseActivity(), AddReportContract {
 
     private val reportViewModel by lazy { ViewModelProviders.of(this).get(ReportViewModel::class.java) }
 
-    private val presenter by lazy { AddReportPresenter(reportViewModel) }
+    private val presenter by lazy {
+        AddReportPresenter(reportViewModel, intent.extras.getParcelable<Bound>(EXTRA_BOUNDS))
+    }
 
     private val locationRequest by lazy {
         LocationRequest().apply {
@@ -176,6 +182,15 @@ class AddReportActivity : BaseActivity(), AddReportContract {
             addTitleFragment.isVisible -> AddReportFragmentType.TITLE
             else -> AddReportFragmentType.TAG
         }
+    }
+
+    override fun showOutsideDialog() {
+        AlertDialog.Builder(this)
+                .setTitle(getString(R.string.alert))
+                .setMessage(getString(R.string.outside_theme_bounds))
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok) { _, _ -> finish() }
+                .show()
     }
 
     override fun getFileFromUri(uri: Uri) = FileHelper.createFileFromUri(this, uri)
