@@ -17,6 +17,7 @@ import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
 import br.com.ilhasoft.voy.models.AddReportFragmentType
+import br.com.ilhasoft.voy.models.Bound
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.addreport.description.AddTitleFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
@@ -39,7 +40,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
         private const val REQUEST_CHECK_SETTINGS: Int = 100
 
         @JvmStatic
-        fun createIntent(context: Context): Intent = Intent(context, AddReportActivity::class.java)
+        fun createIntent(context: Context, themeBounds: Bound? = null): Intent = Intent(context, AddReportActivity::class.java)
     }
 
     private val binding by lazy {

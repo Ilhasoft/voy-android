@@ -108,10 +108,6 @@ class ReportFragment : BaseFragment(), ReportContract {
     override fun navigateToReportDetail(report: Report) =
             startActivity(ReportDetailActivity.createIntent(context, report.theme, report.id, status))
 
-    override fun navigateToAddReport() {
-        startActivity(AddReportActivity.createIntent(context))
-    }
-
     override fun navigateToEditReport(report: Report?) {}
 
     private fun setupView() {

@@ -11,8 +11,6 @@ interface ReportContract : BasicView {
 
     fun navigateToReportDetail(report: Report)
 
-    fun navigateToAddReport()
-
     fun navigateToEditReport(report: Report?)
 
 }

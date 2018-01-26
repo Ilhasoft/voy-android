@@ -37,10 +37,6 @@ class ReportPresenter(private val preferences: Preferences) :
         view.navigateToReportDetail(report)
     }
 
-    fun onClickAddReport() {
-        view.navigateToAddReport()
-    }
-
     fun onClickEditReport(report: Report?) {
         view?.navigateToEditReport(report)
     }
