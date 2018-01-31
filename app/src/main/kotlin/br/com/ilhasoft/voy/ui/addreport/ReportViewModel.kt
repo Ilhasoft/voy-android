@@ -29,17 +29,18 @@ class ReportViewModel : ViewModel() {
         private set
     var buttonTitle: MutableLiveData<Int> = MutableLiveData()
         private set
-    private var tagsFromSever = MutableLiveData<MutableList<Tag>>()
 
+    private var tagsFromSever = MutableLiveData<MutableList<Tag>>()
     private val tagService by lazy { TagService() }
 
-    var report = Report()
     var themeId: Int = ReportsActivity.themeId
     var name: String = ""
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
     var medias = mutableListOf<Uri>()
     val tags by lazy { mutableListOf<Tag>() }
+
+    var report = Report()
 
     fun addUri(uri: Uri) {
         medias.add(uri)
@@ -97,5 +98,12 @@ class ReportViewModel : ViewModel() {
     }
 
     fun isTagSelected(tag: Tag): Boolean = tags.contains(tag)
+
+    fun setUpWithReport(report: Report) {
+        this.report = report
+        report.files.map { medias.add(Uri.parse(it.file)) }
+        name = report.name
+        description = report.description
+    }
 
 }

@@ -23,6 +23,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     companion object {
         var themeId = 0
         var themeColor: Int = 0
+        var themeBounds: Bound? = null
 
         @JvmStatic
         private val EXTRA_THEME_NAME = "themeName"
@@ -33,6 +34,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
                          themeName: String, themeColor: String, themeBounds: Bound): Intent {
             ReportsActivity.themeId = themeId
             ReportsActivity.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
+            ReportsActivity.themeBounds = themeBounds
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)

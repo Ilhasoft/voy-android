@@ -18,6 +18,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
 import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Bound
+import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.addreport.description.AddTitleFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
@@ -39,11 +40,13 @@ class AddReportActivity : BaseActivity(), AddReportContract {
     companion object {
         private const val REQUEST_CHECK_SETTINGS: Int = 100
         private const val EXTRA_BOUNDS: String = "themeBounds"
+        private const val EXTRA_REPORT: String = "report"
 
         @JvmStatic
-        fun createIntent(context: Context, themeBounds: Bound? = null): Intent =
+        fun createIntent(context: Context, themeBounds: Bound? = null, report: Report? = null): Intent =
                 Intent(context, AddReportActivity::class.java).apply {
                     putExtra(EXTRA_BOUNDS, themeBounds)
+                    putExtra(EXTRA_REPORT, report)
                 }
     }
 
@@ -56,7 +59,9 @@ class AddReportActivity : BaseActivity(), AddReportContract {
     private val reportViewModel by lazy { ViewModelProviders.of(this).get(ReportViewModel::class.java) }
 
     private val presenter by lazy {
-        AddReportPresenter(reportViewModel, intent.extras.getParcelable<Bound>(EXTRA_BOUNDS))
+        AddReportPresenter(reportViewModel,
+                intent.extras.getParcelable(EXTRA_BOUNDS),
+                intent.extras.getParcelable(EXTRA_REPORT))
     }
 
     private val locationRequest by lazy {

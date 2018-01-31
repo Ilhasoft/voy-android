@@ -17,6 +17,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseFragment
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
@@ -106,7 +107,8 @@ class ReportFragment : BaseFragment(), ReportContract {
 
     //TODO pass projectID to query
     override fun navigateToReportDetail(report: Report) =
-            startActivity(ReportDetailActivity.createIntent(context, report.theme, report.id, status))
+            startActivity(AddReportActivity.createIntent(context, ReportsActivity.themeBounds, report))
+//            startActivity(ReportDetailActivity.createIntent(context, report.theme, report.id, status))
 
     override fun navigateToEditReport(report: Report?) {}
 

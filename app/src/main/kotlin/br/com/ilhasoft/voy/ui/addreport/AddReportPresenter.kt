@@ -16,7 +16,8 @@ import timber.log.Timber
 /**
  * Created by lucasbarros on 23/11/17.
  */
-class AddReportPresenter(private val reportViewModel: ReportViewModel, private val bound: Bound) :
+class AddReportPresenter(private val reportViewModel: ReportViewModel, private val bound: Bound,
+                         private val report: Report?) :
         Presenter<AddReportContract>(AddReportContract::class.java) {
 
     private val reportService = ReportService()
@@ -33,6 +34,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
 
     override fun attachView(view: AddReportContract) {
         super.attachView(view)
+        report?.let { reportViewModel.setUpWithReport(it) }
         view.navigateToNext(AddReportFragmentType.MEDIAS)
     }
 
@@ -123,6 +125,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     private fun checkedToSave(isInsideBounds: Boolean) {
         if (isInsideBounds) {
             saveReport()
+            pause()
         } else {
             view.showMessage(R.string.outside_theme_bounds)
             isFinalStep = false

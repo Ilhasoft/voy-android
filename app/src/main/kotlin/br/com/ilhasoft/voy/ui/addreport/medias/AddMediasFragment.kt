@@ -75,11 +75,25 @@ class AddMediasFragment :
                 or MediaSelectorDelegate.VIDEO)
     }
 
+    private fun insertMedia(position: Int, imagePath: Uri) = with(binding) {
+        val imageView = when (position) {
+            0 -> image1
+            1 -> image2
+            2 -> image3
+            else -> image4
+        }
+        imageView.setMediaFromUri(imagePath)
+    }
+
     private fun setupView() = with(binding) {
         image1.setImageListener(this@AddMediasFragment)
         image2.setImageListener(this@AddMediasFragment)
         image3.setImageListener(this@AddMediasFragment)
         image4.setImageListener(this@AddMediasFragment)
+
+        for (index in reportViewModel.medias.indices) {
+            insertMedia(index, reportViewModel.medias[index])
+        }
     }
 
     private fun onNewPhoto(uri: Uri) {
