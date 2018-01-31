@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.network.files
 
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.network.reports.Response
+import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -22,6 +23,6 @@ interface FilesApi {
 
     // FIXME: Server error (returning "undefined")
     @DELETE("/api/report-files/{id}/")
-    fun deleteFile(@Path("id") id: Int, @QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Single<Void>
+    fun deleteFile(@Path("id") id: Int): Completable
 
 }

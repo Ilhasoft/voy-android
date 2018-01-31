@@ -57,41 +57,29 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         return api.saveReport(request)
     }
 
-    //TODO: Refactor updateReport
-    /*fun updateReport(id: Int,
+    fun updateReport(reportId: Int,
                      theme: Int,
-                     project: Int? = null,
-                     mapper: Int? = null,
-                     status: Int? = null,
                      location: Location,
-                     newDescription: String?,
-                     newName: String): Single<Report> {
+                     description: String?,
+                     name: String,
+                     tags: List<String>,
+                     urls: List<String>?): Single<Report> {
 
-        val parameters = mutableMapOf<String, Int?>()
-        parameters.apply {
-            putIfNotNull("theme", theme)
-            putIfNotNull("project", project)
-            putIfNotNull("mapper", mapper)
-            putIfNotNull("status", status)
-        }
+        val requestBody = CreateReportRequest(theme, location, description, name, tags, urls)
 
-        val requestBody = CreateReportRequest(theme, location, newDescription, newName, status)
-
-        return api.updateReport(id, parameters, requestBody)
-    }*/
+        return api.updateReport(reportId, requestBody)
+    }
 
     fun deleteReport(id: Int,
                theme: Int? = null,
                project: Int? = null,
-               mapper: Int? = null,
-               status: Int? = null): Single<Void> {
+               mapper: Int? = null): Single<Void> {
 
         val reportsRequest = mutableMapOf<String, Int?>()
         reportsRequest.apply {
             putIfNotNull("theme", theme)
             putIfNotNull("project", project)
             putIfNotNull("mapper", mapper)
-            putIfNotNull("status", status)
         }
         return api.deleteReport(id, reportsRequest)
     }

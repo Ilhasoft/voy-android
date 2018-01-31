@@ -110,6 +110,77 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
                 })
     }
 
+    private fun updateReport() {
+        if (reportViewModel.mediasToDelete().isNotEmpty()) {
+            deleteFilesAndUpdateReport()
+        } else {
+            updateReportIntern()
+        }
+    }
+
+    private fun deleteFilesAndUpdateReport() {
+        Observable.fromIterable(reportViewModel.mediasToDelete())
+                .flatMapCompletable { fileUrl ->
+                    var fileToDelete: ReportFile? = null
+                    reportViewModel.report.files.forEach {
+                        if (it.file == fileUrl.toString())
+                            fileToDelete = it
+                    }
+                    fileToDelete?.let { fileService.deleteFile(it.id) }
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { view.showLoading() }
+                .doOnTerminate { view.dismissLoading() }
+                .doOnComplete { updateReportIntern() }
+                .subscribe({}, {
+                    Timber.e(it)
+                })
+    }
+
+    private fun updateReportIntern() {
+        if (reportViewModel.hasNewMedias()) {
+            updateReportWithFiles()
+        } else {
+            updateReportWithoutFiles()
+        }
+    }
+
+    private fun updateReportWithoutFiles() = with(reportViewModel) {
+        reportService.updateReport(report.id, themeId, report.location!!, description, name,
+                tags.map { it.tag }, links)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { view.showLoading() }
+                .doAfterTerminate { view.dismissLoading() }
+                .subscribe({
+                    reportViewModel.report = it
+                    view.navigateToThanks()
+                }, {
+                    Timber.e(it)
+                })
+    }
+
+    private fun updateReportWithFiles() = with(reportViewModel) {
+        reportService.updateReport(report.id, themeId, report.location!!, description, name,
+                tags.map { it.tag }, links)
+                .flatMapObservable {
+                    reportViewModel.report = report
+                    Observable.fromIterable(reportViewModel.mediasToSave())
+                }
+                .flatMapSingle { saveFile(it) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { view.showLoading() }
+                .doOnTerminate { view.dismissLoading() }
+                .doOnComplete { view.navigateToThanks() }
+                .subscribe({
+                    onFileSaved(it)
+                }, {
+                    Timber.e(it)
+                })
+    }
+
     private fun getFile(uri: Uri) = view.getFileFromUri(uri)
 
     private fun getMimeType(uri: Uri) = view.getMimeTypeFromUri(uri)
@@ -123,12 +194,19 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun checkedToSave(isInsideBounds: Boolean) {
-        if (isInsideBounds) {
-            saveReport()
-            pause()
-        } else {
-            view.showMessage(R.string.outside_theme_bounds)
-            isFinalStep = false
+        when {
+            reportViewModel.report.id == 0 && isInsideBounds -> {
+                saveReport()
+                pause()
+            }
+            reportViewModel.report.id != 0 -> {
+                updateReport()
+                pause()
+            }
+            else -> {
+                view.showMessage(R.string.outside_theme_bounds)
+                isFinalStep = false
+            }
         }
     }
 

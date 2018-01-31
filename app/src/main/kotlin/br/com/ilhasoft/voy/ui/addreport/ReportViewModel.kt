@@ -38,6 +38,7 @@ class ReportViewModel : ViewModel() {
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
     var medias = mutableListOf<Uri>()
+    var mediasFromServer = mutableListOf<Uri>()
     val tags by lazy { mutableListOf<Tag>() }
 
     var report = Report()
@@ -99,9 +100,19 @@ class ReportViewModel : ViewModel() {
 
     fun isTagSelected(tag: Tag): Boolean = tags.contains(tag)
 
+    fun hasNewMedias(): Boolean {
+        return mediasToSave().isNotEmpty()
+    }
+
+    fun mediasToDelete() = mediasFromServer.minus(medias)
+
+    fun mediasToSave(): List<Uri> = medias.minus(mediasFromServer)
+
     fun setUpWithReport(report: Report) {
         this.report = report
-        report.files.map { medias.add(Uri.parse(it.file)) }
+        report.files.map { mediasFromServer.add(Uri.parse(it.file)) }
+        medias.clear()
+        medias.addAll(mediasFromServer)
         name = report.name
         description = report.description
     }
