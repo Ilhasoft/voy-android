@@ -42,6 +42,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
 
     companion object {
+        // It is wrong!!
         @JvmStatic
         private val THEME_ID = "themeId"
         @JvmStatic
@@ -133,7 +134,9 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     override fun showPopupMenu() = popupMenu.show()
 
-    override fun navigateToCommentReport() = startActivity(CommentsActivity.createIntent(this))
+    override fun navigateToCommentReport() {
+        startActivity(CommentsActivity.createIntent(this, intent.getIntExtra(REPORT_ID, 0)))
+    }
 
     override fun swapPage(indicator: Indicator) {
         binding.viewMedias?.viewPager?.setCurrentItem(indicator.position, true)
@@ -232,13 +235,13 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     private fun setupIndicatorRecyclerView(indicatorsList: RecyclerView) = with(indicatorsList) {
-        layoutManager = setupIndicatorLayoutManager()
+        /*layoutManager = setupIndicatorLayoutManager()
         setHasFixedSize(true)
         presenter.getIndicators()?.let {
             indicatorAdapter.addAll(it)
             indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
         }
-        adapter = indicatorAdapter
+        adapter = indicatorAdapter*/
     }
 
     private fun setupIndicatorLayoutManager(): RecyclerView.LayoutManager? =
