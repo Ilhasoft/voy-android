@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.network.comments
 
 import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.network.ServiceFactory
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -30,7 +31,7 @@ class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
         return api.partialUpdateComment(commentId, reportId, CreateCommentsRequest(text, reportId))
     }
 
-    fun deleteComment(commentId: Int, reportId: Int? = null): Single<Void> {
+    fun deleteComment(commentId: Int, reportId: Int? = null): Completable {
         return api.deleteComment(commentId, reportId)
     }
 }

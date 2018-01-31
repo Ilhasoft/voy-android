@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="reportComment"
-            type="br.com.ilhasoft.voy.models.ReportComment" />
+            name="comment"
+            type="br.com.ilhasoft.voy.ui.comment.CommentUIModel" />
+
+        <variable
+            name="isMyComment"
+            type="boolean" />
 
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
@@ -31,7 +36,9 @@
                 android:layout_height="52dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
-                android:src="@drawable/ic_default_img_profile" />
+                app:loadUrl="@{comment.avatar}"
+                app:placeholder="@{@drawable/ic_default_img_profile}"
+                tools:src="@drawable/ic_default_img_profile" />
 
             <TextView
                 android:id="@+id/title"
@@ -44,7 +51,7 @@
                 android:ellipsize="end"
                 android:gravity="start"
                 android:maxLines="1"
-                android:text="@{reportComment.createdBy.username}"
+                android:text="@{comment.createdBy}"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -61,7 +68,7 @@
                 android:layout_toRightOf="@+id/image"
                 android:layout_toStartOf="@+id/expanded_menu"
                 android:ellipsize="end"
-                android:text="@{reportComment.createdOn}"
+                android:text="@{comment.createdOn}"
                 android:textColor="@color/black"
                 android:textSize="10sp"
                 tools:ignore="SmallSp"
@@ -75,9 +82,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:padding="12dp"
+                app:isVisible="@{isMyComment}"
                 android:src="@drawable/ic_comments_menu" />
 
             <TextView
+                android:id="@+id/body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/date"
@@ -87,7 +96,7 @@
                 android:layout_toEndOf="@+id/image"
                 android:layout_toRightOf="@+id/image"
                 android:gravity="fill"
-                android:text="@{reportComment.text}"
+                android:text="@{comment.body}"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 tools:text="KOPAJA - Koperasi Angkutan Jakarta, or in English Jakarta Transportation Cooperation is a public transportation service in Jakarta. Many people in Jakarta use this transportation for commuting to the workplace from home, or vice versa. Besides providing benefits, KOPAJA has a bad impact on respiratory health from it's emissions. KOPAJA must be demolished because the average age of KOPAJA armada is above 10 Years, and is using outdated technology." />
@@ -97,9 +106,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_below="@+id/content"
             android:background="@color/warm_grey" />
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </layout>

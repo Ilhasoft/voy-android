@@ -66,4 +66,6 @@
     <string name="issues_related_report">Issues reported in your report</string>
     <string name="edit_report_label">Edit Report</string>
     <string name="close_dialog_label">Close</string>
+
+    <string name="empty_comments_message">No comments yet.</string>
 </resources>

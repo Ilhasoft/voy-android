@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.ui.comment.holder
+package br.com.ilhasoft.voy.ui.comment
 
 import android.view.MenuItem
 import android.view.View
@@ -7,50 +7,37 @@ import android.widget.PopupMenu
 import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ItemCommentBinding
-import br.com.ilhasoft.voy.models.ReportComment
-import br.com.ilhasoft.voy.ui.comment.CommentsPresenter
 
 /**
  * Created by developer on 14/12/17.
  */
-class CommentViewHolder(val binding: ItemCommentBinding,
-                        val presenter: CommentsPresenter) : ViewHolder<ReportComment>(binding.root),
-        View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+class CommentViewHolder(
+        private val binding: ItemCommentBinding,
+        private val presenter: CommentsPresenter
+) : ViewHolder<CommentUIModel>(binding.root),
+        PopupMenu.OnMenuItemClickListener {
 
-    private lateinit var popupMenu: PopupMenu
-
-    init {
-        binding.expandedMenu.run {
-            setupPopupMenu(this)
-            this.setOnClickListener(this@CommentViewHolder)
-        }
-    }
-
-    override fun onBind(reportComment: ReportComment?) {
-        binding.reportComment = reportComment
+    override fun onBind(comment: CommentUIModel) {
+        binding.comment = comment
+        binding.isMyComment = presenter.isMyID(comment.userId)
+        val popupMenu = PopupMenu(context, binding.expandedMenu)
+        popupMenu.setOnMenuItemClickListener(this)
+        popupMenu.menuInflater.inflate(R.menu.comments, popupMenu.menu)
+        binding.expandedMenu.setOnClickListener(onMoreOptionsClick(popupMenu))
         binding.executePendingBindings()
     }
 
-    override fun onClick(v: View?) {
-        popupMenu.show()
-    }
-
     override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
-        R.id.edit -> {
-            presenter.onClickEditComment(binding.reportComment)
+        R.id.remove -> {
+            binding.comment?.let { presenter.onClickRemoveComment(it) }
             true
         }
-        R.id.share -> {
-            presenter.onClickRemoveComment(binding.reportComment)
-            true
-        }
+
         else -> false
     }
 
-    private fun setupPopupMenu(expandedMenu: ImageView) {
-        popupMenu = PopupMenu(context, expandedMenu)
-        popupMenu.setOnMenuItemClickListener(this)
-        popupMenu.menuInflater.inflate(R.menu.comments, popupMenu.menu)
+    private fun onMoreOptionsClick(popupMenu: PopupMenu): (View) -> Unit = {
+        popupMenu.show()
     }
 
 }
