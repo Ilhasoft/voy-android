@@ -1,8 +1,15 @@
 package br.com.ilhasoft.voy.shared.binding;
 
+import android.content.Context;
 import android.databinding.BindingAdapter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.ImageView;
+
+import br.com.ilhasoft.voy.GlideApp;
 
 /**
  * Created by developer on 04/12/17.
@@ -19,4 +26,15 @@ public class ImageViewBindings {
         imageView.setImageResource(imageRes);
     }
 
+    @BindingAdapter(value = {"loadUrl", "placeholder"}, requireAll = false)
+    public static void loadFromUrl(ImageView view, String url, Drawable placeholderRes) {
+        final Context context = view.getContext();
+        GlideApp.with(context)
+                .load(url)
+                .centerCrop()
+                .placeholder(placeholderRes)
+                .error(placeholderRes)
+                .dontAnimate()
+                .into(view);
+    }
 }
