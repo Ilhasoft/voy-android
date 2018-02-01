@@ -9,4 +9,5 @@ interface ReportsContract : BasicView {
 
     fun navigateBack()
 
+    fun navigateToAddReport()
 }

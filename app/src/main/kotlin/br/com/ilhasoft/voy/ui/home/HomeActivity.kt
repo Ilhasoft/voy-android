@@ -133,8 +133,9 @@ class HomeActivity : BaseActivity(), HomeContract {
 
     override fun navigateToNotificationDetail() {}
 
-    override fun navigateToThemeReports(theme: Theme?) =
-            startActivity(ReportsActivity.createIntent(this, theme?.id, theme?.name, theme?.color))
+    override fun navigateToThemeReports(theme: Theme) {
+        startActivity(ReportsActivity.createIntent(this, theme.id, theme.name, theme.color, theme.bounds))
+    }
 
     private fun setupView() {
         binding.apply {

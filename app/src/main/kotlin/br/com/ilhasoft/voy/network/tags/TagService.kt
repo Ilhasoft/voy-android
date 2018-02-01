@@ -2,7 +2,6 @@ package br.com.ilhasoft.voy.network.tags
 
 import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.network.ServiceFactory
-import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -11,12 +10,9 @@ import io.reactivex.Single
  */
 class TagService : ServiceFactory<TagApi>(TagApi::class.java) {
 
-    fun getTags(project: Int = 0, theme: Int = 0): Flowable<MutableList<Tag>> {
-        val tagsRequest = mutableMapOf<String, Int?>()
-        tagsRequest.apply {
-            putIfNotNull("project", project)
-            putIfNotNull("theme", theme)
-        }
+    fun getTags(themeId: Int): Flowable<MutableList<Tag>> {
+        val tagsRequest = mutableMapOf<String, Int>()
+        tagsRequest["theme"] = themeId
         return api.getTags(tagsRequest)
     }
 

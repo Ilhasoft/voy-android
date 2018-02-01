@@ -39,7 +39,7 @@ class AddImageView : FrameLayout {
             image.setOnClickListener { listener?.onClickAddImage(this@AddImageView) }
             remove.setOnClickListener {
                 removeImage()
-                listener?.onClickRemove(uri)
+                listener?.onClickRemove(uri!!)
             }
         }
     }

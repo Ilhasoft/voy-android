@@ -8,7 +8,8 @@ import kotlinx.android.parcel.Parcelize
  * Created by developer on 05/01/18.
  */
 @Parcelize
-data class ReportFile(@SerializedName("title") val title: String,
+data class ReportFile(val id: Int,
+                      @SerializedName("title") val title: String,
                       @SerializedName("description") val description: String,
                       @SerializedName("media_type") val mediaType: String,
                       @SerializedName("file") val file: String,

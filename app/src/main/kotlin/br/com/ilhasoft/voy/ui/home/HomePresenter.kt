@@ -14,12 +14,12 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
     private val projectService: ProjectService by lazy { ProjectService() }
     private val themeService: ThemeService by lazy { ThemeService() }
 
-    override fun attachView(view: HomeContract?) {
+    override fun attachView(view: HomeContract) {
         super.attachView(view)
-        view?.showLoading()
+        view.showLoading()
         loadProjectsData()
         loadThemesData()
-        view?.dismissLoading()
+        view.dismissLoading()
     }
 
     private fun loadProjectsData() {
@@ -35,39 +35,39 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
     }
 
     private fun fillProjectsAdapter(projects: MutableList<Project>) {
-        view?.fillProjectsAdapter(projects)
+        view.fillProjectsAdapter(projects)
     }
 
     private fun fillThemesAdapter(themes: MutableList<Theme>) {
-        view?.fillThemesAdapter(themes)
+        view.fillThemesAdapter(themes)
     }
 
     fun onClickMyAccount() {
-        view?.navigateToMyAccount()
+        view.navigateToMyAccount()
     }
 
     fun onClickSelectProject() {
-        view?.selectProject()
+        view.selectProject()
     }
 
     fun onClickNotifications() {
-        view?.showNotifications()
+        view.showNotifications()
     }
 
     fun onClickHeaderNavView() {
-        view?.dismissNotifications()
+        view.dismissNotifications()
     }
 
     fun onClickProject(project: Project?) {
-        view?.swapProject(project)
+        view.swapProject(project)
     }
 
     fun onClickItemNotification(notification: Notification?) {
-        view?.navigateToNotificationDetail()
+        view.navigateToNotificationDetail()
     }
 
-    fun onClickTheme(theme: Theme?) {
-        view?.navigateToThemeReports(theme)
+    fun onClickTheme(theme: Theme) {
+        view.navigateToThemeReports(theme)
     }
 
     fun setSelectedProject(project: Project?) {

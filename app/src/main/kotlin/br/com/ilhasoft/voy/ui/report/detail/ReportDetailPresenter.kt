@@ -4,7 +4,7 @@ import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.medias.MediasService
-import br.com.ilhasoft.voy.network.reports.ReportsService
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselFragment
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
@@ -12,7 +12,7 @@ import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 class ReportDetailPresenter(private val preferences: Preferences) :
         Presenter<ReportDetailContract>(ReportDetailContract::class.java) {
 
-    private val reportService: ReportsService by lazy { ReportsService() }
+    private val reportService: ReportService by lazy { ReportService() }
     private val reportMediasService: MediasService by lazy { MediasService() }
     var reportMedias: List<ReportMedia>? = null
     var indicator = Indicator(Uri.EMPTY, true)

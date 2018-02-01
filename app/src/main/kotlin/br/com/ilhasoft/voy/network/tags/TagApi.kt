@@ -13,7 +13,7 @@ import retrofit2.http.QueryMap
 interface TagApi {
 
     @GET("/api/tags/")
-    fun getTags(@QueryMap parameters: Map<String, Int?>): Flowable<MutableList<Tag>>
+    fun getTags(@QueryMap parameters: Map<String, Int>): Flowable<MutableList<Tag>>
 
     @GET("/api/tags/{id}/")
     fun getTag(@Path("id") tagId: Int): Single<Tag>

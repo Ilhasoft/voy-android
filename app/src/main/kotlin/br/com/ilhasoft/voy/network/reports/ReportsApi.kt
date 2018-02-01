@@ -22,7 +22,6 @@ interface ReportsApi {
     // FIXME: Server with error (returning error 500)
     @PUT("/api/reports/{id}/")
     fun updateReport(@Path("id") id: Int,
-                     @QueryMap parameters: Map<String, Int?>,
                      @Body body: CreateReportRequest): Single<Report>
 
     // TODO: implement partial update

@@ -25,13 +25,13 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
 import br.com.ilhasoft.voy.databinding.ItemIndicatorBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
-import br.com.ilhasoft.voy.databinding.ViewReportToolbarBinding
 import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
 import br.com.ilhasoft.voy.ui.report.detail.holder.TagViewHolder
@@ -157,7 +157,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             }
             binding.report = it
             setupMediasView()
-            it.tags?.let {
+            it.tags.let {
                 tagsAdapter.addAll(it)
                 tagsAdapter.notifyDataSetChanged()
             }
@@ -183,16 +183,16 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     private fun setupView() {
         binding.run {
-            viewToolbar?.run { setupToolbar(this) }
-            setupRecyclerView(tags)
             presenter = this@ReportDetailActivity.presenter
+            setupToolbar()
+            setupRecyclerView(tags)
         }
     }
 
-    private fun setupToolbar(viewToolbar: ViewReportToolbarBinding) = with(viewToolbar) {
-        setupPopupMenu(expandedMenu)
-        showReportAlert = true
-        presenter = this@ReportDetailActivity.presenter
+    private fun setupToolbar() = binding.viewToolbar?.let {
+        setupPopupMenu(it.expandedMenu)
+        it.titleColor = ReportsActivity.themeColor
+        it.enableDividerLine = true
     }
 
     private fun setupPopupMenu(expandedMenu: ImageButton) {
