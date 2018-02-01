@@ -7,13 +7,13 @@ import android.databinding.ObservableBoolean
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import br.com.ilhasoft.support.core.helpers.KeyboardHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
+import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityCommentsBinding
 import br.com.ilhasoft.voy.databinding.ItemCommentBinding
-import br.com.ilhasoft.voy.databinding.ViewCommentsToolbarBinding
-import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.network.comments.CommentsService
 import br.com.ilhasoft.voy.ui.base.BaseActivity
@@ -48,14 +48,16 @@ class CommentsActivity : BaseActivity(), CommentsContract {
         }
     }
 
+    private val reportId by lazy { intent.getIntExtra(REPORT_ID_EXTRA, 0) }
     private val progressObserver: ObservableBoolean by lazy { ObservableBoolean(true) }
     private val emptyViewObserver: ObservableBoolean by lazy { ObservableBoolean(false) }
+    private val validator: Validator by lazy { Validator(binding) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
-        presenter.loadComments(intent.getIntExtra(REPORT_ID_EXTRA, 0))
+        presenter.loadComments(reportId)
     }
 
     override fun onStart() {
@@ -79,8 +81,6 @@ class CommentsActivity : BaseActivity(), CommentsContract {
         commentsAdapter.remove(comment)
     }
 
-    override fun sendComment(reportComment: ReportComment?) {}
-
     override fun showLoad() {
         progressObserver.set(true)
     }
@@ -101,13 +101,27 @@ class CommentsActivity : BaseActivity(), CommentsContract {
         commentsAdapter.addAll(comments)
     }
 
+    override fun commentCreated() {
+        cleanKeyboard()
+        showMessage(R.string.comment_created_message)
+    }
+
+    private fun cleanKeyboard() {
+        KeyboardHelper.hideForced(binding.comment)
+        binding.comment.setText("")
+    }
+
+    override fun isValidCommentBodyState(): Boolean = validator.validate()
+
     private fun setupView() {
-        binding.run {
+        binding.apply {
+            reportId = this@CommentsActivity.reportId
             inProgress = progressObserver
             showEmptyView = emptyViewObserver
-            setupRecyclerView(comments)
             presenter = this@CommentsActivity.presenter
         }
+
+        setupRecyclerView(binding.comments)
     }
 
     private fun setupRecyclerView(comments: RecyclerView) = with(comments) {

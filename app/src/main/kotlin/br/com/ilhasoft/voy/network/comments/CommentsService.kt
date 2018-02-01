@@ -16,7 +16,7 @@ class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
 
     fun getComment(commentId: Int, reportId: Int? = null): Single<ReportComment> = api.getComment(commentId, reportId)
 
-    fun saveComment(text: String, reportId: Int): Single<ReportComment> {
+    fun saveComment(text: String, reportId: Int): Maybe<ReportComment> {
         val requestBody = CreateCommentsRequest(text, reportId)
         return api.saveComment(requestBody)
     }

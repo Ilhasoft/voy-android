@@ -19,7 +19,7 @@ interface CommentsApi {
     fun getComment(@Path("id") id: Int, @Query("report") reportId: Int?): Single<ReportComment>
 
     @POST("/api/report-comments/")
-    fun saveComment(@Body body: CreateCommentsRequest): Single<ReportComment>
+    fun saveComment(@Body body: CreateCommentsRequest): Maybe<ReportComment>
 
     @PUT("/api/report-comments/{id}/")
     fun updateComment(@Path("id") id: Int,

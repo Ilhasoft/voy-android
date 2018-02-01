@@ -1,12 +1,14 @@
 package br.com.ilhasoft.voy.ui.comment
 
 import br.com.ilhasoft.support.core.mvp.Presenter
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Preferences
-import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.comments.CommentsService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
+import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,7 +27,6 @@ class CommentsPresenter(
     }
 
     fun loadComments(reportId: Int) {
-        // TODO error state
         compositeDisposable.add(
                 commentsService.getComments(reportId)
                         .fromIoToMainThread()
@@ -34,7 +35,7 @@ class CommentsPresenter(
                         .doOnNext { if (it.isEmpty()) view.showEmptyView() }
                         .subscribe(
                                 { view.populateComments(it) },
-                                Throwable::printStackTrace
+                                { ErrorHandlerHelper.showError(it) { msg -> view.showMessage(msg) } }
                         )
         )
     }
@@ -50,13 +51,33 @@ class CommentsPresenter(
                         .loadControl(view)
                         .subscribe(
                                 { view.navigateToRemoveComment(comment) },
-                                Throwable::printStackTrace
+                                {
+                                    ErrorHandlerHelper.showError(it, R.string.comment_delete_error) { msg ->
+                                        view.showMessage(msg)
+                                    }
+                                }
                         )
         )
     }
 
-    fun onClickSendComment(reportComment: ReportComment?) {
-        view.sendComment(reportComment)
+    fun onClickSendComment(body: String, reportId: Int) {
+        compositeDisposable.add(
+                Single.just(body to reportId)
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .filter { view.isValidCommentBodyState() }
+                        .observeOn(Schedulers.io())
+                        .flatMap { (text, id) -> commentsService.saveComment(text, id) }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .loadControl(view)
+                        .subscribe(
+                                { view.commentCreated() },
+                                {
+                                    ErrorHandlerHelper.showError(it, R.string.comment_create_error) { msg ->
+                                        view.showMessage(msg)
+                                    }
+                                }
+                        )
+        )
     }
 
     fun isMyID(id: Int): Boolean {
