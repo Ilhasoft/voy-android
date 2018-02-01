@@ -81,11 +81,11 @@ class CommentsActivity : BaseActivity(), CommentsContract {
         commentsAdapter.remove(comment)
     }
 
-    override fun showLoad() {
+    override fun showLoading() {
         progressObserver.set(true)
     }
 
-    override fun dismissLoad() {
+    override fun dismissLoading() {
         progressObserver.set(false)
     }
 
