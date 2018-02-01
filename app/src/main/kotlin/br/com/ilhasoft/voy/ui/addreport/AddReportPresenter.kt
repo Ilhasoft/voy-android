@@ -51,8 +51,6 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     fun onLocationLoaded(location: android.location.Location) {
-        view.showMessage("lat: ${location.latitude} long: ${location.longitude}")
-
         view.dismissLoadLocationDialog()
         userLocation = Location("point", arrayListOf(location.longitude, location.latitude))
         checkBounds()
