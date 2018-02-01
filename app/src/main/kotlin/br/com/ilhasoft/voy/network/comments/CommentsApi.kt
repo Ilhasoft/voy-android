@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.network.comments
 
 import br.com.ilhasoft.voy.models.ReportComment
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -18,7 +19,7 @@ interface CommentsApi {
     fun getComment(@Path("id") id: Int, @Query("report") reportId: Int?): Single<ReportComment>
 
     @POST("/api/report-comments/")
-    fun saveComment(@Body body: CreateCommentsRequest): Single<ReportComment>
+    fun saveComment(@Body body: CreateCommentsRequest): Maybe<ReportComment>
 
     @PUT("/api/report-comments/{id}/")
     fun updateComment(@Path("id") id: Int,
@@ -30,7 +31,6 @@ interface CommentsApi {
                       @Query("report") reportId: Int?,
                       @Body body: CreateCommentsRequest): Single<ReportComment>
 
-    // FIXME: Server with error (returning "undefined")
     @DELETE("/api/report-comments/{id}/")
-    fun deleteComment(@Path("id") id: Int, @Query("report") reportId: Int?): Single<Void>
+    fun deleteComment(@Path("id") id: Int, @Query("report") reportId: Int?): Completable
 }

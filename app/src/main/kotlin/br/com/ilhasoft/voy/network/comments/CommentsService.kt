@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.network.comments
 
 import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.network.ServiceFactory
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -15,7 +16,7 @@ class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
 
     fun getComment(commentId: Int, reportId: Int? = null): Single<ReportComment> = api.getComment(commentId, reportId)
 
-    fun saveComment(text: String, reportId: Int): Single<ReportComment> {
+    fun saveComment(text: String, reportId: Int): Maybe<ReportComment> {
         val requestBody = CreateCommentsRequest(text, reportId)
         return api.saveComment(requestBody)
     }
@@ -30,7 +31,7 @@ class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
         return api.partialUpdateComment(commentId, reportId, CreateCommentsRequest(text, reportId))
     }
 
-    fun deleteComment(commentId: Int, reportId: Int? = null): Single<Void> {
+    fun deleteComment(commentId: Int, reportId: Int? = null): Completable {
         return api.deleteComment(commentId, reportId)
     }
 }
