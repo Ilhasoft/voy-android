@@ -3,10 +3,10 @@ package br.com.ilhasoft.voy.ui.report.fragment
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
-import br.com.ilhasoft.voy.ui.report.ReportsActivity
 
 class ReportPresenter(private val preferences: Preferences) :
         Presenter<ReportContract>(ReportContract::class.java) {
@@ -22,7 +22,7 @@ class ReportPresenter(private val preferences: Preferences) :
 
     private fun loadReportsData() {
         reportService.getReports(page = 1, page_size = 50,
-                theme = ReportsActivity.themeId, mapper = preferences.getInt(User.ID), status = getStatus())
+                theme = ThemeData.themeId, mapper = preferences.getInt(User.ID), status = getStatus())
                 .compose(RxHelper.defaultSingleSchedulers())
                 .subscribe({ fillReportsAdapter(it.results) }, {})
     }

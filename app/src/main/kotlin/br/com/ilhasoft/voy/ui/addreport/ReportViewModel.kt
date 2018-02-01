@@ -5,9 +5,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.tags.TagService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
-import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 
@@ -32,7 +32,6 @@ class ReportViewModel : ViewModel() {
     private var tagsFromSever = MutableLiveData<MutableList<String>>()
     private val tagService by lazy { TagService() }
 
-    var themeId: Int = ReportsActivity.themeId
     var name: String = ""
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
@@ -82,7 +81,7 @@ class ReportViewModel : ViewModel() {
 
     fun getAllTags(): LiveData<MutableList<String>> {
         if (tagsFromSever.value == null || tagsFromSever.value?.isEmpty() == true) {
-            tagService.getTags(themeId)
+            tagService.getTags(ThemeData.themeId)
                     .compose(RxHelper.defaultFlowableSchedulers())
                     .subscribe({
                         tagsFromSever.value = it.map { it.tag }.toMutableList()

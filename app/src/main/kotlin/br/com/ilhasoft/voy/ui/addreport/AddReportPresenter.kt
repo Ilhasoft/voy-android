@@ -16,15 +16,15 @@ import timber.log.Timber
 /**
  * Created by lucasbarros on 23/11/17.
  */
-class AddReportPresenter(private val reportViewModel: ReportViewModel, private val bound: Bound,
+class AddReportPresenter(private val reportViewModel: ReportViewModel, private val bound: ArrayList<ArrayList<Double>>,
                          private val report: Report?) :
         Presenter<AddReportContract>(AddReportContract::class.java) {
 
     private val reportService = ReportService()
     private val fileService = FilesService()
     private val boundPairs: List<Pair<Double, Double>> by lazy {
-        if (bound.coordinates.isNotEmpty())
-            bound.coordinates[0].map { Pair(it[1], it[0]) }
+        if (bound.isNotEmpty())
+            bound.map { Pair(it[0], it[1]) }
         else
             listOf()
     }
@@ -92,7 +92,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun saveReport() = with(reportViewModel) {
-        reportService.saveReport(themeId, userLocation, description, name, tags, links)
+        reportService.saveReport(ThemeData.themeId, userLocation, description, name, tags, links)
                 .flatMapObservable { onSavedReportAndStartSaveFiles(it) }
                 .flatMapSingle { saveFile(it) }
                 .subscribeOn(Schedulers.io())
@@ -144,7 +144,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun updateReportWithoutFiles() = with(reportViewModel) {
-        reportService.updateReport(report.id, themeId, report.location!!, description, name,
+        reportService.updateReport(report.id, ThemeData.themeId, report.location!!, description, name,
                 tags, links)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -159,7 +159,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun updateReportWithFiles() = with(reportViewModel) {
-        reportService.updateReport(report.id, themeId, report.location!!, description, name,
+        reportService.updateReport(report.id, ThemeData.themeId, report.location!!, description, name,
                 tags, links)
                 .flatMapObservable {
                     reportViewModel.report = report
