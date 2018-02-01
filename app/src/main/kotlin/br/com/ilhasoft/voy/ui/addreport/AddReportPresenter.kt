@@ -93,9 +93,8 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
         view.checkLocation()
     }
 
-    private fun saveReport() {
-        reportService.saveReport(reportViewModel.themeId, userLocation, reportViewModel.description,
-                reportViewModel.name, reportViewModel.tags.map { it.tag }, reportViewModel.links)
+    private fun saveReport() = with(reportViewModel) {
+        reportService.saveReport(themeId, userLocation, description, name, tags, links)
                 .flatMapObservable { onSavedReportAndStartSaveFiles(it) }
                 .flatMapSingle { saveFile(it) }
                 .subscribeOn(Schedulers.io())
@@ -148,7 +147,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
 
     private fun updateReportWithoutFiles() = with(reportViewModel) {
         reportService.updateReport(report.id, themeId, report.location!!, description, name,
-                tags.map { it.tag }, links)
+                tags, links)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { view.showLoading() }
@@ -163,7 +162,7 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
 
     private fun updateReportWithFiles() = with(reportViewModel) {
         reportService.updateReport(report.id, themeId, report.location!!, description, name,
-                tags.map { it.tag }, links)
+                tags, links)
                 .flatMapObservable {
                     reportViewModel.report = report
                     Observable.fromIterable(reportViewModel.mediasToSave())

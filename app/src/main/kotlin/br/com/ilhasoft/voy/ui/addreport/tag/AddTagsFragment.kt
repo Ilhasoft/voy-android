@@ -28,12 +28,12 @@ class AddTagsFragment : BaseFragment() {
 
     private val reportViewModel by lazy { ViewModelProviders.of(activity).get(ReportViewModel::class.java) }
 
-    private val tagsAdapter: AutoRecyclerAdapter<Tag, TagViewHolder> by lazy {
-        AutoRecyclerAdapter<Tag, TagViewHolder>(tagsViewHolder).apply {
+    private val tagsAdapter by lazy {
+        AutoRecyclerAdapter<String, TagViewHolder>(tagsViewHolder).apply {
             setHasStableIds(true)
         }
     }
-    private val tagsViewHolder: OnCreateViewHolder<Tag, TagViewHolder> by lazy {
+    private val tagsViewHolder: OnCreateViewHolder<String, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             TagViewHolder(ItemTagThemeBinding.inflate(layoutInflater, parent, false), reportViewModel)
         }
@@ -53,7 +53,7 @@ class AddTagsFragment : BaseFragment() {
         reportViewModel.setButtonTitle(R.string.send_report)
     }
 
-    private fun setTags(tagsList: List<Tag>) {
+    private fun setTags(tagsList: List<String>) {
         tagsAdapter.clear()
         tagsAdapter.addAll(tagsList)
     }

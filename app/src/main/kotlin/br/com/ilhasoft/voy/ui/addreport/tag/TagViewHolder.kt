@@ -9,7 +9,7 @@ import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
  * Created by geral on 11/12/17.
  */
 class TagViewHolder(val binding: ItemTagThemeBinding,
-                    val reportViewModel: ReportViewModel) : ViewHolder<Tag>(binding.root) {
+                    val reportViewModel: ReportViewModel) : ViewHolder<String>(binding.root) {
 
     init {
         binding.root.setOnClickListener {
@@ -22,7 +22,7 @@ class TagViewHolder(val binding: ItemTagThemeBinding,
         }
     }
 
-    override fun onBind(tag: Tag) {
+    override fun onBind(tag: String) {
         binding.tag = tag
         binding.selected = reportViewModel.isTagSelected(tag)
         binding.executePendingBindings()

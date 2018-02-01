@@ -10,7 +10,7 @@
 
         <variable
             name="tag"
-            type="br.com.ilhasoft.voy.models.Tag" />
+            type="String" />
 
     </data>
 
@@ -31,7 +31,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="6dp"
-            android:text="@{tag.tag}"
+            android:text="@{tag}"
             android:textColor="@{ selected? @color/white_three : @color/black }"
             android:textSize="15sp"
             tools:ignore="SmallSp"

@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import br.com.ilhasoft.voy.models.Report
-import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.network.tags.TagService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import br.com.ilhasoft.voy.ui.report.ReportsActivity
@@ -30,7 +29,7 @@ class ReportViewModel : ViewModel() {
     var buttonTitle: MutableLiveData<Int> = MutableLiveData()
         private set
 
-    private var tagsFromSever = MutableLiveData<MutableList<Tag>>()
+    private var tagsFromSever = MutableLiveData<MutableList<String>>()
     private val tagService by lazy { TagService() }
 
     var themeId: Int = ReportsActivity.themeId
@@ -39,7 +38,7 @@ class ReportViewModel : ViewModel() {
     val links by lazy { mutableListOf<String>() }
     var medias = mutableListOf<Uri>()
     var mediasFromServer = mutableListOf<Uri>()
-    val tags by lazy { mutableListOf<Tag>() }
+    val tags by lazy { mutableListOf<String>() }
 
     var report = Report()
 
@@ -81,24 +80,28 @@ class ReportViewModel : ViewModel() {
         return links.size < LIST_MAX_SIZE
     }
 
-    fun getAllTags(): LiveData<MutableList<Tag>> {
+    fun getAllTags(): LiveData<MutableList<String>> {
         if (tagsFromSever.value == null || tagsFromSever.value?.isEmpty() == true) {
             tagService.getTags(themeId)
                     .compose(RxHelper.defaultFlowableSchedulers())
-                    .subscribe({ tagsFromSever.value = it }, { Timber.e(it) })
+                    .subscribe({
+                        tagsFromSever.value = it.map { it.tag }.toMutableList()
+                    }, {
+                        Timber.e(it)
+                    })
         }
         return tagsFromSever
     }
 
-    fun addTag(tag: Tag) {
+    fun addTag(tag: String) {
         tags.add(tag)
     }
 
-    fun removeTag(tag: Tag) {
+    fun removeTag(tag: String) {
         tags.remove(tag)
     }
 
-    fun isTagSelected(tag: Tag): Boolean = tags.contains(tag)
+    fun isTagSelected(tag: String): Boolean = tags.contains(tag)
 
     fun hasNewMedias(): Boolean {
         return mediasToSave().isNotEmpty()
@@ -115,6 +118,10 @@ class ReportViewModel : ViewModel() {
         medias.addAll(mediasFromServer)
         name = report.name
         description = report.description
+        links.clear()
+        links.addAll(report.urls)
+        tags.clear()
+        tags.addAll(report.tags)
     }
 
 }
