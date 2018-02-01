@@ -1,9 +1,11 @@
 package br.com.ilhasoft.voy.network.users
 
 import br.com.ilhasoft.voy.models.User
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -20,5 +22,8 @@ interface UserApi {
 
     @GET("/api/users/")
     fun getUser(@Query("auth_token") token: String): Flowable<List<User>>
+
+    @PUT("/api/users/{id}")
+    fun editUser(@Path("id") userId: Int): Completable
 
 }

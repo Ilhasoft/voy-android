@@ -82,4 +82,7 @@
     <string name="comment_delete_error">We have a problem to remove this comment.</string>
     <string name="comment_create_error">We have a problem to create a new comment.</string>
     <string name="http_request_error">We have a problem to process your request, try again latter!</string>
+
+    <string name="password_min_length_error">Password should be at least 6 characters.</string>
+    <string name="user_updated_message">Your user was updated!</string>
 </resources>

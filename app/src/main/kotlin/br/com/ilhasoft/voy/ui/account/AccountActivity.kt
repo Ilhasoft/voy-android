@@ -11,10 +11,13 @@ import br.com.ilhasoft.support.core.helpers.DimensionHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.LinearSpaceItemDecoration
+import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAccountBinding
 import br.com.ilhasoft.voy.databinding.ItemAvatarBinding
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.login.LoginActivity
 
@@ -30,20 +33,22 @@ class AccountActivity : BaseActivity(), AccountContract {
     private val binding: ActivityAccountBinding by lazy {
         DataBindingUtil.setContentView<ActivityAccountBinding>(this, R.layout.activity_account)
     }
-    private val presenter: AccountPresenter by lazy { AccountPresenter(SharedPreferences(this)) }
-    private val avatarViewHolder:
-            OnCreateViewHolder<Int, AvatarViewHolder> by lazy {
+    private val presenter: AccountPresenter by lazy {
+        AccountPresenter(UserService(), SharedPreferences(applicationContext))
+    }
+    private val avatarViewHolder: OnCreateViewHolder<Int, AvatarViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             AvatarViewHolder(ItemAvatarBinding.inflate(layoutInflater, parent, false),
                     presenter)
         }
     }
-    private val avatarsAdapter:
-            AutoRecyclerAdapter<Int, AvatarViewHolder> by lazy {
+    private val avatarsAdapter: AutoRecyclerAdapter<Int, AvatarViewHolder> by lazy {
         AutoRecyclerAdapter(mutableListOf(), avatarViewHolder).apply {
             setHasStableIds(true)
         }
     }
+
+    private val validator by lazy { Validator(binding) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,12 +89,24 @@ class AccountActivity : BaseActivity(), AccountContract {
         avatarsAdapter.notifyDataSetChanged()
     }
 
+    override fun setUser(user: User) {
+        binding.user = user
+    }
+
+    override fun saveUser() {
+        binding.user?.let{ presenter.saveUser(it) }
+    }
+
+    override fun isValidUser(): Boolean = validator.validate()
+
+    override fun userUpdatedMessage() {
+        showMessage(R.string.user_updated_message)
+    }
+
     override fun navigateToMakeLogout() = startActivity(LoginActivity.createIntent(this))
 
     private fun setupView() {
         binding.run {
-            //FIXME set the actual user avatar not a static reference
-            drawableId = R.drawable.ic_avatar12
             editingPhoto = false
             presenter = this@AccountActivity.presenter
             setupAdapter()
@@ -100,6 +117,7 @@ class AccountActivity : BaseActivity(), AccountContract {
     private fun setupAdapter() {
         val avatars = resources.obtainTypedArray(R.array.avatars)
         (0 until avatars.length()).forEach { avatarsAdapter.add(avatars.getResourceId(it, 0)) }
+        avatars.recycle()
     }
 
     private fun setupRecyclerView(reports: RecyclerView) = with(reports) {

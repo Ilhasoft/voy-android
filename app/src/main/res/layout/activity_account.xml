@@ -5,7 +5,9 @@
 
     <data>
 
-        <import type="android.view.View" />
+        <variable
+            name="user"
+            type="br.com.ilhasoft.voy.models.User" />
 
         <variable
             name="editingPhoto"
@@ -47,11 +49,13 @@
             android:layout_marginTop="32dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_gravity="center"
                 android:padding="5dp"
                 app:drawableRes="@{drawableId}"
+                app:loadUrl="@{user.avatar}"
+                app:placeholder="@{@drawable/shape_rounded_grey}"
                 tools:src="@drawable/ic_account_avatar" />
 
             <ImageButton
@@ -68,66 +72,63 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="44dp"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
-            tools:visibility="gone">
+            app:isVisible="@{!editingPhoto}"
+            tools:visibility="visible">
+            
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:enabled="false"
+                android:hint="@string/username_hint"
+                android:padding="16dp"
+                android:text="@{user.username}" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:background="@color/white" />
-
-            <Space
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:layout_weight="0.05" />
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@null"
                 android:enabled="false"
-                android:hint="@string/username_hint" />
+                android:hint="@string/email"
+                android:padding="16dp"
+                android:text="@{user.email}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:hint="@string/email" />
+                android:background="@null"
+                android:inputType="textPassword"
+                android:hint="@string/password_hint"
+                android:padding="16dp"
+                android:text="@={user.password}"
+                app:validateMinLength="@{6}"
+                app:validateMinLengthMessage="@{@string/password_min_length_error}"/>
 
-            <FrameLayout
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:hint="@string/password_hint" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:text="@string/change"
-                    android:visibility="visible" />
-
-            </FrameLayout>
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
 
         </LinearLayout>
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
-            tools:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/avatars"
@@ -139,9 +140,10 @@
             android:paddingLeft="16dp"
             android:paddingRight="8dp"
             android:paddingStart="16dp"
-            android:visibility="@{editingPhoto ? View.VISIBLE : View.GONE}"
+            app:isVisible="@{editingPhoto}"
+            tools:layout_height="8dp"
             tools:listitem="@layout/item_avatar"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <Button
             style="?android:borderlessButtonStyle"
