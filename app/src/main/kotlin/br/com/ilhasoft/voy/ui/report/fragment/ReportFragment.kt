@@ -17,6 +17,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseFragment
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
@@ -30,10 +31,9 @@ class ReportFragment : BaseFragment(), ReportContract {
         const val NOT_APPROVED_STATUS = 3
 
         @JvmStatic
-        fun newInstance(status: Int, themeId: Int): ReportFragment {
+        fun newInstance(status: Int): ReportFragment {
             val args = Bundle()
             args.putInt(EXTRA_STATUS, status)
-            args.putInt(EXTRA_THEME_ID, themeId)
             return createWithArguments(args)
         }
 
@@ -60,7 +60,6 @@ class ReportFragment : BaseFragment(), ReportContract {
         }
     }
     private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
-    private val themeId: Int by lazy { arguments.getInt(EXTRA_THEME_ID) }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -88,8 +87,6 @@ class ReportFragment : BaseFragment(), ReportContract {
         presenter.detachView()
     }
 
-    override fun getThemeId(): Int? = themeId
-
     override fun getStatus(): Int? = status
 
     override fun fillReportsAdapter(reports: List<Report>) {
@@ -111,10 +108,6 @@ class ReportFragment : BaseFragment(), ReportContract {
     //TODO pass projectID to query
     override fun navigateToReportDetail(report: Report) =
             startActivity(ReportDetailActivity.createIntent(context, report.theme, report.id, status))
-
-    override fun navigateToAddReport() {
-        startActivity(AddReportActivity.createIntent(context))
-    }
 
     override fun navigateToEditReport(report: Report?) {}
 

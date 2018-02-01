@@ -5,21 +5,12 @@
     <data>
 
         <variable
-            name="clicked"
-            type="Boolean" />
+            name="selected"
+            type="boolean" />
 
         <variable
             name="tag"
-            type="br.com.ilhasoft.voy.models.Tag" />
-
-        <variable
-            name="presenter"
-            type="br.com.ilhasoft.voy.ui.addreport.tag.AddThemeFragmentPresenter" />
-
-        <variable
-            name="tagSelectionController"
-            type="br.com.ilhasoft.voy.ui.addreport.tag.TagSelectionController" />
-
+            type="String" />
 
     </data>
 
@@ -35,13 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/selector_tag_button"
+            android:background="@{ selected? @drawable/btn_tag_blue : @drawable/btn_tag_grey }"
             android:paddingBottom="6dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="6dp"
-            android:text="@{tag.tag}"
-            android:textColor="@color/selector_tag_text"
+            android:text="@{tag}"
+            android:textColor="@{ selected? @color/white_three : @color/black }"
             android:textSize="15sp"
             tools:ignore="SmallSp"
             tools:text="Accessibility" />

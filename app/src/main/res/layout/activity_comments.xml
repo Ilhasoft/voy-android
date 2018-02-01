@@ -36,10 +36,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <include
-                    android:id="@+id/viewToolbar"
-                    layout="@layout/view_comments_toolbar"
-                    app:presenter="@{presenter}" />
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/view_toolbar"
+                app:onBackClick="@{() -> presenter.onClickNavigateBack()}"
+                app:title="@{@string/comment_report_label}" />
 
             </android.support.design.widget.AppBarLayout>
 

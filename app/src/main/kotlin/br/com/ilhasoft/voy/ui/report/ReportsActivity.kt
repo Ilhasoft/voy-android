@@ -7,7 +7,9 @@ import android.graphics.Color
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
-import br.com.ilhasoft.voy.databinding.ViewReportsToolbarBinding
+import br.com.ilhasoft.voy.models.Bound
+import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
@@ -19,20 +21,24 @@ import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 class ReportsActivity : BaseActivity(), ReportsContract {
 
     companion object {
-        @JvmStatic
-        private val THEME_ID = "themeId"
-        @JvmStatic
-        private val THEME_NAME = "themeName"
-        @JvmStatic
-        private val THEME_COLOR = "themeColor"
+        var themeId = 0
+        var themeColor: Int = 0
+        var themeBounds: Bound? = null
 
         @JvmStatic
-        fun createIntent(context: Context, themeId: Int?,
-                         themeName: String?, themeColor: String?): Intent {
+        private val EXTRA_THEME_NAME = "themeName"
+        private val EXTRA_THEME_BOUNDS = "themeBounds"
+
+        @JvmStatic
+        fun createIntent(context: Context, themeId: Int,
+                         themeName: String, themeColor: String, themeBounds: Bound): Intent {
+            ReportsActivity.themeId = themeId
+            ReportsActivity.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
+            ReportsActivity.themeBounds = themeBounds
+
             val intent = Intent(context, ReportsActivity::class.java)
-            intent.putExtra(THEME_ID, themeId)
-            intent.putExtra(THEME_NAME, themeName)
-            intent.putExtra(THEME_COLOR, themeColor)
+            intent.putExtra(EXTRA_THEME_NAME, themeName)
+            intent.putExtra(EXTRA_THEME_BOUNDS, themeBounds)
             return intent
         }
     }
@@ -41,9 +47,8 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         DataBindingUtil.setContentView<ActivityReportsBinding>(this, R.layout.activity_reports)
     }
     private val presenter: ReportsPresenter by lazy { ReportsPresenter() }
-    private val themeId: Int by lazy { intent.extras.getInt(THEME_ID) }
-    private val themeName: String by lazy { intent.extras.getString(THEME_NAME) }
-    private val themeColor: String by lazy { intent.extras.getString(THEME_COLOR) }
+    private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
+    private val themeBounds by lazy { intent.extras.getParcelable<Bound>(EXTRA_THEME_BOUNDS) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,17 +75,21 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         finish()
     }
 
+    override fun navigateToAddReport() {
+        startActivity(AddReportActivity.createIntent(this, themeBounds))
+    }
+
     private fun setupView() {
         binding.apply {
-            viewToolbar?.run { setupToolbar(this) }
+            setUpToolBar()
+            presenter = this@ReportsActivity.presenter
             setupTabs()
         }
     }
 
-    private fun setupToolbar(viewToolbar: ViewReportsToolbarBinding) = with(viewToolbar) {
-        name.setTextColor(Color.parseColor(getString(R.string.color_hex, this@ReportsActivity.themeColor)))
-        themeName = this@ReportsActivity.themeName
-        presenter = this@ReportsActivity.presenter
+    private fun setUpToolBar() = binding.viewToolbar?.let {
+        it.title = this@ReportsActivity.themeName
+        it.titleColor = ReportsActivity.themeColor
     }
 
     private fun setupTabs() {
@@ -95,12 +104,12 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS,
-                themeId), getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS,
-                themeId), getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS,
-                themeId), getString(R.string.not_approved_fragment_title))
+        val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS),
+                getString(R.string.approved_fragment_title))
+        val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS),
+                getString(R.string.pending_fragment_title))
+        val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS),
+                getString(R.string.not_approved_fragment_title))
         return mutableListOf(approved, pending, rejected)
     }
 

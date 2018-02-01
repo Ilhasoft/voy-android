@@ -10,7 +10,7 @@ import br.com.ilhasoft.voy.databinding.ActivityThanksBinding
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 
-class ThanksActivity : BaseActivity(), ThanksContract {
+class ThanksActivity : BaseActivity() {
 
     companion object {
         @JvmStatic
@@ -20,42 +20,16 @@ class ThanksActivity : BaseActivity(), ThanksContract {
     private val binding: ActivityThanksBinding by lazy {
         DataBindingUtil.setContentView<ActivityThanksBinding>(this, R.layout.activity_thanks)
     }
-    private val presenter: ThanksPresenter by lazy { ThanksPresenter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.run {
-            presenter = this@ThanksActivity.presenter
-            this@ThanksActivity.presenter.attachView(this@ThanksActivity)
+            newReport.setOnClickListener {
+                startActivity(AddReportActivity.createIntent(this@ThanksActivity))
+                finish()
+            }
+            close.setOnClickListener { finish() }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.start()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.stop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
-    }
-
-    override fun navigateToAddReport() {
-        finish()
-        startActivity(AddReportActivity.createIntent(this))
-    }
-
-    override fun onClickClose() {
-        finish()
-    }
-
-    override fun onBackPressed() {
-        this.onClickClose()
     }
 
 }

@@ -5,7 +5,7 @@ import br.com.ilhasoft.voy.network.ServiceFactory
 import br.com.ilhasoft.voy.network.reports.Response
 import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
 import br.com.ilhasoft.voy.shared.helpers.RetrofitHelper
-import io.reactivex.Maybe
+import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.RequestBody
 import java.io.File
@@ -37,16 +37,16 @@ class FilesService : ServiceFactory<FilesApi>(FilesApi::class.java) {
 
     fun saveFile(title: String,
                  description: String,
-                 media_type: String,
                  file: File,
                  mimeType: String,
-                 report: Int): Single<ReportFile> {
+                 report: Int,
+                 mediaType: String = ""): Single<ReportFile> {
 
         val requestMap = mutableMapOf<String, RequestBody>()
         requestMap.apply {
             putIfNotNull("title", RetrofitHelper.createPartFromString(title))
             putIfNotNull("description", RetrofitHelper.createPartFromString(description))
-            putIfNotNull("media_type", RetrofitHelper.createPartFromString(media_type))
+            putIfNotNull("media_type", RetrofitHelper.createPartFromString(mediaType))
             putIfNotNull("report_id", RetrofitHelper.createPartFromString(report.toString()))
         }
 
@@ -55,21 +55,17 @@ class FilesService : ServiceFactory<FilesApi>(FilesApi::class.java) {
         return apiFile.saveFile(requestMap, requestFile)
     }
 
-    fun deleteFile(fileId: Int,
-                   theme: Int? = null,
-                   report: Int? = null,
-                   project: Int? = null,
-                   media_type: String? = null): Single<Void> {
+    fun deleteFile(fileId: Int): Completable {
 
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap.apply {
-            putIfNotNull("theme", theme)
-            putIfNotNull("report", report)
-            putIfNotNull("project", project)
-            putIfNotNull("media_type", media_type)
-        }
+//        val requestMap = mutableMapOf<String, Any?>()
+//        requestMap.apply {
+//            putIfNotNull("theme", theme)
+//            putIfNotNull("report", report)
+//            putIfNotNull("project", project)
+//            putIfNotNull("media_type", media_type)
+//        }
 
-        return api.deleteFile(fileId, requestMap)
+        return api.deleteFile(fileId)
     }
 
 }

@@ -26,8 +26,10 @@
 
             <include
                 android:id="@+id/viewToolbar"
-                layout="@layout/view_report_toolbar"
-                app:themeName="@{report.name}" />
+                layout="@layout/view_reports_toolbar"
+                app:onClickBack="@{() -> presenter.onClickNavigateBack()}"
+                app:onClickPopMenu="@{() -> presenter.onClickPopupMenu()}"
+                app:title="@{@string/report}" />
 
         </android.support.design.widget.AppBarLayout>
 

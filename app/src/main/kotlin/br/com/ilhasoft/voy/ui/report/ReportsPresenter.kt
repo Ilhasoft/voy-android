@@ -8,7 +8,10 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 class ReportsPresenter : Presenter<ReportsContract>(ReportsContract::class.java) {
 
     fun onClickNavigateBack() {
-        view?.navigateBack()
+        view.navigateBack()
     }
 
+    fun onClickAddReport() {
+        view.navigateToAddReport()
+    }
 }

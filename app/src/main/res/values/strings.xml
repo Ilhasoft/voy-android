@@ -63,9 +63,19 @@
     <string name="themes_quantity">You are within %d themes</string>
     <string name="color_hex">#%s</string>
     <string name="reports_quantity">You have %d reports</string>
+
     <string name="issues_related_report">Issues reported in your report</string>
     <string name="edit_report_label">Edit Report</string>
     <string name="close_dialog_label">Close</string>
+
+    <string name="report">Report</string>
+    <string name="getting_location">Getting your location</string>
+    <string name="alert">Alert</string>
+    <string name="permission_denied">You denied permission which is require for this feature</string>
+    <string name="rationale_location_description">Your location is required for this feature, please allow it to continue.</string>
+    <string name="something_went_wrong">Something went wrong, please try again.</string>
+    <string name="deny">Deny</string>
+    <string name="outside_theme_bounds">You are outside this theme\'s bounds. You couln\'t create a report.</string>
 
     <string name="empty_comments_message">No comments yet.</string>
     <string name="comment_created_message">Your comment was sent to moderation after approved it will available here!</string>

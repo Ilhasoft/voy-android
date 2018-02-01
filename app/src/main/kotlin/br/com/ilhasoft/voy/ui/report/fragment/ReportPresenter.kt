@@ -4,13 +4,14 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.reports.ReportsService
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 
 class ReportPresenter(private val preferences: Preferences) :
         Presenter<ReportContract>(ReportContract::class.java) {
 
-    private val reportService: ReportsService by lazy { ReportsService() }
+    private val reportService: ReportService by lazy { ReportService() }
 
     override fun attachView(view: ReportContract?) {
         super.attachView(view)
@@ -21,12 +22,10 @@ class ReportPresenter(private val preferences: Preferences) :
 
     private fun loadReportsData() {
         reportService.getReports(page = 1, page_size = 50,
-                theme = getThemeId(), mapper = preferences.getInt(User.ID), status = getStatus())
+                theme = ReportsActivity.themeId, mapper = preferences.getInt(User.ID), status = getStatus())
                 .compose(RxHelper.defaultSingleSchedulers())
                 .subscribe({ fillReportsAdapter(it.results) }, {})
     }
-
-    private fun getThemeId(): Int? = view?.getThemeId()
 
     private fun getStatus(): Int? = view?.getStatus()
 
@@ -36,10 +35,6 @@ class ReportPresenter(private val preferences: Preferences) :
 
     fun navigateToReportDetail(report: Report) {
         view.navigateToReportDetail(report)
-    }
-
-    fun onClickAddReport() {
-        view.navigateToAddReport()
     }
 
     fun onClickEditReport(report: Report?) {

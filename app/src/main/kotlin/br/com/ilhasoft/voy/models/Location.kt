@@ -9,5 +9,5 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-class Location(@SerializedName("type") val type: String,
+data class Location(@SerializedName("type") val type: String,
                @SerializedName("coordinates") val coordinates: ArrayList<Double>) : Parcelable
