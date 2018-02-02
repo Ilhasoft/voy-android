@@ -17,7 +17,7 @@ data class User(val id: Int,
            val email: String,
            @SerializedName("is_mapper") val isMapper: Boolean,
            @SerializedName("is_admin") val isAdmin: Boolean,
-           var password: String) : Parcelable {
+           var password: String?) : Parcelable {
 
     companion object {
         @JvmStatic
