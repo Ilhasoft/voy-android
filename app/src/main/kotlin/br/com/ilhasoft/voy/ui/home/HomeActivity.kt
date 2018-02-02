@@ -8,12 +8,14 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.databinding.*
+import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
+import br.com.ilhasoft.voy.databinding.ItemMapBinding
+import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
+import br.com.ilhasoft.voy.databinding.ItemThemeBinding
 import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.SharedPreferences
@@ -24,6 +26,7 @@ import br.com.ilhasoft.voy.ui.home.holder.NotificationViewHolder
 import br.com.ilhasoft.voy.ui.home.holder.ProjectViewHolder
 import br.com.ilhasoft.voy.ui.home.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.report.ReportsActivity
+import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 
 class HomeActivity : BaseActivity(), HomeContract {
 
@@ -109,6 +112,12 @@ class HomeActivity : BaseActivity(), HomeContract {
         themesAdapter.addAll(themes)
     }
 
+    override fun fillNotificationAdapter(notifications: List<Notification>) {
+        notificationsAdapter.clear()
+        notificationsAdapter.addAll(notifications)
+        binding.viewToolbar?.hasNotification = notificationsAdapter.isNotEmpty()
+    }
+
     override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
 
     override fun selectProject() {
@@ -131,7 +140,11 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    override fun navigateToNotificationDetail() {}
+    override fun navigateToNotificationDetail(notification: Notification) {
+        startActivity(ReportDetailActivity.createIntent(this, notification.report.theme, notification.report.id, notification.status))
+        notificationsAdapter.remove(notification)
+        binding.viewToolbar?.hasNotification = notificationsAdapter.isNotEmpty()
+    }
 
     override fun navigateToThemeReports(theme: Theme) {
         startActivity(ReportsActivity.createIntent(this, theme.id, theme.name, theme.color, theme.bounds))
@@ -150,7 +163,7 @@ class HomeActivity : BaseActivity(), HomeContract {
 
     private fun setupToolbar() = with(binding.viewToolbar) {
         this!!.run {
-            hasNotification = notificationsAdapter.count() > 0
+            hasNotification = notificationsAdapter.isNotEmpty()
             presenter = this@HomeActivity.presenter
         }
     }
