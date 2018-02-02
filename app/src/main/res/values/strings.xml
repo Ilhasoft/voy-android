@@ -5,6 +5,7 @@
     <string name="hey">Hey!</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
+    <string name="new_password_hint">New password</string>
     <string name="login_error">Username or password incorrect,\nplease try again!</string>
     <string name="login_success">Login successfully completed!</string>
     <string name="login_network_error">We do not identify an active internet connection,\ncheck your connection, and try again!</string>
@@ -85,7 +86,9 @@
 
     <string name="report_was_approved">Your report was approved</string>
     <string name="report_was_not_approved">Your report was not approved</string>
-    <string name="commentt_was_approved">You have a new comment on your report</string>
-    <string name="commentt_was_not_approved">Your comment was not approved</string>
+    <string name="comment_was_approved">You have a new comment on your report</string>
+    <string name="comment_was_not_approved">Your comment was not approved</string>
 
+    <string name="password_min_length_error">Password should be at least 6 characters.</string>
+    <string name="user_updated_message">Your user was updated!</string>
 </resources>

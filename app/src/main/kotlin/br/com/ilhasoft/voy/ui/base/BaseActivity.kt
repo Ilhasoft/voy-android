@@ -5,13 +5,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
-import br.com.ilhasoft.support.core.mvp.BasicView
 import br.com.ilhasoft.voy.R
 
 /**
  * Created by lucasbarros on 22/11/17.
  */
-abstract class BaseActivity : AppCompatActivity(), BasicView {
+abstract class BaseActivity : AppCompatActivity(), BaseView {
 
     private val progressDialog: IndeterminateProgressDialog by lazy {
         val dialog = IndeterminateProgressDialog(this)

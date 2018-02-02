@@ -9,9 +9,10 @@ import br.com.ilhasoft.voy.databinding.ItemAvatarBinding
 /**
  * Created by geral on 01/12/17.
  */
-class AvatarViewHolder(val binding: ItemAvatarBinding,
-                       val presenter: AccountPresenter) :
-        ViewHolder<Int>(binding.root), View.OnClickListener {
+class AvatarViewHolder(
+        val binding: ItemAvatarBinding,
+       val presenter: AccountPresenter
+) : ViewHolder<Int>(binding.root), View.OnClickListener {
 
     init {
         binding.let {
@@ -31,7 +32,7 @@ class AvatarViewHolder(val binding: ItemAvatarBinding,
     }
 
     override fun onClick(v: View?) {
-        presenter.setSelectedAvatar(binding.drawableId)
+        presenter.setSelectedAvatar(binding.drawableId, adapterPosition)
     }
 
     private fun configAvatarSelection(avatar: Int?) {

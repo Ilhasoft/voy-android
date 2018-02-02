@@ -2,6 +2,8 @@ package br.com.ilhasoft.voy.network.users
 
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.ServiceFactory
+import br.com.ilhasoft.voy.shared.extensions.extractNumbers
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -15,5 +17,12 @@ class UserService : ServiceFactory<UserApi>(UserApi::class.java) {
     fun getUser(userId: Int): Single<User> = api.getUser(userId)
 
     fun getUser(): Flowable<List<User>> = api.getUser(accessToken)
+
+    fun editUser(user: User): Completable {
+        val newUser = processUserAvatarToUpdate(user)
+        return api.editUser(user.id, newUser)
+    }
+
+    private fun processUserAvatarToUpdate(user: User): User = user.copy(avatar = user.avatar.extractNumbers())
 
 }

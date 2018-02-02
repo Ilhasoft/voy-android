@@ -18,21 +18,21 @@ class NotificationViewHolder(val binding: ItemNotificationBinding,
 
     override fun onBind(notification: Notification) {
         binding.notification = notification
-        binding.notificationTitle.text = getString(getTitle(notification))
+        binding.notificationTitle.text = getString(getNotificationTitle(notification))
         binding.executePendingBindings()
     }
 
-    private fun getTitle(notification: Notification): Int {
+    private fun getNotificationTitle(notification: Notification): Int {
         return if (notification.status == 1) {
             if (notification.origin == 1)
                 R.string.report_was_approved
             else
-                R.string.commentt_was_approved
+                R.string.comment_was_approved
         } else {
             if (notification.origin == 1)
                 R.string.report_was_not_approved
             else
-                R.string.commentt_was_not_approved
+                R.string.comment_was_not_approved
         }
 
     }

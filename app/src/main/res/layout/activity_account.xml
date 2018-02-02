@@ -5,7 +5,9 @@
 
     <data>
 
-        <import type="android.view.View" />
+        <variable
+            name="user"
+            type="br.com.ilhasoft.voy.models.User" />
 
         <variable
             name="editingPhoto"
@@ -18,6 +20,10 @@
         <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.account.AccountPresenter" />
+
+        <variable
+            name="isPasswordLocked"
+            type="android.databinding.ObservableBoolean" />
 
     </data>
 
@@ -47,8 +53,8 @@
             android:layout_marginTop="32dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_gravity="center"
                 android:padding="5dp"
                 app:drawableRes="@{drawableId}"
@@ -68,66 +74,82 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="44dp"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
-            tools:visibility="gone">
+            app:isVisible="@{!editingPhoto}"
+            tools:visibility="visible">
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:background="@color/white" />
-
-            <Space
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:layout_weight="0.05" />
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@null"
                 android:enabled="false"
-                android:hint="@string/username_hint" />
+                android:hint="@string/username_hint"
+                android:padding="16dp"
+                android:text="@{user.username}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@null"
                 android:enabled="false"
-                android:hint="@string/email" />
+                android:hint="@string/email"
+                android:padding="16dp"
+                android:text="@{user.email}" />
 
-            <FrameLayout
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <EditText
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:hint="@string/password_hint" />
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/new_password_hint"
+                    android:inputType="textPassword"
+                    android:padding="16dp"
+                    android:text="@={user.password}"
+                    android:enabled="@{!isPasswordLocked}"
+                    app:validateMinLength="@{6}"
+                    app:validateMinLengthMessage="@{@string/password_min_length_error}" />
 
-                <TextView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:text="@string/change"
-                    android:visibility="visible" />
+                    android:padding="8dp"
+                    android:layout_gravity="center"
+                    android:onClick="@{() -> presenter.onClickLock()}"
+                    android:src="@{isPasswordLocked ? @drawable/ic_lock_outline : @drawable/ic_lock_open}"
+                    tools:src="@drawable/ic_lock_open"/>
+            </LinearLayout>
 
-            </FrameLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/cool_grey" />
 
         </LinearLayout>
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:visibility="@{editingPhoto ? View.GONE : View.VISIBLE}"
-            tools:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/avatars"
@@ -139,9 +161,10 @@
             android:paddingLeft="16dp"
             android:paddingRight="8dp"
             android:paddingStart="16dp"
-            android:visibility="@{editingPhoto ? View.VISIBLE : View.GONE}"
+            app:isVisible="@{editingPhoto}"
+            tools:layout_height="8dp"
             tools:listitem="@layout/item_avatar"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <Button
             style="?android:borderlessButtonStyle"
