@@ -4,6 +4,7 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
@@ -15,7 +16,7 @@ class AccountPresenter(
         private val preferences: Preferences
 ) : Presenter<AccountContract>(AccountContract::class.java) {
 
-    private var avatarDrawableId: Int? = null
+    var avatarDrawableId: Int? = null
     private val compositeDisposable = CompositeDisposable()
 
     override fun start() {
@@ -34,6 +35,7 @@ class AccountPresenter(
                         .fromIoToMainThread()
                         .loadControl(view)
                         .filter { it.isNotEmpty() }
+                        .doOnNext { setAvatarByPosition(it.first().avatar.extractNumbers()) }
                         .subscribe(
                                 { view.setUser(it.first()) },
                                 {
@@ -61,14 +63,20 @@ class AccountPresenter(
         )
     }
 
+    private fun setAvatarByPosition(position: String) {
+        view.setAvatarByPosition(position.toInt())
+    }
+
     fun onClickNavigateBack() {
         view.navigateBack()
     }
 
     fun onClickSaveMyAccount() {
-        Single.just(view)
-                .filter { it.isValidUser() }
-                .subscribe { view.saveUser() }
+        compositeDisposable.add(
+                Single.just(view)
+                        .filter { it.isValidUser() }
+                        .subscribe { view.saveUser() }
+        )
     }
 
     fun onClickSwitchAvatar() {
@@ -81,9 +89,13 @@ class AccountPresenter(
         view.navigateToMakeLogout()
     }
 
-    fun setSelectedAvatar(drawableId: Int?) {
+    fun onClickLock() {
+        view.changeLockState()
+    }
+
+    fun setSelectedAvatar(drawableId: Int?, position: Int) {
         avatarDrawableId = drawableId
-        view.swapAvatar()
+        drawableId?.let { view.swapAvatar(it, position) }
     }
 
     fun getSelectedAvatar() = avatarDrawableId

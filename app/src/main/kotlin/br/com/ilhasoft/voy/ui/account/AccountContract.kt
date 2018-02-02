@@ -11,7 +11,7 @@ interface AccountContract : BaseView {
 
     fun navigateToSwitchAvatar()
 
-    fun swapAvatar()
+    fun swapAvatar(newAvatar: Int, position: Int)
 
     fun navigateToMakeLogout()
 
@@ -22,5 +22,11 @@ interface AccountContract : BaseView {
     fun isValidUser(): Boolean
 
     fun userUpdatedMessage()
+
+    fun setNewAvatarToUser(avatar: Int)
+
+    fun setAvatarByPosition(position: Int)
+
+    fun changeLockState()
 
 }

@@ -3,6 +3,7 @@ package br.com.ilhasoft.voy.ui.account
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.databinding.ObservableBoolean
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -49,12 +50,12 @@ class AccountActivity : BaseActivity(), AccountContract {
     }
 
     private val validator by lazy { Validator(binding) }
+    private val isPasswordLocked by lazy { ObservableBoolean(true) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
-        presenter.setSelectedAvatar(binding.drawableId)
     }
 
     override fun onStart() {
@@ -84,8 +85,8 @@ class AccountActivity : BaseActivity(), AccountContract {
         binding.editingPhoto = binding.editingPhoto?.not()
     }
 
-    override fun swapAvatar() {
-        binding.drawableId = presenter.getSelectedAvatar()
+    override fun swapAvatar(newAvatar: Int, position: Int) {
+        binding.drawableId = newAvatar
         avatarsAdapter.notifyDataSetChanged()
     }
 
@@ -94,46 +95,67 @@ class AccountActivity : BaseActivity(), AccountContract {
     }
 
     override fun saveUser() {
-        binding.user?.let{ presenter.saveUser(it) }
+        binding.user?.let{
+            val newUser = it.copy(avatar = "${getAvatarFromSelectedResource().plus(1)}")
+            presenter.saveUser(newUser)
+        }
     }
 
-    override fun isValidUser(): Boolean = validator.validate()
+    override fun isValidUser(): Boolean = isPasswordLocked.get() || validator.validate()
 
     override fun userUpdatedMessage() {
         showMessage(R.string.user_updated_message)
     }
 
+    override fun setNewAvatarToUser(position: Int) {
+        val arrayPosition = position.minus(1)
+        presenter.setSelectedAvatar(getAvatarsResources()[arrayPosition], arrayPosition)
+    }
+
+    override fun setAvatarByPosition(position: Int) {
+        val arrayPosition = position.minus(1)
+        binding.drawableId = getAvatarsResources()[arrayPosition]
+        presenter.avatarDrawableId = binding.drawableId
+    }
+
+    override fun changeLockState() {
+        isPasswordLocked.set(!isPasswordLocked.get())
+        binding.user?.let { it.password = null }
+    }
+
     override fun navigateToMakeLogout() = startActivity(LoginActivity.createIntent(this))
 
     private fun setupView() {
-        binding.run {
+        binding.apply {
             editingPhoto = false
             presenter = this@AccountActivity.presenter
-            setupAdapter()
-            setupRecyclerView(avatars)
+            isPasswordLocked = this@AccountActivity.isPasswordLocked
         }
+
+        setupAdapter()
+        setupRecyclerView(binding.avatars)
     }
 
     private fun setupAdapter() {
-        val avatars = resources.obtainTypedArray(R.array.avatars)
-        (0 until avatars.length()).forEach { avatarsAdapter.add(avatars.getResourceId(it, 0)) }
-        avatars.recycle()
+        avatarsAdapter.addAll(getAvatarsResources())
     }
+
+    private fun getAvatarsResources(): List<Int> {
+        val avatars = resources.obtainTypedArray(R.array.avatars)
+        val resources = (0 until avatars.length()).map { avatars.getResourceId(it, 0) }
+        avatars.recycle()
+        return resources
+    }
+
+    private fun getAvatarFromSelectedResource(): Int = getAvatarsResources().indexOf(presenter.avatarDrawableId)
 
     private fun setupRecyclerView(reports: RecyclerView) = with(reports) {
-        layoutManager = setupLayoutManager()
-        addItemDecoration(setupItemDecoration())
         setHasFixedSize(true)
+        layoutManager = GridLayoutManager(this@AccountActivity, AVATARS_SPAN_COUNT)
+        addItemDecoration(LinearSpaceItemDecoration(LinearLayoutManager.VERTICAL).apply {
+            space = DimensionHelper.toPx(this@AccountActivity, 4f)
+        })
         adapter = avatarsAdapter
-    }
-
-    private fun setupLayoutManager(): RecyclerView.LayoutManager =
-            GridLayoutManager(this, AVATARS_SPAN_COUNT)
-
-    private fun setupItemDecoration(): LinearSpaceItemDecoration {
-        val itemDecoration = LinearSpaceItemDecoration(LinearLayoutManager.VERTICAL)
-        itemDecoration.space = DimensionHelper.toPx(this, 4f)
-        return itemDecoration
     }
 
 }

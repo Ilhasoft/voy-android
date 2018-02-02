@@ -21,6 +21,10 @@
             name="presenter"
             type="br.com.ilhasoft.voy.ui.account.AccountPresenter" />
 
+        <variable
+            name="isPasswordLocked"
+            type="android.databinding.ObservableBoolean" />
+
     </data>
 
     <LinearLayout
@@ -54,8 +58,6 @@
                 android:layout_gravity="center"
                 android:padding="5dp"
                 app:drawableRes="@{drawableId}"
-                app:loadUrl="@{user.avatar}"
-                app:placeholder="@{@drawable/shape_rounded_grey}"
                 tools:src="@drawable/ic_account_avatar" />
 
             <ImageButton
@@ -78,7 +80,7 @@
             android:orientation="vertical"
             app:isVisible="@{!editingPhoto}"
             tools:visibility="visible">
-            
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
@@ -112,16 +114,35 @@
                 android:layout_height="0.5dp"
                 android:background="@color/cool_grey" />
 
-            <EditText
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:inputType="textPassword"
-                android:hint="@string/password_hint"
-                android:padding="16dp"
-                android:text="@={user.password}"
-                app:validateMinLength="@{6}"
-                app:validateMinLengthMessage="@{@string/password_min_length_error}"/>
+                android:orientation="horizontal">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/new_password_hint"
+                    android:inputType="textPassword"
+                    android:padding="16dp"
+                    android:text="@={user.password}"
+                    android:enabled="@{!isPasswordLocked}"
+                    app:validateMinLength="@{6}"
+                    app:validateMinLengthMessage="@{@string/password_min_length_error}" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:padding="8dp"
+                    android:layout_gravity="center"
+                    android:onClick="@{() -> presenter.onClickLock()}"
+                    android:src="@{isPasswordLocked ? @drawable/ic_lock_outline : @drawable/ic_lock_open}"
+                    tools:src="@drawable/ic_lock_open"/>
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

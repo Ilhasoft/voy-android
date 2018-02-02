@@ -5,6 +5,7 @@
     <string name="hey">Hey!</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
+    <string name="new_password_hint">New password</string>
     <string name="login_error">Username or password incorrect,\nplease try again!</string>
     <string name="login_success">Login successfully completed!</string>
     <string name="login_network_error">We do not identify an active internet connection,\ncheck your connection, and try again!</string>
