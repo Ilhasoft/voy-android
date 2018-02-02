@@ -7,11 +7,12 @@ import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import timber.log.Timber
 
-class HomePresenter(private val preferences: Preferences) : Presenter<HomeContract>(HomeContract::class.java) {
+class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeContract::class.java) {
 
-    private var selectedProject: Project? = null
     private val projectService: ProjectService by lazy { ProjectService() }
     private val themeService: ThemeService by lazy { ThemeService() }
+
+    private var selectedProject: Project? = null
     private val userId = preferences.getInt(User.ID)
 
     override fun attachView(view: HomeContract) {
@@ -28,15 +29,11 @@ class HomePresenter(private val preferences: Preferences) : Presenter<HomeContra
                 .doOnTerminate { view.dismissLoading() }
                 .subscribe({
                     fillProjectsAdapter(it)
-                    if (it.isNotEmpty())
-                        loadThemesData(it.first().id)
+                    if (it.isNotEmpty()) {
+                        selectedProject = it.first()
+                        loadThemesData(selectedProject!!.id)
+                    }
                 }, { Timber.e(it) })
-    }
-
-    private fun loadProjectsData() {
-        projectService.getProjects()
-                .compose(RxHelper.defaultFlowableSchedulers())
-                .subscribe({ fillProjectsAdapter(it) }, {})
     }
 
     private fun loadThemesData(projectId: Int) {
@@ -59,7 +56,7 @@ class HomePresenter(private val preferences: Preferences) : Presenter<HomeContra
         view.navigateToMyAccount()
     }
 
-    fun onClickSelectProject() {
+    fun onClickChooseProject() {
         view.selectProject()
     }
 
@@ -72,8 +69,9 @@ class HomePresenter(private val preferences: Preferences) : Presenter<HomeContra
     }
 
     fun onClickProject(project: Project) {
-        view.swapProject(project)
-        loadThemesData(project.id)
+        selectedProject = project
+        view.swapProject(selectedProject!!)
+        loadThemesData(selectedProject!!.id)
     }
 
     fun onClickItemNotification(notification: Notification?) {
@@ -84,10 +82,6 @@ class HomePresenter(private val preferences: Preferences) : Presenter<HomeContra
         view.navigateToThemeReports(theme)
     }
 
-    fun setSelectedProject(project: Project?) {
-        selectedProject = project
-    }
-
-    fun getSelectedProject(): Project? = selectedProject
+    fun isSelectedProject(project: Project): Boolean = selectedProject?.id == project.id
 
 }

@@ -11,9 +11,7 @@ import io.reactivex.Single
  */
 class ProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java) {
 
-    fun getProjects(): Flowable<MutableList<Project>> {
-        return api.getProjects(BaseFactory.accessToken)
-    }
+    fun getProjects(): Flowable<MutableList<Project>> = api.getProjects(BaseFactory.accessToken)
 
     fun getProject(projectId: Int): Single<Project> = api.getProject(projectId)
 
