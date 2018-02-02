@@ -14,7 +14,7 @@ interface HomeContract : BasicView {
 
     fun selectProject()
 
-    fun swapProject(project: Project?)
+    fun swapProject(project: Project)
 
     fun showNotifications()
 
