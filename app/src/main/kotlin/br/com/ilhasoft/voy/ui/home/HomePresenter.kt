@@ -1,25 +1,36 @@
 package br.com.ilhasoft.voy.ui.home
 
 import br.com.ilhasoft.support.core.mvp.Presenter
-import br.com.ilhasoft.voy.models.Notification
-import br.com.ilhasoft.voy.models.Project
-import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.projects.ProjectService
 import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import timber.log.Timber
 
-class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
+class HomePresenter(private val preferences: Preferences) : Presenter<HomeContract>(HomeContract::class.java) {
 
     private var selectedProject: Project? = null
     private val projectService: ProjectService by lazy { ProjectService() }
     private val themeService: ThemeService by lazy { ThemeService() }
+    private val userId = preferences.getInt(User.ID)
 
     override fun attachView(view: HomeContract) {
         super.attachView(view)
         view.showLoading()
-        loadProjectsData()
-        loadThemesData()
+        loadData()
         view.dismissLoading()
+    }
+
+    private fun loadData() {
+        projectService.getProjects()
+                .compose(RxHelper.defaultFlowableSchedulers())
+                .doOnSubscribe { view.showLoading() }
+                .doOnTerminate { view.dismissLoading() }
+                .subscribe({
+                    fillProjectsAdapter(it)
+                    if (it.isNotEmpty())
+                        loadThemesData(it.first().id)
+                }, { Timber.e(it) })
     }
 
     private fun loadProjectsData() {
@@ -28,10 +39,12 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
                 .subscribe({ fillProjectsAdapter(it) }, {})
     }
 
-    private fun loadThemesData() {
-        themeService.getThemes()
+    private fun loadThemesData(projectId: Int) {
+        themeService.getThemes(projectId, user = userId)
                 .compose(RxHelper.defaultFlowableSchedulers())
-                .subscribe({ fillThemesAdapter(it) }, {})
+                .doOnSubscribe { view.showLoading() }
+                .doOnTerminate { view.dismissLoading() }
+                .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
     }
 
     private fun fillProjectsAdapter(projects: MutableList<Project>) {
@@ -58,8 +71,9 @@ class HomePresenter : Presenter<HomeContract>(HomeContract::class.java) {
         view.dismissNotifications()
     }
 
-    fun onClickProject(project: Project?) {
+    fun onClickProject(project: Project) {
         view.swapProject(project)
+        loadThemesData(project.id)
     }
 
     fun onClickItemNotification(notification: Notification?) {
