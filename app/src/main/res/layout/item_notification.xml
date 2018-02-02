@@ -23,7 +23,6 @@
         android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         android:onClick="@{() -> presenter.onClickItemNotification(notification)}"
-        android:text="@{notification.title}"
         tools:text="A report from you has been approved" />
 
 </layout>
