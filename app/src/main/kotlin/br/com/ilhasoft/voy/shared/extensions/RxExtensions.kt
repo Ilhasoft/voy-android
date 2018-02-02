@@ -22,8 +22,8 @@ fun <T> Flowable<T>.fromIoToMainThread(): Flowable<T> {
 fun <T> Flowable<T>.loadControl(loadView: LoadView): Flowable<T> {
     return compose{ upstream ->
         upstream
-                .doOnSubscribe { loadView.showLoad() }
-                .doAfterTerminate { loadView.dismissLoad() }
+                .doOnSubscribe { loadView.showLoading() }
+                .doAfterTerminate { loadView.dismissLoading() }
     }
 }
 
@@ -38,8 +38,8 @@ fun Completable.fromIoToMainThread(): Completable {
 fun Completable.loadControl(loadView: LoadView): Completable {
     return compose{ upstream ->
         upstream
-                .doOnSubscribe { loadView.showLoad() }
-                .doAfterTerminate { loadView.dismissLoad() }
+                .doOnSubscribe { loadView.showLoading() }
+                .doAfterTerminate { loadView.dismissLoading() }
     }
 }
 
@@ -54,8 +54,8 @@ fun <T> Single<T>.fromIoToMainThread(): Single<T> {
 fun <T> Single<T>.loadControl(loadView: LoadView): Single<T> {
     return compose{ upstream ->
         upstream
-                .doOnSubscribe { loadView.showLoad() }
-                .doAfterTerminate { loadView.dismissLoad() }
+                .doOnSubscribe { loadView.showLoading() }
+                .doAfterTerminate { loadView.dismissLoading() }
     }
 }
 
@@ -70,7 +70,7 @@ fun <T> Maybe<T>.fromIoToMainThread(): Maybe<T> {
 fun <T> Maybe<T>.loadControl(loadView: LoadView): Maybe<T> {
     return compose{ upstream ->
         upstream
-                .doOnSubscribe { loadView.showLoad() }
-                .doAfterTerminate { loadView.dismissLoad() }
+                .doOnSubscribe { loadView.showLoading() }
+                .doAfterTerminate { loadView.dismissLoading() }
     }
 }

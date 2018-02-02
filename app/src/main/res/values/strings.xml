@@ -5,6 +5,7 @@
     <string name="hey">Hey!</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
+    <string name="new_password_hint">New password</string>
     <string name="login_error">Username or password incorrect,\nplease try again!</string>
     <string name="login_success">Login successfully completed!</string>
     <string name="login_network_error">We do not identify an active internet connection,\ncheck your connection, and try again!</string>
@@ -82,4 +83,7 @@
     <string name="comment_delete_error">We have a problem to remove this comment.</string>
     <string name="comment_create_error">We have a problem to create a new comment.</string>
     <string name="http_request_error">We have a problem to process your request, try again latter!</string>
+
+    <string name="password_min_length_error">Password should be at least 6 characters.</string>
+    <string name="user_updated_message">Your user was updated!</string>
 </resources>

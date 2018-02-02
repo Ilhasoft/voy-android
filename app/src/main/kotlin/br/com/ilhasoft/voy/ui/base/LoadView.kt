@@ -5,6 +5,6 @@ package br.com.ilhasoft.voy.ui.base
  */
 interface LoadView {
 
-    fun showLoad()
-    fun dismissLoad()
+    fun showLoading()
+    fun dismissLoading()
 }
