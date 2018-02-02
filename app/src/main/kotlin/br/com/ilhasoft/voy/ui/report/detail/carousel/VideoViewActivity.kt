@@ -16,8 +16,14 @@ import br.com.ilhasoft.voy.ui.base.BaseActivity
 class VideoViewActivity : BaseActivity() {
 
     companion object {
+
+        private const val EXTRA_URL = "extraUrl"
+
         @JvmStatic
-        fun createIntent(context: Context): Intent = Intent(context, VideoViewActivity::class.java)
+        fun createIntent(context: Context, url: String): Intent {
+            return Intent(context, VideoViewActivity::class.java)
+                    .putExtra(EXTRA_URL, url)
+        }
     }
 
     private val binding: ActivityVideoviewBinding by lazy {
@@ -30,7 +36,7 @@ class VideoViewActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        url = intent.extras.getString("url")
+        url = intent.extras.getString(EXTRA_URL)
         showLoading()
         setupView()
     }
@@ -39,12 +45,14 @@ class VideoViewActivity : BaseActivity() {
     private fun setupView() {
         binding.run {
             mediaController.setAnchorView(video)
-            video.setMediaController(mediaController)
-            video.setVideoURI(Uri.parse(url))
-            video.requestFocus()
-            video.setOnPreparedListener {
-                dismissLoading()
-                video.start()
+            video.apply {
+                setMediaController(mediaController)
+                setVideoURI(Uri.parse(url))
+                requestFocus()
+                setOnPreparedListener {
+                    dismissLoading()
+                    video.start()
+                }
             }
         }
     }

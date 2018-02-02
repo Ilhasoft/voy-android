@@ -29,10 +29,12 @@ import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
+import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
 import br.com.ilhasoft.voy.ui.report.detail.holder.TagViewHolder
 import com.google.android.flexbox.FlexWrap
@@ -42,31 +44,22 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
 
     companion object {
-        // It is wrong!!
-        @JvmStatic
-        private val THEME_ID = "themeId"
-        @JvmStatic
-        private val REPORT_ID = "reportId"
-        @JvmStatic
-        private val REPORT_STATUS = "status"
+        private const val EXTRA_REPORT = "extraReport"
 
-        @JvmStatic
-        fun createIntent(context: Context, themeId: Int, reportId: Int, status: Int): Intent {
-            val intent = Intent(context, ReportDetailActivity::class.java)
-            intent.putExtra(THEME_ID, themeId)
-            intent.putExtra(REPORT_ID, reportId)
-            intent.putExtra(REPORT_STATUS, status)
-            return intent
+        fun createIntent(context: Context, report: Report): Intent {
+            return Intent(context, ReportDetailActivity::class.java)
+                    .putExtra(EXTRA_REPORT, report)
         }
     }
 
+    private val report: Report? by lazy { intent.getParcelableExtra<Report?>(EXTRA_REPORT) }
     private val binding: ActivityReportDetailBinding by lazy {
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
     }
     private val presenter: ReportDetailPresenter by lazy {
-        ReportDetailPresenter(SharedPreferences(this))
+        ReportDetailPresenter(report, SharedPreferences(this), ReportService())
     }
-    private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, presenter.getCarouselItems()) }
+    private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, mutableListOf()) }
     private val indicatorViewHolder: OnCreateViewHolder<Indicator, IndicatorViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             IndicatorViewHolder(ItemIndicatorBinding.inflate(layoutInflater, parent, false), presenter)
@@ -77,21 +70,17 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             setHasStableIds(false)
         }
     }
-    private val tagViewHolder:
-            OnCreateViewHolder<String, TagViewHolder> by lazy {
+    private val tagViewHolder: OnCreateViewHolder<String, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             TagViewHolder(ItemTagBinding.inflate(layoutInflater, parent, false), presenter)
         }
     }
-    private val tagsAdapter:
-            AutoRecyclerAdapter<String, TagViewHolder> by lazy {
+    private val tagsAdapter: AutoRecyclerAdapter<String, TagViewHolder> by lazy {
         AutoRecyclerAdapter(mutableListOf(), tagViewHolder).apply {
             setHasStableIds(true)
         }
     }
-    private val reportDetailId: Int by lazy { intent.extras.getInt(REPORT_ID) }
-    private val themeId: Int by lazy { intent.extras.getInt(THEME_ID) }
-    private val reportStatus: Int by lazy { intent.extras.getInt(REPORT_STATUS) }
+
     private lateinit var popupMenu: PopupMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,36 +124,36 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     override fun showPopupMenu() = popupMenu.show()
 
     override fun navigateToCommentReport() {
-        startActivity(CommentsActivity.createIntent(this, intent.getIntExtra(REPORT_ID, 0)))
+        startActivity(CommentsActivity.createIntent(this, report?.id ?: 0))
     }
 
     override fun swapPage(indicator: Indicator) {
         binding.viewMedias?.viewPager?.setCurrentItem(indicator.position, true)
     }
 
-    override fun getReportId(): Int = reportDetailId
-
-    override fun getThemeId(): Int? = themeId
-
-    override fun getReportStatus(): Int? = reportStatus
-
     override fun getThemeColor(): String? = binding.report?.themeColor
 
     override fun showReportData(report: Report) {
-        report.let {
-            binding.run {
-                viewToolbar?.name?.setTextColor(Color.parseColor(getString(R.string.color_hex,
-                        it.themeColor)))
-                name.setTextColor(Color.parseColor(getString(R.string.color_hex,
-                        it.themeColor)))
-            }
-            binding.report = it
-            setupMediasView()
-            it.tags.let {
-                tagsAdapter.addAll(it)
-                tagsAdapter.notifyDataSetChanged()
-            }
+        val themeColor = Color.parseColor(getString(R.string.color_hex, report.themeColor))
+
+        binding.apply {
+            viewToolbar?.name?.setTextColor(themeColor)
+            name.setTextColor(themeColor)
+            createdOn.setTextColor(themeColor)
+            this.report = report
         }
+        setupMediasView()
+        tagsAdapter.addAll(report.tags)
+        tagsAdapter.notifyDataSetChanged()
+    }
+
+    override fun populateIndicator(indicators: List<Indicator>) {
+        indicatorAdapter.addAll(indicators)
+        indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
+    }
+
+    override fun populateCarousel(carouselItems: List<CarouselItem>) {
+        carouselAdapter.addAll(carouselItems)
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
@@ -185,11 +174,9 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     private fun setupView() {
-        binding.run {
-            presenter = this@ReportDetailActivity.presenter
-            setupToolbar()
-            setupRecyclerView(tags)
-        }
+        binding.presenter = this@ReportDetailActivity.presenter
+        setupToolbar()
+        setupRecyclerView(binding.tags)
     }
 
     private fun setupToolbar() = binding.viewToolbar?.let {
@@ -205,16 +192,13 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     private fun setupRecyclerView(tags: RecyclerView) = with(tags) {
-        layoutManager = setupLayoutManager()
+        layoutManager = FlexboxLayoutManager(this@ReportDetailActivity).apply {
+            flexWrap = FlexWrap.WRAP
+        }
         addItemDecoration(setupItemDecoration())
         setHasFixedSize(true)
         adapter = tagsAdapter
     }
-
-    private fun setupLayoutManager(): RecyclerView.LayoutManager =
-            FlexboxLayoutManager(this).apply {
-                flexWrap = FlexWrap.WRAP
-            }
 
     private fun setupItemDecoration(): SpaceItemDecoration {
         val space = DimensionHelper.toPx(this, 4f)
@@ -235,16 +219,9 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     private fun setupIndicatorRecyclerView(indicatorsList: RecyclerView) = with(indicatorsList) {
-        /*layoutManager = setupIndicatorLayoutManager()
         setHasFixedSize(true)
-        presenter.getIndicators()?.let {
-            indicatorAdapter.addAll(it)
-            indicatorAdapter[Indicator.INITIAL_POSITION].selected = true
-        }
-        adapter = indicatorAdapter*/
+        layoutManager = LinearLayoutManager(this@ReportDetailActivity,
+                LinearLayoutManager.HORIZONTAL, false)
+        adapter = indicatorAdapter
     }
-
-    private fun setupIndicatorLayoutManager(): RecyclerView.LayoutManager? =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
 }

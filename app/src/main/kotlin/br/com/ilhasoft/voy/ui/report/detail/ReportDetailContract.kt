@@ -3,6 +3,7 @@ package br.com.ilhasoft.voy.ui.report.detail
 import br.com.ilhasoft.support.core.mvp.BasicView
 import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 
 interface ReportDetailContract : BasicView {
 
@@ -16,14 +17,11 @@ interface ReportDetailContract : BasicView {
 
     fun swapPage(indicator: Indicator)
 
-    fun getReportId(): Int
-
-    fun getThemeId(): Int?
-
-    fun getReportStatus(): Int?
-
     fun getThemeColor(): String?
 
     fun showReportData(report: Report)
 
+    fun populateIndicator(indicators: List<Indicator>)
+
+    fun populateCarousel(carouselItems: List<CarouselItem>)
 }
