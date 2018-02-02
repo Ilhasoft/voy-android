@@ -13,19 +13,14 @@ class ProjectViewHolder(val binding: ItemMapBinding,
 
     init {
         binding.run {
-            isSelected = false
             presenter = this@ProjectViewHolder.presenter
         }
     }
 
     override fun onBind(project: Project) {
-        configProjectSelection(project)
+        binding.isSelected = presenter.isSelectedProject(project)
         binding.project = project
         binding.executePendingBindings()
-    }
-
-    private fun configProjectSelection(project: Project) {
-        binding.isSelected = presenter.getSelectedProject() == project
     }
 
 }

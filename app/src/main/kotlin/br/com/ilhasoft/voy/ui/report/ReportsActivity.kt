@@ -7,8 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
-import br.com.ilhasoft.voy.models.Bound
-import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
@@ -21,24 +20,18 @@ import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 class ReportsActivity : BaseActivity(), ReportsContract {
 
     companion object {
-        var themeId = 0
-        var themeColor: Int = 0
-        var themeBounds: Bound? = null
-
         @JvmStatic
         private val EXTRA_THEME_NAME = "themeName"
-        private val EXTRA_THEME_BOUNDS = "themeBounds"
 
         @JvmStatic
         fun createIntent(context: Context, themeId: Int,
-                         themeName: String, themeColor: String, themeBounds: Bound): Intent {
-            ReportsActivity.themeId = themeId
-            ReportsActivity.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
-            ReportsActivity.themeBounds = themeBounds
+                         themeName: String, themeColor: String, themeBounds: ArrayList<ArrayList<Double>>): Intent {
+            ThemeData.themeId = themeId
+            ThemeData.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
+            ThemeData.themeBounds = themeBounds
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
-            intent.putExtra(EXTRA_THEME_BOUNDS, themeBounds)
             return intent
         }
     }
@@ -48,7 +41,6 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
     private val presenter: ReportsPresenter by lazy { ReportsPresenter() }
     private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
-    private val themeBounds by lazy { intent.extras.getParcelable<Bound>(EXTRA_THEME_BOUNDS) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +68,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
 
     override fun navigateToAddReport() {
-        startActivity(AddReportActivity.createIntent(this, themeBounds))
+        startActivity(AddReportActivity.createIntent(this))
     }
 
     private fun setupView() {
@@ -89,7 +81,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
     private fun setUpToolBar() = binding.viewToolbar?.let {
         it.title = this@ReportsActivity.themeName
-        it.titleColor = ReportsActivity.themeColor
+        it.titleColor = ThemeData.themeColor
     }
 
     private fun setupTabs() {

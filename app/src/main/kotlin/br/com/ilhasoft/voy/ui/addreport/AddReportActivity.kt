@@ -17,8 +17,8 @@ import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
 import br.com.ilhasoft.voy.models.AddReportFragmentType
-import br.com.ilhasoft.voy.models.Bound
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.addreport.description.AddTitleFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
@@ -39,13 +39,12 @@ class AddReportActivity : BaseActivity(), AddReportContract {
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS: Int = 100
-        private const val EXTRA_BOUNDS: String = "themeBounds"
         private const val EXTRA_REPORT: String = "report"
 
         @JvmStatic
-        fun createIntent(context: Context, themeBounds: Bound? = null, report: Report? = null): Intent =
+        fun createIntent(context: Context,
+                         report: Report? = null): Intent =
                 Intent(context, AddReportActivity::class.java).apply {
-                    putExtra(EXTRA_BOUNDS, themeBounds)
                     putExtra(EXTRA_REPORT, report)
                 }
     }
@@ -60,7 +59,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
 
     private val presenter by lazy {
         AddReportPresenter(reportViewModel,
-                intent.extras.getParcelable(EXTRA_BOUNDS),
+                ThemeData.themeBounds,
                 intent.extras.getParcelable(EXTRA_REPORT))
     }
 
@@ -215,7 +214,9 @@ class AddReportActivity : BaseActivity(), AddReportContract {
             } catch (apiException: ApiException) {
                 when (apiException.statusCode) {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> resolveLocationEnable(apiException)
-                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> { showUnknownErrorDialog() }
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                        showUnknownErrorDialog()
+                    }
                 }
             }
         }

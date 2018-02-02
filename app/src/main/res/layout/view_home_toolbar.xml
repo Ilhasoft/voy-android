@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="project"
-            type="br.com.ilhasoft.voy.models.Project" />
+            name="projectName"
+            type="String" />
 
         <variable
             name="hasNotification"
@@ -48,8 +48,8 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:onClick="@{() -> presenter.onClickSelectProject()}"
-            android:text="@{project.name}"
+            android:onClick="@{() -> presenter.onClickChooseProject()}"
+            android:text="@{projectName}"
             android:textColor="@color/vivid_purple"
             android:textSize="20sp"
             android:textStyle="bold"
