@@ -141,7 +141,7 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
 
     override fun navigateToNotificationDetail(notification: Notification) {
-        startActivity(ReportDetailActivity.createIntent(this, notification.report.theme, notification.report.id, notification.status))
+        startActivity(ReportDetailActivity.createIntent(this, notification.report))
         notificationsAdapter.remove(notification)
         binding.viewToolbar?.hasNotification = notificationsAdapter.isNotEmpty()
     }

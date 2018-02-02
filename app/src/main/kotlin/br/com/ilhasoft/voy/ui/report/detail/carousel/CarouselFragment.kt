@@ -54,7 +54,7 @@ class CarouselFragment : BaseFragment(), CarouselContract {
 
     override fun onStart() {
         super.onStart()
-        presenter.start()l
+        presenter.start()
     }
 
     override fun onStop() {

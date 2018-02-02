@@ -6,6 +6,7 @@
     <data>
 
         <import type="android.view.View" />
+
         <import type="br.com.ilhasoft.voy.shared.extensions.DateHelper" />
 
         <variable
@@ -53,7 +54,9 @@
                 android:layout_height="52dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
-                android:src="@drawable/ic_default_img_profile" />
+                app:loadUrl="@{report.lastImage.file}"
+                app:placeholder="@{@drawable/shape_rounded_grey}"
+                tools:src="@drawable/ic_default_img_profile" />
 
             <TextView
                 android:id="@+id/date"

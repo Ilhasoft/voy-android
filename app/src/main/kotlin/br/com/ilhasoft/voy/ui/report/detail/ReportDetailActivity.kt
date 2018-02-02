@@ -31,6 +31,7 @@ import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
+import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
@@ -157,7 +158,10 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
-        R.id.edit -> true
+        R.id.edit -> {
+            navigateToEditReport()
+            true
+        }
         R.id.share -> true
         else -> false
     }
@@ -224,4 +228,6 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
                 LinearLayoutManager.HORIZONTAL, false)
         adapter = indicatorAdapter
     }
+
+    private fun navigateToEditReport() = startActivity(AddReportActivity.createIntent(this, report))
 }
