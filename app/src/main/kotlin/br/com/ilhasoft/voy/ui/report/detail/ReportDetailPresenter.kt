@@ -2,27 +2,35 @@ package br.com.ilhasoft.voy.ui.report.detail
 
 import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
-import br.com.ilhasoft.voy.models.*
-import br.com.ilhasoft.voy.network.medias.MediasService
+import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.models.Indicator
+import br.com.ilhasoft.voy.models.Preferences
+import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportService
-import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
+import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselFragment
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
+import io.reactivex.disposables.CompositeDisposable
 
-class ReportDetailPresenter(private val preferences: Preferences) :
-        Presenter<ReportDetailContract>(ReportDetailContract::class.java) {
+class ReportDetailPresenter(
+        private val report: Report?,
+        private val preferences: Preferences,
+        private val reportService: ReportService
+) : Presenter<ReportDetailContract>(ReportDetailContract::class.java) {
 
-    private val reportService: ReportService by lazy { ReportService() }
-    private val reportMediasService: MediasService by lazy { MediasService() }
-    var reportMedias: List<ReportMedia>? = null
     var indicator = Indicator(Uri.EMPTY, true)
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun attachView(view: ReportDetailContract?) {
         super.attachView(view)
-        view?.showLoading()
         loadReportData()
-        loadReportMedias()
-        view?.dismissLoading()
+    }
+
+    override fun detachView() {
+        compositeDisposable.clear()
+        super.detachView()
     }
 
     fun onClickNavigateBack() {
@@ -45,49 +53,39 @@ class ReportDetailPresenter(private val preferences: Preferences) :
         view.swapPage(indicator)
     }
 
-    private fun getReportId(): Int = view.getReportId()
-
-    private fun getThemeId(): Int? = view.getThemeId()
-
-    private fun getReportStatus(): Int? = view.getReportStatus()
-
     fun getThemeColor(): String? = view.getThemeColor()
 
-    private fun showReportData(report: Report) {
-        view.showReportData(report)
-    }
-
     private fun loadReportData() {
-        reportService.getReport(id = getReportId(), theme = getThemeId(),
-                mapper = preferences.getInt(User.ID), status = getReportStatus())
-                .compose(RxHelper.defaultSingleSchedulers())
-                .subscribe({ showReportData(it) }, {})
+        compositeDisposable.add(reportService.getReport(id = report?.id ?: 0, theme = report?.theme ?: 0,
+                mapper = preferences.getInt(User.ID), status = report?.status ?: 0)
+                .fromIoToMainThread()
+                .doOnSubscribe { view.showLoading() }
+                .doAfterSuccess { view.dismissLoading() }
+                .doOnSuccess { view.showReportData(it) }
+                .doOnSuccess { view.populateIndicator(getIndicators(it)) }
+                .subscribe(
+                        { view.populateCarousel(getCarouselItems(it)) },
+                        {
+                            ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                                view.showMessage(msg)
+                            }
+                        }
+                )
+        )
     }
 
-    private fun loadReportMedias() {
-        reportMediasService.getMedias(reportId = getReportId())
-                .compose(RxHelper.defaultFlowableSchedulers())
-                .subscribe({ reportMedias = it }, {})
-    }
-
-    //TODO Make a better use of kotlin functions
-    fun getCarouselItems(): List<CarouselItem>? {
+    private fun getCarouselItems(report: Report): List<CarouselItem> {
         val carouselItems = mutableListOf<CarouselItem>()
-        reportMedias?.map { reportMedia ->
-            reportMedia.files.forEach {
-                carouselItems.add(CarouselItem(CarouselFragment.newInstance(it)))
-            }
+        report.files.forEach {
+            carouselItems.add(CarouselItem(CarouselFragment.newInstance(it)))
         }
         return carouselItems
     }
 
-    //TODO Make a better use of kotlin functions
-    fun getIndicators(): List<Indicator>? {
+    private fun getIndicators(report: Report): List<Indicator> {
         val indicators = mutableListOf<Indicator>()
-        reportMedias?.mapIndexed { index, reportMedia ->
-            reportMedia.files.forEach {
-                indicators.add(Indicator(Uri.parse(it.file), false, index))
-            }
+        report.files.filterIndexed { index, reportFile ->
+            indicators.add(Indicator(Uri.parse(reportFile.file), false, index))
         }
         return indicators
     }

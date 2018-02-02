@@ -2,9 +2,8 @@ package br.com.ilhasoft.voy.ui.comment
 
 import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.shared.extensions.format
 import io.reactivex.functions.Function
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Created by felipe on 31/01/18.
@@ -21,15 +20,10 @@ class CommentsUIMapper : Function<List<ReportComment>, List<CommentUIModel>> {
                     it.createdBy.id,
                     userName(it.createdBy),
                     it.text,
-                    formatCreatedOnDate(it.createdOn),
+                    it.createdOn.format("MMM dd, yyyy"),
                     it.createdBy.avatar
             )
         }
-    }
-
-    private fun formatCreatedOnDate(createdOn: Date): String {
-        val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-        return formatter.format(createdOn)
     }
 
     private fun userName(createdBy: User): String {

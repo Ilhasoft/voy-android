@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.ui.report.detail.carousel
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -53,7 +54,7 @@ class CarouselFragment : BaseFragment(), CarouselContract {
 
     override fun onStart() {
         super.onStart()
-        presenter.start()
+        presenter.start()l
     }
 
     override fun onStop() {
@@ -70,7 +71,7 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         media?.apply {
             if (mediaType == ReportFile.TYPE_VIDEO) {
                 //FIXME handle unsupported media files type and codec (3gp, mp4 codec)
-                startActivity(VideoViewActivity.createIntent(context).putExtra("url", file))
+                startActivity(VideoViewActivity.createIntent(context, file))
             } else {
                 startActivity(MediaViewOptions(ImageMedia(file)).createIntent(context))
             }
@@ -78,19 +79,20 @@ class CarouselFragment : BaseFragment(), CarouselContract {
     }
 
     private fun setupView() {
-        binding.run {
+        binding.apply {
             presenter = this@CarouselFragment.presenter
             media = this@CarouselFragment.media
-            media?.apply {
-                if (mediaType == ReportFile.TYPE_VIDEO)
-                    play.visibility = View.VISIBLE
-                //TODO implement database query for local uris before requesting from url
-                GlideApp.with(context)
-                        .load(file)
-                        .centerCrop()
-                        .into(image)
-            }
+        }
+
+        media?.let {
+            if (it.mediaType == ReportFile.TYPE_VIDEO)
+                binding.play.visibility = View.VISIBLE
+            //TODO implement database query for local uris before requesting from url
+
+            GlideApp.with(context)
+                    .load(Uri.parse(it.file))
+                    .centerCrop()
+                    .into(binding.image)
         }
     }
-
 }

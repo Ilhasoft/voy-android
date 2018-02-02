@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="br.com.ilhasoft.voy.shared.extensions.DateHelper"/>
+
         <variable
             name="report"
             type="br.com.ilhasoft.voy.models.Report" />
@@ -33,95 +35,89 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <FrameLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="28dp">
 
-                <LinearLayout
+                <include
+                    android:id="@+id/viewMedias"
+                    layout="@layout/view_detail_viewpager" />
+
+                <TextView
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="28dp">
+                    android:layout_marginTop="12dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@{report.name}"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="Pollution, a global problem"
+                    tools:textColor="@color/vivid_purple_two" />
 
-                    <include
-                        android:id="@+id/viewMedias"
-                        layout="@layout/view_detail_viewpager" />
+                <TextView
+                    android:id="@+id/created_on"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@{DateHelper.format(report.createdOn, `MMM dd, yyyy`)}"
+                    android:textColor="@color/greyish_brown"
+                    android:textSize="12sp"
+                    tools:text="Aug 03, 2017" />
 
-                    <TextView
-                        android:id="@+id/name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="@{report.name}"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        tools:text="Pollution, a global problem"
-                        tools:textColor="@color/vivid_purple_two" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@{report.description}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    tools:text="KOPAJA - Koperasi Angkutan Jakarta, or in English Jakarta transportation Cooperation is a public transportation service in Jakarta. Many people in Jakarta use this transportation for commuting to the workplace from home, or vice versa. Besides providing benefits, KOPAJA has a bad impact on respiratory health from it's emissions. KOPAJA " />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="@{report.formattedDate()}"
-                        android:textColor="@color/greyish_brown"
-                        android:textSize="12sp"
-                        tools:text="Aug 03, 2017" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    tools:listitem="@layout/item_tag" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="@{report.description}"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        tools:text="KOPAJA - Koperasi Angkutan Jakarta, or in English Jakarta transportation Cooperation is a public transportation service in Jakarta. Many people in Jakarta use this transportation for commuting to the workplace from home, or vice versa. Besides providing benefits, KOPAJA has a bad impact on respiratory health from it's emissions. KOPAJA " />
+            </LinearLayout>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/tags"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        tools:listitem="@layout/item_tag" />
+        </ScrollView>
 
-                </LinearLayout>
-
-            </ScrollView>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="bottom"
-                android:layout_marginTop="16dp"
-                android:background="@color/white"
-                android:clickable="@{report.canReceiveComments}"
-                android:drawableLeft="@drawable/ic_message_baloon"
-                android:drawablePadding="-124dp"
-                android:drawableStart="@drawable/ic_message_baloon"
-                android:onClick="@{() -> presenter.onClickCommentOnReport()}"
-                android:paddingLeft="112dp"
-                android:paddingStart="112dp"
-                android:text="@string/comment_report_label"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:theme="@style/WhiteRaisedButton"
-                tools:ignore="RtlSymmetry" />
-
-        </FrameLayout>
-
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
+            android:clickable="@{report.canReceiveComments}"
+            android:drawableLeft="@drawable/ic_message_baloon"
+            android:drawablePadding="-124dp"
+            android:drawableStart="@drawable/ic_message_baloon"
+            android:onClick="@{() -> presenter.onClickCommentOnReport()}"
+            android:paddingLeft="112dp"
+            android:paddingStart="112dp"
+            android:text="@string/comment_report_label"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:theme="@style/WhiteRaisedButton"
+            tools:ignore="RtlSymmetry" />
     </LinearLayout>
-
 </layout>
