@@ -82,4 +82,10 @@
     <string name="comment_delete_error">We have a problem to remove this comment.</string>
     <string name="comment_create_error">We have a problem to create a new comment.</string>
     <string name="http_request_error">We have a problem to process your request, try again latter!</string>
+
+    <string name="report_was_approved">Your report was approved</string>
+    <string name="report_was_not_approved">Your report was not approved</string>
+    <string name="commentt_was_approved">You have a new comment on your report</string>
+    <string name="commentt_was_not_approved">Your comment was not approved</string>
+
 </resources>

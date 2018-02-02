@@ -6,6 +6,8 @@ import br.com.ilhasoft.voy.network.notification.NotificationService
 import br.com.ilhasoft.voy.network.projects.ProjectService
 import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeContract::class.java) {
@@ -19,13 +21,8 @@ class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeCont
 
     override fun attachView(view: HomeContract) {
         super.attachView(view)
-        notificationService.getNotifications().compose(RxHelper.defaultFlowableSchedulers())
-                .subscribe({
-                    val i = it[0]
-                }, {
-                    Timber.e(it)
-                })
-        //        loadData()
+        loadData()
+        loadNotifications()
     }
 
     fun onClickMyAccount() {
@@ -50,8 +47,12 @@ class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeCont
         loadThemesData(selectedProject!!.id)
     }
 
-    fun onClickItemNotification(notification: Notification?) {
-        view.navigateToNotificationDetail()
+    fun onClickItemNotification(notification: Notification) {
+        notificationService.markAsRead(notification.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete { navigateToNotificationDetails(notification) }
+                .subscribe({}, { Timber.e(it) })
     }
 
     fun onClickTheme(theme: Theme) {
@@ -82,12 +83,27 @@ class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeCont
                 .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
     }
 
+    private fun loadNotifications() {
+        notificationService.getNotifications()
+                .compose(RxHelper.defaultFlowableSchedulers())
+                .subscribe({
+                    view.fillNotificationAdapter(it)
+                }, {
+                    Timber.e(it)
+                })
+    }
+
     private fun fillProjectsAdapter(projects: MutableList<Project>) {
         view.fillProjectsAdapter(projects)
     }
 
     private fun fillThemesAdapter(themes: MutableList<Theme>) {
         view.fillThemesAdapter(themes)
+    }
+
+    private fun navigateToNotificationDetails(notification: Notification) {
+        notification.read = true
+        view.navigateToNotificationDetail(notification)
     }
 
 }
