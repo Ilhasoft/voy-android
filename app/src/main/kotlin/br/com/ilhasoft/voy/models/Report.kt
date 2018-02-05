@@ -26,4 +26,6 @@ data class Report(@SerializedName("id") var id: Int = 0,
                   @SerializedName("last_image") var lastImage: ReportFile? = null,
                   @SerializedName("status") var status: Int = 0,
                   @SerializedName("urls") var urls: ArrayList<String> = arrayListOf(),
-                  @SerializedName("files") var files: ArrayList<ReportFile> = arrayListOf()) : Parcelable
+                  @SerializedName("files") var files: ArrayList<ReportFile> = arrayListOf(),
+                  @SerializedName("last_notification") var lastNotification: String? = ""
+) : Parcelable

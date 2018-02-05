@@ -38,6 +38,7 @@ import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
 import br.com.ilhasoft.voy.ui.report.detail.holder.TagViewHolder
+import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
@@ -88,6 +89,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
+        if (report?.status == ReportFragment.NOT_APPROVED_STATUS) showReportAlert()
     }
 
     override fun onStart() {
@@ -107,15 +109,14 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     override fun navigateBack() = onBackPressed()
 
-    //TODO Show respective message from issue reported
     override fun showReportAlert() {
-        val spannable = SpannableString("This is a generic message to warning you that something is wrong with this report")
+        val spannable = SpannableString(report?.lastNotification ?: "")
         spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.darkish_pink)),
                 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val dialog = AlertDialog.Builder(this)
                 .setTitle(getString(R.string.issues_related_report))
                 .setMessage(spannable)
-                .setPositiveButton(getString(R.string.edit_report_label).toUpperCase(), { _, _ -> })
+                .setPositiveButton(getString(R.string.edit_report_label).toUpperCase(), { _, _ -> navigateToEditReport() })
                 .setNegativeButton(getString(R.string.close_dialog_label).toUpperCase(), { _, _ -> })
                 .show()
         dialog.getButton(Dialog.BUTTON_NEGATIVE)

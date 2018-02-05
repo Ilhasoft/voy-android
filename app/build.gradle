@@ -4,6 +4,9 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+
+    loadProperties("signature")
+
     compileSdkVersion 26
     defaultConfig {
         applicationId "br.com.ilhasoft.voy"
@@ -14,7 +17,12 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
-        signature {}
+        signature {
+            keyAlias signatureProperties.alias
+            keyPassword signatureProperties.keyPassword
+            storeFile file(signatureProperties.keyPath)
+            storePassword signatureProperties.storePassword
+        }
     }
     buildTypes {
         debug {}
@@ -23,6 +31,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signature
         }
     }
     dataBinding {
@@ -121,4 +130,10 @@ dependencies {
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${versions.dispatcher}"
 
     implementation "com.google.android.gms:play-services-location:${versions.playServiceLocation}"
+}
+
+def loadProperties(propertyName) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
+    ext."${propertyName}Properties" = properties
 }
