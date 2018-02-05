@@ -5,7 +5,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
 
-    loadProperties("signature")
+//    loadProperties("signature")
 
     compileSdkVersion 26
     defaultConfig {
@@ -18,10 +18,10 @@ android {
     }
     signingConfigs {
         signature {
-            keyAlias signatureProperties.alias
-            keyPassword signatureProperties.keyPassword
-            storeFile file(signatureProperties.keyPath)
-            storePassword signatureProperties.storePassword
+//            keyAlias signatureProperties.alias
+//            keyPassword signatureProperties.keyPassword
+//            storeFile file(signatureProperties.keyPath)
+//            storePassword signatureProperties.storePassword
         }
     }
     buildTypes {
@@ -31,7 +31,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.signature
+//            signingConfig signingConfigs.signature
         }
     }
     dataBinding {
@@ -132,8 +132,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:${versions.playServiceLocation}"
 }
 
-def loadProperties(propertyName) {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
-    ext."${propertyName}Properties" = properties
-}
+//def loadProperties(propertyName) {
+//    Properties properties = new Properties()
+//    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
+//    ext."${propertyName}Properties" = properties
+//}

@@ -79,8 +79,7 @@ class LoginActivity : BaseActivity(), LoginContract {
     private fun setupView() {
         binding.run {
             credentials = if (BuildConfig.DEBUG)
-                Credentials("pirralho", "123456")
-//                Credentials(getString(R.string.username_dev), getString(R.string.password_dev))
+                Credentials(getString(R.string.username_dev), getString(R.string.password_dev))
             else
                 this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
