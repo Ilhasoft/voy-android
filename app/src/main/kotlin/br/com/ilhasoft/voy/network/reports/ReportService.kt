@@ -4,7 +4,6 @@ import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.ServiceFactory
 import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
-import io.reactivex.Flowable
 import io.reactivex.Single
 
 /**
@@ -53,7 +52,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
                    name: String,
                    tags: List<String>,
                    urls: List<String>?): Single<Report> {
-        val request = CreateReportRequest(theme, location, description, name, tags, urls)
+        val request = ReportRequest(theme, location, description, name, tags, urls)
         return api.saveReport(request)
     }
 
@@ -65,7 +64,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
                      tags: List<String>,
                      urls: List<String>?): Single<Report> {
 
-        val requestBody = CreateReportRequest(theme, location, description, name, tags, urls)
+        val requestBody = ReportRequest(theme, location, description, name, tags, urls)
 
         return api.updateReport(reportId, requestBody)
     }

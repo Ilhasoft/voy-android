@@ -17,12 +17,12 @@ interface ReportsApi {
                   @QueryMap parameters: Map<String, Int?>): Single<Report>
 
     @POST("/api/reports/")
-    fun saveReport(@Body body: CreateReportRequest): Single<Report>
+    fun saveReport(@Body body: ReportRequest): Single<Report>
 
     // FIXME: Server with error (returning error 500)
     @PUT("/api/reports/{id}/")
     fun updateReport(@Path("id") id: Int,
-                     @Body body: CreateReportRequest): Single<Report>
+                     @Body body: ReportRequest): Single<Report>
 
     // TODO: implement partial update
 
