@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.shared.receivers
+package br.com.ilhasoft.voy.shared.connectivity
 
 /**
  * Created by lucasbarros on 06/02/18.

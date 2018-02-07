@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.shared.receivers
+package br.com.ilhasoft.voy.shared.connectivity
 
 import android.content.BroadcastReceiver
 import android.content.Context

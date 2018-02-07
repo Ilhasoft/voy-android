@@ -1,23 +1,20 @@
 package br.com.ilhasoft.voy.ui.base
 
-import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.shared.receivers.ConnectivityListener
-import br.com.ilhasoft.voy.shared.receivers.ConnectivityReceiver
+import br.com.ilhasoft.voy.shared.connectivity.ConnectivityManager
 
 
 /**
  * Created by lucasbarros on 22/11/17.
  */
-abstract class BaseActivity : AppCompatActivity(), BaseView, ConnectivityListener {
+abstract class BaseActivity : AppCompatActivity(), BaseView {
 
-    private val connectivityReceiver by lazy { ConnectivityReceiver() }
+    private val connectivityManager by lazy { ConnectivityManager() }
 
     private val progressDialog: IndeterminateProgressDialog by lazy {
         val dialog = IndeterminateProgressDialog(this)
@@ -32,13 +29,15 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, ConnectivityListene
 
     override fun onStart() {
         super.onStart()
-        connectivityReceiver.connectivityListener = this
-        registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        connectivityManager.registerReceive(this)
+        connectivityManager.status.subscribe({
+            showMessage("isConnected: $it")
+        })
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(connectivityReceiver)
+        connectivityManager.unregisterReceiver(this)
     }
 
     override fun dismissLoading() {
@@ -59,9 +58,5 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, ConnectivityListene
             return view.getChildAt(0)
         }
         return window.decorView.rootView
-    }
-
-    override fun onNetworkStatusChange(isConnect: Boolean) {
-        showMessage("$isConnect")
     }
 }
