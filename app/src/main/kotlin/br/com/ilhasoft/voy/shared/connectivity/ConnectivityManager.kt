@@ -10,13 +10,14 @@ import io.reactivex.subjects.PublishSubject
  */
 class ConnectivityManager : ConnectivityListener {
 
-    private val connectivityReceiver by lazy {
-        ConnectivityReceiver().apply {
-            connectivityListener = this@ConnectivityManager
-        }
+    companion object {
+        private val connectivityReceiver by lazy { ConnectivityReceiver() }
+
+        fun isConnected(): Boolean = connectivityReceiver.isConnected()
     }
+
     val status = PublishSubject.create<Boolean>().toSerialized()
-    
+
     fun registerReceive(context: Context) {
         context.registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
     }

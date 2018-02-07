@@ -6,13 +6,15 @@ import br.com.ilhasoft.voy.network.notification.NotificationService
 import br.com.ilhasoft.voy.network.projects.ProjectService
 import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import br.com.ilhasoft.voy.shared.repositories.ProjectRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeContract::class.java) {
+class HomePresenter(preferences: Preferences,
+                    private val projectRepository: ProjectRepository) : Presenter<HomeContract>(HomeContract::class.java) {
 
-    private val projectService: ProjectService by lazy { ProjectService() }
+//    private val projectService: ProjectService by lazy { ProjectService() }
     private val themeService: ThemeService by lazy { ThemeService() }
     private val notificationService by lazy { NotificationService() }
 
@@ -22,7 +24,7 @@ class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeCont
     override fun attachView(view: HomeContract) {
         super.attachView(view)
         loadData()
-        loadNotifications()
+//        loadNotifications()
     }
 
     fun onClickMyAccount() {
@@ -62,7 +64,7 @@ class HomePresenter(preferences: Preferences) : Presenter<HomeContract>(HomeCont
     fun isSelectedProject(project: Project): Boolean = selectedProject?.id == project.id
 
     private fun loadData() {
-        projectService.getProjects()
+        projectRepository.getProjects()
                 .compose(RxHelper.defaultFlowableSchedulers())
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }

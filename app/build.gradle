@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
 
 android {
 
@@ -130,6 +131,10 @@ dependencies {
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${versions.dispatcher}"
 
     implementation "com.google.android.gms:play-services-location:${versions.playServiceLocation}"
+}
+
+realm {
+    syncEnabled = true
 }
 
 //def loadProperties(propertyName) {

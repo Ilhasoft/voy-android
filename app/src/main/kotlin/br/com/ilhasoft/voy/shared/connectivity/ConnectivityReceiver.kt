@@ -18,7 +18,7 @@ class ConnectivityReceiver : BroadcastReceiver() {
         connectivityListener?.onNetworkStatusChange(isConnected())
     }
 
-    private fun isConnected(): Boolean {
+    fun isConnected(): Boolean {
         val connectivityManager = VoyApplication.instance.applicationContext
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetworkInfo
