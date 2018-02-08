@@ -3,16 +3,14 @@ package br.com.ilhasoft.voy.ui.home
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.notification.NotificationService
-import br.com.ilhasoft.voy.network.projects.ProjectService
 import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
-import br.com.ilhasoft.voy.shared.repositories.ProjectRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class HomePresenter(preferences: Preferences,
-                    private val projectRepository: ProjectRepository) : Presenter<HomeContract>(HomeContract::class.java) {
+                    private val projectRepository: HomeInteractor) : Presenter<HomeContract>(HomeContract::class.java) {
 
 //    private val projectService: ProjectService by lazy { ProjectService() }
     private val themeService: ThemeService by lazy { ThemeService() }
@@ -68,13 +66,13 @@ class HomePresenter(preferences: Preferences,
                 .compose(RxHelper.defaultFlowableSchedulers())
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }
-                .subscribe({
-                    fillProjectsAdapter(it)
-                    if (it.isNotEmpty()) {
-                        selectedProject = it.first()
-                        loadThemesData(selectedProject!!.id)
-                    }
-                }, { Timber.e(it) })
+                .doOnNext { fillProjectsAdapter(it) }
+                .filter { it.isNotEmpty() }
+                .doOnNext { selectedProject = it.first() }
+                .observeOn(Schedulers.io())
+                .flatMap { themeService.getThemes(selectedProject!!.id, userId) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
     }
 
     private fun loadThemesData(projectId: Int) {

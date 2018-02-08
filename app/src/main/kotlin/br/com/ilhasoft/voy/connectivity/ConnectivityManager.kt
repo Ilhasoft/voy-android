@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.shared.connectivity
+package br.com.ilhasoft.voy.connectivity
 
 import android.content.Context
 import android.content.IntentFilter

@@ -20,7 +20,6 @@ import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.Theme
-import br.com.ilhasoft.voy.shared.repositories.ProjectRepositoryImpl
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.holder.NotificationViewHolder
@@ -39,7 +38,7 @@ class HomeActivity : BaseActivity(), HomeContract {
     private val binding: ActivityHomeBinding by lazy {
         DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
     }
-    private val presenter: HomePresenter by lazy { HomePresenter(SharedPreferences(this), ProjectRepositoryImpl()) }
+    private val presenter: HomePresenter by lazy { HomePresenter(SharedPreferences(this), HomeInteractorImpl()) }
     private val projectViewHolder: OnCreateViewHolder<Project, ProjectViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ProjectViewHolder(ItemMapBinding.inflate(layoutInflater, parent, false), presenter)

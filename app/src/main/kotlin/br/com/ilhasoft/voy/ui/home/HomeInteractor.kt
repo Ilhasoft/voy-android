@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.shared.repositories
+package br.com.ilhasoft.voy.ui.home
 
 import br.com.ilhasoft.voy.models.Project
 import io.reactivex.Flowable
@@ -6,8 +6,6 @@ import io.reactivex.Flowable
 /**
  * Created by lucas on 07/02/18.
  */
-interface ProjectRepository {
+interface HomeInteractor {
     fun getProjects(): Flowable<MutableList<Project>>
-
-    fun saveProjects(projects: MutableList<Project>)
 }

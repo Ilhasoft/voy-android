@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.shared.connectivity.ConnectivityManager
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 
 
 /**
