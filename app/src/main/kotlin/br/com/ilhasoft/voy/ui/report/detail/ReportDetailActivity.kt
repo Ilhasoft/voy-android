@@ -55,7 +55,6 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         }
     }
 
-
     private val report: Report? by lazy { intent.getParcelableExtra<Report?>(EXTRA_REPORT) }
     private val binding: ActivityReportDetailBinding by lazy {
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
@@ -128,7 +127,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     override fun showPopupMenu() = popupMenu.show()
-override fun navigateToCommentReport() {
+
+    override fun navigateToCommentReport() {
         startActivity(CommentsActivity.createIntent(this, report?.id ?: 0))
     }
 
@@ -236,12 +236,11 @@ override fun navigateToCommentReport() {
     private fun navigateToEditReport() = startActivity(AddReportActivity.createIntent(this, report))
 
     private fun setupTagData(): TagDataUI {
-        val tagDataUI = TagDataUI
-        tagDataUI.selectedColor = Color.parseColor("#${presenter.getThemeColor()}")
-        tagDataUI.textSelectedColor = ContextCompat.getColor(this, R.color.white_three)
-        tagDataUI.textSize = 12F
-        return tagDataUI
-
+        return TagDataUI.apply {
+            selectedColor = Color.parseColor("#${presenter.getThemeColor()}")
+            textSelectedColor = ContextCompat.getColor(this@ReportDetailActivity, R.color.white_three)
+            textSize = 12F
+        }
     }
 
 }

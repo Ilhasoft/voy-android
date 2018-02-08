@@ -58,13 +58,13 @@ class AddTagsFragment : BaseFragment() {
     }
 
     private fun setupTagData(): TagDataUI {
-        val tagDataUI = TagDataUI
-        tagDataUI.selectedColor = ContextCompat.getColor(context, R.color.bright_sky_blue)
-        tagDataUI.textSelectedColor = ContextCompat.getColor(context, R.color.white_three)
-        tagDataUI.normalColor = ContextCompat.getColor(context, R.color.white_five)
-        tagDataUI.textNormalColor = ContextCompat.getColor(context, R.color.black)
-        tagDataUI.textSize = 12F
-        return tagDataUI
+        return TagDataUI.apply {
+            selectedColor = ContextCompat.getColor(context, R.color.bright_sky_blue)
+            textSelectedColor = ContextCompat.getColor(context, R.color.white_three)
+            normalColor = ContextCompat.getColor(context, R.color.white_five)
+            textNormalColor = ContextCompat.getColor(context, R.color.black)
+            textSize = 12F
+        }
     }
 
     private fun setTags(tagsList: List<String>) {
