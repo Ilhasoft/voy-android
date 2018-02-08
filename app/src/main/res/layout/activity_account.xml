@@ -46,11 +46,15 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"/>
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp">
+            android:layout_gravity="center_horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="64dp"
@@ -72,10 +76,14 @@
 
         </FrameLayout>
 
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="44dp"
             android:layout_weight="1"
             android:orientation="vertical"
             app:isVisible="@{!editingPhoto}"
@@ -83,7 +91,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
+                android:layout_height="0.2dp"
                 android:background="@color/cool_grey" />
 
             <EditText
@@ -97,8 +105,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/cool_grey" />
+                android:layout_height="0.2dp"
+                android:background="@color/warm_grey" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -111,8 +119,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/cool_grey" />
+                android:layout_height="0.2dp"
+                android:background="@color/warm_grey" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -146,8 +154,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/cool_grey" />
+                android:layout_height="0.2dp"
+                android:background="@color/warm_grey" />
 
         </LinearLayout>
 
