@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.db.project
 
 import br.com.ilhasoft.voy.models.Project
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.realm.Realm
 
 /**
@@ -20,7 +21,6 @@ class ProjectDbHelper {
     }
 
     fun saveProjects(projects: MutableList<Project>): Flowable<MutableList<Project>> {
-        //TODO: Refactor to include realm with RxJava
         return Flowable.fromCallable {
             var projectsDb = projects.map { project ->
                 ProjectDbModel().apply {

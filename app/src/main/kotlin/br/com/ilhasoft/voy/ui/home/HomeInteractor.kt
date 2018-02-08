@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.ui.home
 
 import br.com.ilhasoft.voy.models.Project
+import br.com.ilhasoft.voy.models.Theme
 import io.reactivex.Flowable
 
 /**
@@ -8,4 +9,6 @@ import io.reactivex.Flowable
  */
 interface HomeInteractor {
     fun getProjects(): Flowable<MutableList<Project>>
+
+    fun getThemes(projectId: Int, userId: Int): Flowable<MutableList<Theme>>
 }

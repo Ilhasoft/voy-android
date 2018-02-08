@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class HomePresenter(preferences: Preferences,
-                    private val projectRepository: HomeInteractor) : Presenter<HomeContract>(HomeContract::class.java) {
+                    private val homeInteractor: HomeInteractor) : Presenter<HomeContract>(HomeContract::class.java) {
 
 //    private val projectService: ProjectService by lazy { ProjectService() }
     private val themeService: ThemeService by lazy { ThemeService() }
@@ -62,22 +62,20 @@ class HomePresenter(preferences: Preferences,
     fun isSelectedProject(project: Project): Boolean = selectedProject?.id == project.id
 
     private fun loadData() {
-        projectRepository.getProjects()
-                .compose(RxHelper.defaultFlowableSchedulers())
+        homeInteractor.getProjects()
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }
                 .doOnNext { fillProjectsAdapter(it) }
                 .filter { it.isNotEmpty() }
                 .doOnNext { selectedProject = it.first() }
                 .observeOn(Schedulers.io())
-                .flatMap { themeService.getThemes(selectedProject!!.id, userId) }
+                .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
     }
 
     private fun loadThemesData(projectId: Int) {
-        themeService.getThemes(projectId, user = userId)
-                .compose(RxHelper.defaultFlowableSchedulers())
+        homeInteractor.getThemes(projectId, userId)
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }
                 .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })

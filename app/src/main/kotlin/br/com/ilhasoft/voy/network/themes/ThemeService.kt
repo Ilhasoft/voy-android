@@ -12,14 +12,10 @@ import io.reactivex.Single
 class ThemeService : ServiceFactory<ThemeApi>(ThemeApi::class.java) {
 
     fun getThemes(project: Int? = null,
-                  yearStart: Int? = null,
-                  yearEnd: Int? = null,
                   user: Int? = null): Flowable<MutableList<Theme>> {
         val themesRequest = mutableMapOf<String, Int?>()
         themesRequest.apply {
             putIfNotNull("project", project)
-            putIfNotNull("year_start", yearStart)
-            putIfNotNull("year_end", yearEnd)
             putIfNotNull("user", user)
         }
         return api.getThemes(themesRequest)
