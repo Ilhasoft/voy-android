@@ -236,7 +236,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private fun navigateToEditReport() = startActivity(AddReportActivity.createIntent(this, report))
 
     private fun setupTagData(): TagDataUI {
-        return TagDataUI.apply {
+        return TagDataUI().apply {
             selectedColor = Color.parseColor("#${presenter.getThemeColor()}")
             textSelectedColor = ContextCompat.getColor(this@ReportDetailActivity, R.color.white_three)
             textSize = 10F

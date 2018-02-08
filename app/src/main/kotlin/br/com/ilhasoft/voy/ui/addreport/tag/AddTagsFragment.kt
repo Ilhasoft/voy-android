@@ -58,7 +58,7 @@ class AddTagsFragment : BaseFragment() {
     }
 
     private fun setupTagData(): TagDataUI {
-        return TagDataUI.apply {
+        return TagDataUI().apply {
             selectedColor = ContextCompat.getColor(context, R.color.bright_sky_blue)
             textSelectedColor = ContextCompat.getColor(context, R.color.white_three)
             normalColor = ContextCompat.getColor(context, R.color.white_five)
