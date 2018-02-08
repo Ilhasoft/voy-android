@@ -239,7 +239,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         return TagDataUI.apply {
             selectedColor = Color.parseColor("#${presenter.getThemeColor()}")
             textSelectedColor = ContextCompat.getColor(this@ReportDetailActivity, R.color.white_three)
-            textSize = 12F
+            textSize = 10F
         }
     }
 
