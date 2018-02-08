@@ -20,7 +20,7 @@ android {
         signature {
             keyAlias signatureProperties.alias
             keyPassword signatureProperties.keyPassword
-            //storeFile file(signatureProperties.keyPath)
+            storeFile file(signatureProperties.keyPath)
             storePassword signatureProperties.storePassword
         }
     }
@@ -134,6 +134,6 @@ dependencies {
 
 def loadProperties(propertyName) {
     Properties properties = new Properties()
-    //properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
+    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
     ext."${propertyName}Properties" = properties
 }
