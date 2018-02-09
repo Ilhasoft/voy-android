@@ -33,7 +33,7 @@ class ThemeDbHelper {
                             lng = bound[1]
                         }
                     })
-                    tags.addAll(theme.tags.map { title -> TagDbModel().apply { tag = title } })
+                    tags.addAll(theme.tags.map { title -> StringDbModel().apply { text = title } })
                     color = theme.color
                     allowLinks = theme.allowLinks
                 }

@@ -14,7 +14,7 @@ open class ThemeDbModel : RealmObject() {
     var projectId: Int = 0
     var name: String = "ThemeName"
     var bounds: RealmList<BoundDbModel> = RealmList()
-    var tags: RealmList<TagDbModel> = RealmList()
+    var tags: RealmList<StringDbModel> = RealmList()
     var color: String = "00cbff"
     var allowLinks: Boolean = true
 }
@@ -23,7 +23,7 @@ fun ThemeDbModel.toTheme(): Theme {
     return Theme(id = this.id,
             name = this.name,
             bounds = this.bounds.map { arrayListOf(it.lat, it.lng) }.toList(),
-            tags = this.tags.map { it.tag }.toList(),
+            tags = this.tags.map { it.text }.toList(),
             color = this.color,
             allowLinks = this.allowLinks)
 }

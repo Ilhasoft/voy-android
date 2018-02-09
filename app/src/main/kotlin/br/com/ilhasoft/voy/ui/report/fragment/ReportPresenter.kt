@@ -8,7 +8,8 @@ import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 
-class ReportPresenter(private val preferences: Preferences) :
+class ReportPresenter(private val preferences: Preferences,
+                      private val reportInteractor: ReportInteractor) :
         Presenter<ReportContract>(ReportContract::class.java) {
 
     private val reportService: ReportService by lazy { ReportService() }
@@ -21,10 +22,9 @@ class ReportPresenter(private val preferences: Preferences) :
     }
 
     private fun loadReportsData() {
-        reportService.getReports(page = 1, page_size = 50,
+        reportInteractor.getReports(page = 1, page_size = 50,
                 theme = ThemeData.themeId, mapper = preferences.getInt(User.ID), status = getStatus())
-                .compose(RxHelper.defaultSingleSchedulers())
-                .subscribe({ fillReportsAdapter(it.results) }, {})
+                .subscribe({ fillReportsAdapter(it) }, {})
     }
 
     private fun getStatus(): Int? = view?.getStatus()

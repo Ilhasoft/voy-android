@@ -59,6 +59,14 @@ fun <T> Single<T>.fromIoToMainThread(): Single<T> {
     }
 }
 
+fun <T> Single<T>.onMainThread(): Single<T> {
+    return compose{ upstream ->
+        upstream
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+}
+
 fun <T> Single<T>.loadControl(loadView: LoadView): Single<T> {
     return compose{ upstream ->
         upstream

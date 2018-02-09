@@ -5,6 +5,6 @@ import io.realm.RealmObject
 /**
  * Created by lucasbarros on 08/02/18.
  */
-open class TagDbModel: RealmObject() {
-    var tag: String = ""
+open class StringDbModel : RealmObject() {
+    var text: String = ""
 }
