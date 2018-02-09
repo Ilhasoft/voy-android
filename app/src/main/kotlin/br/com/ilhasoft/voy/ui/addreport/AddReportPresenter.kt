@@ -16,7 +16,7 @@ import timber.log.Timber
 /**
  * Created by lucasbarros on 23/11/17.
  */
-class AddReportPresenter(private val reportViewModel: ReportViewModel, private val bound: ArrayList<ArrayList<Double>>,
+class AddReportPresenter(private val reportViewModel: ReportViewModel, private val bound: List<List<Double>>,
                          private val report: Report?) :
         Presenter<AddReportContract>(AddReportContract::class.java) {
 

@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.db
+package br.com.ilhasoft.voy.db.theme
 
 import io.realm.RealmObject
 

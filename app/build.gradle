@@ -75,6 +75,7 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:${versions.androidSupport}"
+    implementation "com.android.support:multidex:${versions.multidex}"
 
     testImplementation 'junit:junit:4.12'
 
