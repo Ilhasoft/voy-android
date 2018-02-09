@@ -13,6 +13,7 @@ android {
         applicationId "br.com.ilhasoft.voy"
         minSdkVersion 16
         targetSdkVersion 26
+        multiDexEnabled true
         versionCode 1
         versionName "0.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

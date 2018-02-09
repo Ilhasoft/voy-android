@@ -19,6 +19,14 @@ fun <T> Flowable<T>.fromIoToMainThread(): Flowable<T> {
     }
 }
 
+fun <T> Flowable<T>.onMainThread(): Flowable<T> {
+    return compose{ upstream ->
+        upstream
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+}
+
 fun <T> Flowable<T>.loadControl(loadView: LoadView): Flowable<T> {
     return compose{ upstream ->
         upstream

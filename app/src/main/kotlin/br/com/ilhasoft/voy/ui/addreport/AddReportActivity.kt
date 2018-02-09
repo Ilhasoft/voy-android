@@ -55,7 +55,10 @@ class AddReportActivity : BaseActivity(), AddReportContract {
 
     private val locationClient by lazy { LocationServices.getFusedLocationProviderClient(this) }
 
-    private val reportViewModel by lazy { ViewModelProviders.of(this).get(ReportViewModel::class.java) }
+    private val reportViewModel by lazy {
+        val factory = ReportViewModelFactory(AddReportInteractorImpl())
+        ViewModelProviders.of(this, factory).get(ReportViewModel::class.java)
+    }
 
     private val presenter by lazy {
         AddReportPresenter(reportViewModel,
