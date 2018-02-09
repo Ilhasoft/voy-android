@@ -29,6 +29,7 @@ import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.models.TagDataUI
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
@@ -37,8 +38,8 @@ import br.com.ilhasoft.voy.ui.comment.CommentsActivity
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
-import br.com.ilhasoft.voy.ui.report.detail.holder.TagViewHolder
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
+import br.com.ilhasoft.voy.ui.shared.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
@@ -74,7 +75,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
     private val tagViewHolder: OnCreateViewHolder<String, TagViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
-            TagViewHolder(ItemTagBinding.inflate(layoutInflater, parent, false), presenter)
+            TagViewHolder(ItemTagBinding.inflate(layoutInflater, parent, false), tagDataUI, null)
         }
     }
     private val tagsAdapter: AutoRecyclerAdapter<String, TagViewHolder> by lazy {
@@ -82,6 +83,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             setHasStableIds(true)
         }
     }
+
+    private val tagDataUI: TagDataUI by lazy { setupTagData() }
 
     private lateinit var popupMenu: PopupMenu
 
@@ -231,4 +234,13 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     private fun navigateToEditReport() = startActivity(AddReportActivity.createIntent(this, report))
+
+    private fun setupTagData(): TagDataUI {
+        return TagDataUI().apply {
+            selectedColor = Color.parseColor("#${presenter.getThemeColor()}")
+            textSelectedColor = ContextCompat.getColor(this@ReportDetailActivity, R.color.white_three)
+            textSize = 10F
+        }
+    }
+
 }
