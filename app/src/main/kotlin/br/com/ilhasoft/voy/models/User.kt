@@ -24,6 +24,15 @@ data class User(val id: Int,
         @JvmStatic
         val ID = "id"
 
+        @JvmStatic
+        val USERNAME = "username"
+
+        @JvmStatic
+        val AVATAR = "avatar"
+
+        @JvmStatic
+        val EMAIL = "email"
+
         @JvmField
         val CREATOR: Parcelable.Creator<User> = object : Parcelable.Creator<User> {
             override fun createFromParcel(source: Parcel): User = User(source)

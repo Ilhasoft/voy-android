@@ -12,16 +12,17 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class AccountPresenter(
-        private val userService: UserService,
-        private val preferences: Preferences
+        private val accountInteractor: AccountInteractor
 ) : Presenter<AccountContract>(AccountContract::class.java) {
 
     var avatarDrawableId: Int? = null
     private val compositeDisposable = CompositeDisposable()
+    private val userService = UserService()
 
     override fun start() {
         super.start()
-        getUser()
+        loadUser()
+        //getUser()
     }
 
     override fun detachView() {
@@ -29,23 +30,40 @@ class AccountPresenter(
         super.detachView()
     }
 
-    private fun getUser() {
-        compositeDisposable.add(
-                userService.getUser()
-                        .fromIoToMainThread()
-                        .loadControl(view)
-                        .filter { it.isNotEmpty() }
-                        .doOnNext { setAvatarByPosition(it.first().avatar.extractNumbers()) }
-                        .subscribe(
-                                { view.setUser(it.first()) },
-                                {
-                                    ErrorHandlerHelper.showError(it) { msg ->
-                                        view.showMessage(msg)
-                                    }
-                                }
-                        )
-        )
+    private fun loadUser() {
+        accountInteractor.getUser()
+                .fromIoToMainThread()
+                .subscribe(
+                        { user ->
+                            setAvatarByPosition(user.avatar.extractNumbers())
+                            view.setUser(user)
+                        },
+                        {
+                            ErrorHandlerHelper.showError(it) { msg ->
+                                view.showMessage(msg)
+                            }
+                        }
+                )
+
     }
+//
+//    private fun getUser() {
+//        compositeDisposable.add(
+//                userService.getUser()
+//                        .fromIoToMainThread()
+//                        .loadControl(view)
+//                        .filter { it.isNotEmpty() }
+//                        .doOnNext { setAvatarByPosition(it.first().avatar.extractNumbers()) }
+//                        .subscribe(
+//                                { view.setUser(it.first()) },
+//                                {
+//                                    ErrorHandlerHelper.showError(it) { msg ->
+//                                        view.showMessage(msg)
+//                                    }
+//                                }
+//                        )
+//        )
+//    }
 
     fun saveUser(user: User) {
         compositeDisposable.add(
@@ -84,8 +102,8 @@ class AccountPresenter(
     }
 
     fun onClickLogout() {
-        preferences.remove(User.TOKEN)
-        preferences.remove(User.ID)
+//        preferences.remove(User.TOKEN)
+//        preferences.remove(User.ID)
         view.navigateToMakeLogout()
     }
 

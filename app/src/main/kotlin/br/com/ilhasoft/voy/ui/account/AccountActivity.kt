@@ -35,7 +35,7 @@ class AccountActivity : BaseActivity(), AccountContract {
         DataBindingUtil.setContentView<ActivityAccountBinding>(this, R.layout.activity_account)
     }
     private val presenter: AccountPresenter by lazy {
-        AccountPresenter(UserService(), SharedPreferences(applicationContext))
+        AccountPresenter(AccountInteractorImpl(applicationContext))
     }
     private val avatarViewHolder: OnCreateViewHolder<Int, AvatarViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->

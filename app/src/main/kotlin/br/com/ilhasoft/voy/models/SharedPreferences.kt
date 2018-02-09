@@ -59,4 +59,6 @@ class SharedPreferences(context: Context) : Preferences {
         editor.remove(key).apply()
     }
 
+    fun getAllEntries() = client.all
+
 }
