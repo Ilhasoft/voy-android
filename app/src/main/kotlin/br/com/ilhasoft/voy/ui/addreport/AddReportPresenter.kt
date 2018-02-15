@@ -17,7 +17,7 @@ import timber.log.Timber
  * Created by lucasbarros on 23/11/17.
  */
 class AddReportPresenter(private val reportViewModel: ReportViewModel, private val bound: List<List<Double>>,
-                         private val report: Report?) :
+                         private val report: Report?, private val reportInteractor: AddReportInteractor) :
         Presenter<AddReportContract>(AddReportContract::class.java) {
 
     private val reportService = ReportService()
@@ -92,11 +92,9 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun saveReport() = with(reportViewModel) {
-        reportService.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags, links)
+        reportInteractor.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags, links)
                 .flatMapObservable { onSavedReportAndStartSaveFiles(it) }
                 .flatMapSingle { saveFile(it) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }
                 .doOnComplete { view.navigateToThanks() }

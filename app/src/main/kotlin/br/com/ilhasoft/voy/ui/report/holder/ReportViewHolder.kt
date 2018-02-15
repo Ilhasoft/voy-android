@@ -10,6 +10,7 @@ import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter
 
@@ -29,7 +30,7 @@ class ReportViewHolder(val binding: ItemReportBinding,
     override fun onBind(report: Report) {
         binding.let {
             it.themeIndicator.setBackgroundColor(Color.parseColor(getString(R.string.color_hex,
-                    report.themeColor)))
+                    ThemeData.themeColor)))
             it.approved = report.status == ReportFragment.APPROVED_STATUS
             it.report = report
 

@@ -35,8 +35,8 @@ abstract class BaseActivity : AppCompatActivity(), BaseView {
         })
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         connectivityManager.unregisterReceiver(this)
     }
 

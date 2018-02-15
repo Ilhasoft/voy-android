@@ -2,13 +2,11 @@ package br.com.ilhasoft.voy.db.report
 
 import br.com.ilhasoft.voy.db.theme.BoundDbModel
 import br.com.ilhasoft.voy.db.theme.StringDbModel
-import br.com.ilhasoft.voy.db.theme.ThemeDbModel
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.realm.Realm
-import io.realm.RealmList
 
 /**
  * Created by lucasbarros on 09/02/18.
@@ -19,8 +17,9 @@ class ReportDbHelper {
 
     fun getReports(): Flowable<List<Report>> {
         return Flowable.fromCallable {
-            val reportsDb = realm.where(ReportDbModel::class.java).equalTo("id", 0).findAll()
-            reportsDb.map { it.toTheme() }.toMutableList()
+            val id = 0
+            val reportsDb = realm.where(ReportDbModel::class.java).equalTo("id", id).findAll()
+            reportsDb.map { it.toReport() }.toMutableList()
         }
     }
 
@@ -29,7 +28,7 @@ class ReportDbHelper {
                    description: String?,
                    name: String,
                    tags: List<String>,
-                   urls: List<String>?): Single<Report>{
+                   urls: List<String>?): Single<Report> {
         //TODO: Refactor to include realm with RxJava
         return Single.fromCallable {
             var reportDb = ReportDbModel().apply {
@@ -50,7 +49,7 @@ class ReportDbHelper {
                 }
             }
             realm.beginTransaction()
-            reportDb = realm.copyToRealmOrUpdate(reportDb)
+            reportDb = realm.copyToRealm(reportDb)
             realm.commitTransaction()
             reportDb.toReport()
         }

@@ -47,9 +47,8 @@ class ThemeDbHelper {
 
     fun getThemeTags(themeId: Int): Flowable<MutableList<String>> {
         return Flowable.fromCallable {
-           realm.beginTransaction()
             val theme = realm.where(ThemeDbModel::class.java).equalTo("id", themeId).findFirst()
-            theme?.tags?.map { it.tag }?.toMutableList() ?: mutableListOf()
+            theme?.tags?.map { it.text }?.toMutableList() ?: mutableListOf()
         }
     }
 }

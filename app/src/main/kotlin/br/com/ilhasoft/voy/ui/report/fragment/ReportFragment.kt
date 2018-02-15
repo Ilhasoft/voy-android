@@ -23,7 +23,6 @@ class ReportFragment : BaseFragment(), ReportContract {
 
     companion object {
         private const val EXTRA_STATUS = "status"
-        private const val EXTRA_THEME_ID = "themeId"
         const val APPROVED_STATUS = 1
         const val PENDING_STATUS = 2
         const val NOT_APPROVED_STATUS = 3
@@ -45,7 +44,7 @@ class ReportFragment : BaseFragment(), ReportContract {
     private val binding: FragmentReportsBinding by lazy {
         FragmentReportsBinding.inflate(LayoutInflater.from(context))
     }
-    private val presenter: ReportPresenter by lazy { ReportPresenter(SharedPreferences(context)) }
+    private val presenter: ReportPresenter by lazy { ReportPresenter(SharedPreferences(context), ReportInteractorImpl(status)) }
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),

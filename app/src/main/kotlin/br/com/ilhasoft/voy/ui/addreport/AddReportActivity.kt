@@ -63,7 +63,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
     private val presenter by lazy {
         AddReportPresenter(reportViewModel,
                 ThemeData.themeBounds,
-                intent.extras.getParcelable(EXTRA_REPORT))
+                intent.extras.getParcelable(EXTRA_REPORT), AddReportInteractorImpl())
     }
 
     private val locationRequest by lazy {

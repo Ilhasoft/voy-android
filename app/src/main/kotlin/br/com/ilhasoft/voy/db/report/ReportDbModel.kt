@@ -6,6 +6,7 @@ import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import io.realm.RealmList
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 /**
  * Created by lucasbarros on 09/02/18.
@@ -13,7 +14,7 @@ import io.realm.RealmObject
 open class ReportDbModel : RealmObject() {
     var id: Int = 0
     var themeId: Int = 0
-    var location: BoundDbModel = BoundDbModel()
+    var location: BoundDbModel? = BoundDbModel()
     var name: String = "ReportName"
     var description: String? = null
     var tags: RealmList<StringDbModel> = RealmList()
@@ -28,7 +29,7 @@ open class ReportDbModel : RealmObject() {
 fun ReportDbModel.toReport(): Report {
     return Report(id,
             themeId,
-            Location("Point", arrayListOf(location.lng, location.lat)),
+            Location("Point", arrayListOf(location!!.lng, location!!.lat)),
             name = name,
             description = description,
             tags = tags.map { it.text }.toMutableList(),

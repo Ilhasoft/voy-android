@@ -5,14 +5,11 @@ import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.reports.ReportService
-import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import timber.log.Timber
 
 class ReportPresenter(private val preferences: Preferences,
                       private val reportInteractor: ReportInteractor) :
         Presenter<ReportContract>(ReportContract::class.java) {
-
-    private val reportService: ReportService by lazy { ReportService() }
 
     override fun attachView(view: ReportContract?) {
         super.attachView(view)
@@ -22,9 +19,9 @@ class ReportPresenter(private val preferences: Preferences,
     }
 
     private fun loadReportsData() {
-        reportInteractor.getReports(page = 1, page_size = 50,
+        reportInteractor.getReports(page = 1, pageSize = 50,
                 theme = ThemeData.themeId, mapper = preferences.getInt(User.ID), status = getStatus())
-                .subscribe({ fillReportsAdapter(it) }, {})
+                .subscribe({ fillReportsAdapter(it) }, { Timber.e(it) })
     }
 
     private fun getStatus(): Int? = view?.getStatus()
