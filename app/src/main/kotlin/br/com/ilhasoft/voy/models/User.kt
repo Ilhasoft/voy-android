@@ -38,7 +38,30 @@ data class User(val id: Int,
             override fun createFromParcel(source: Parcel): User = User(source)
             override fun newArray(size: Int): Array<User?> = arrayOfNulls(size)
         }
+
+        @JvmStatic
+        fun createUserFromPreferencesMap(userMap: Map<String, *>) : User {
+            return userMap.let {
+                User(it[User.ID] as Int,
+                        it[User.AVATAR] as String,
+                        it[User.USERNAME] as String,
+                        it[User.EMAIL] as String)
+            }
+        }
     }
+
+    constructor(id: Int, avatar: String, username: String, email: String) : this(
+            id,
+            "",
+            "",
+            "",
+            avatar,
+            username,
+            email,
+            false,
+            false,
+            null
+    )
 
     constructor(source: Parcel) : this(
             source.readInt(),

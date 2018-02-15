@@ -1,7 +1,6 @@
 package br.com.ilhasoft.voy.ui.account
 
 import br.com.ilhasoft.support.core.mvp.Presenter
-import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
@@ -22,7 +21,6 @@ class AccountPresenter(
     override fun start() {
         super.start()
         loadUser()
-        //getUser()
     }
 
     override fun detachView() {
@@ -34,9 +32,9 @@ class AccountPresenter(
         accountInteractor.getUser()
                 .fromIoToMainThread()
                 .subscribe(
-                        { user ->
-                            setAvatarByPosition(user.avatar.extractNumbers())
-                            view.setUser(user)
+                        { it ->
+                            setAvatarByPosition(it.first().avatar.extractNumbers())
+                            view.setUser(it.first())
                         },
                         {
                             ErrorHandlerHelper.showError(it) { msg ->
@@ -46,24 +44,6 @@ class AccountPresenter(
                 )
 
     }
-//
-//    private fun getUser() {
-//        compositeDisposable.add(
-//                userService.getUser()
-//                        .fromIoToMainThread()
-//                        .loadControl(view)
-//                        .filter { it.isNotEmpty() }
-//                        .doOnNext { setAvatarByPosition(it.first().avatar.extractNumbers()) }
-//                        .subscribe(
-//                                { view.setUser(it.first()) },
-//                                {
-//                                    ErrorHandlerHelper.showError(it) { msg ->
-//                                        view.showMessage(msg)
-//                                    }
-//                                }
-//                        )
-//        )
-//    }
 
     fun saveUser(user: User) {
         compositeDisposable.add(
@@ -102,8 +82,7 @@ class AccountPresenter(
     }
 
     fun onClickLogout() {
-//        preferences.remove(User.TOKEN)
-//        preferences.remove(User.ID)
+        accountInteractor.removeUserPreferencesEntries();
         view.navigateToMakeLogout()
     }
 
