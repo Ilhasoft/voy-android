@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -14,9 +16,11 @@ import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.PopupMenu
+import android.widget.ShareActionProvider
 import br.com.ilhasoft.support.core.helpers.DimensionHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
@@ -42,6 +46,7 @@ import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import br.com.ilhasoft.voy.ui.shared.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import java.io.File
 
 class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
@@ -87,6 +92,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private val tagDataUI: TagDataUI by lazy { setupTagData() }
 
     private lateinit var popupMenu: PopupMenu
+
+    private lateinit var shareActionProvider: ShareActionProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,7 +173,10 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             navigateToEditReport()
             true
         }
-        R.id.share -> true
+        R.id.share -> {
+            startActivity(Intent.createChooser(createShareIntent(), "send"))
+            true
+        }
         else -> false
     }
 
@@ -197,6 +207,32 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         popupMenu = PopupMenu(this, expandedMenu)
         popupMenu.setOnMenuItemClickListener(this)
         popupMenu.menuInflater.inflate(R.menu.report_detail, popupMenu.menu)
+        showMenuOptionBasedOnReportState(popupMenu.menu)
+    }
+
+    private fun showMenuOptionBasedOnReportState(menu: Menu) {
+        val editItem = menu.findItem(R.id.edit)
+        val shareItem = menu.findItem(R.id.share)
+        report?.status.let {
+            if (it == ReportFragment.APPROVED_STATUS) {
+                editItem.isVisible = false
+                shareItem.isVisible = true
+
+            }
+        }
+    }
+
+    private fun createShareIntent(): Intent {
+        return Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, report?.name)
+            putExtra(Intent.EXTRA_TEXT, report?.description)
+            report?.files?.forEach {
+                putExtra(Intent.EXTRA_STREAM, Uri.fromFile(File(it.file)))
+            }
+            type = "image/*"
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
     }
 
     private fun setupRecyclerView(tags: RecyclerView) = with(tags) {
