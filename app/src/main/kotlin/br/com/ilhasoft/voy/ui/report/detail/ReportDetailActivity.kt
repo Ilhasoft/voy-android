@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -20,7 +18,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.PopupMenu
-import android.widget.ShareActionProvider
 import br.com.ilhasoft.support.core.helpers.DimensionHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
@@ -39,6 +36,7 @@ import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
+import br.com.ilhasoft.voy.ui.home.HomeActivity
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
@@ -46,7 +44,6 @@ import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import br.com.ilhasoft.voy.ui.shared.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
-import java.io.File
 
 class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
@@ -92,8 +89,6 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private val tagDataUI: TagDataUI by lazy { setupTagData() }
 
     private lateinit var popupMenu: PopupMenu
-
-    private lateinit var shareActionProvider: ShareActionProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -174,7 +169,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             true
         }
         R.id.share -> {
-            startActivity(Intent.createChooser(createShareIntent(), "send"))
+            startActivity(Intent.createChooser(createShareIntent(), "Share by"))
             true
         }
         else -> false
@@ -217,7 +212,6 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             if (it == ReportFragment.APPROVED_STATUS) {
                 editItem.isVisible = false
                 shareItem.isVisible = true
-
             }
         }
     }
@@ -225,13 +219,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private fun createShareIntent(): Intent {
         return Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, report?.name)
-            putExtra(Intent.EXTRA_TEXT, report?.description)
-            report?.files?.forEach {
-                putExtra(Intent.EXTRA_STREAM, Uri.fromFile(File(it.file)))
-            }
-            type = "image/*"
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            putExtra(Intent.EXTRA_TEXT, "https://voy-dev.ilhasoft.mobi/project/${HomeActivity.PROJECT_NAME}/report/${report?.id}")
+            type = "text/plain"
         }
     }
 
