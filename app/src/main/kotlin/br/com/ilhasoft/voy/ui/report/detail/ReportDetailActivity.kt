@@ -206,13 +206,12 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     }
 
     private fun showMenuOptionBasedOnReportState(menu: Menu) {
-        val editItem = menu.findItem(R.id.edit)
-        val shareItem = menu.findItem(R.id.share)
         report?.status.let {
-            if (it == ReportFragment.APPROVED_STATUS) {
-                editItem.isVisible = false
-                shareItem.isVisible = true
-            }
+            if (it == ReportFragment.APPROVED_STATUS)
+                menu.apply {
+                    findItem(R.id.edit).isVisible = false
+                    findItem(R.id.share).isVisible = true
+                }
         }
     }
 
