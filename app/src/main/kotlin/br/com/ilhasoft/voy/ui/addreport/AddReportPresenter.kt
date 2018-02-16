@@ -74,11 +74,6 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
             reportViewModel.report.lastImage = reportFile
     }
 
-    private fun onSavedReportAndStartSaveFiles(report: Report): Observable<Uri>? {
-        reportViewModel.report = report
-        return Observable.fromIterable(reportViewModel.medias)
-    }
-
     private fun saveFile(uri: Uri): Single<ReportFile> {
         val file = getFile(uri)
         val mimeType = getMimeType(uri)
@@ -92,14 +87,13 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun saveReport() = with(reportViewModel) {
-        reportInteractor.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags, links)
-                .flatMapObservable { onSavedReportAndStartSaveFiles(it) }
-                .flatMapSingle { saveFile(it) }
+        reportInteractor.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags,
+                medias.map { getFile(it) }, links)
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }
-                .doOnComplete { view.navigateToThanks() }
                 .subscribe({
-                    onFileSaved(it)
+                    reportViewModel.report = it
+                    view.navigateToThanks()
                 }, {
                     Timber.e(it)
                 })

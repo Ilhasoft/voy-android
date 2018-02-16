@@ -4,6 +4,7 @@ import br.com.ilhasoft.voy.db.theme.BoundDbModel
 import br.com.ilhasoft.voy.db.theme.StringDbModel
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.realm.Realm
@@ -17,19 +18,14 @@ class ReportDbHelper {
 
     fun getReports(): Flowable<List<Report>> {
         return Flowable.fromCallable {
-            val id = 0
-            val reportsDb = realm.where(ReportDbModel::class.java).equalTo("id", id).findAll()
+            val reportsDb = realm.where(ReportDbModel::class.java)
+                    .equalTo(ReportDbModel::themeId.name, ThemeData.themeId).findAll()
             reportsDb.map { it.toReport() }.toMutableList()
         }
     }
 
-    fun saveReport(theme: Int,
-                   location: Location,
-                   description: String?,
-                   name: String,
-                   tags: List<String>,
-                   urls: List<String>?): Single<Report> {
-        //TODO: Refactor to include realm with RxJava
+    fun saveReport(theme: Int, location: Location, description: String?, name: String,
+                   tags: List<String>, medias: List<String>, urls: List<String>?): Single<Pair<Report, Int>> {
         return Single.fromCallable {
             var reportDb = ReportDbModel().apply {
                 themeId = theme
@@ -40,6 +36,7 @@ class ReportDbHelper {
                 this.name = name
                 this.description = description
                 this.tags.addAll(tags.map { title -> StringDbModel().apply { text = title } })
+                this.mediasPath.addAll(medias.map { path -> StringDbModel().apply { text = path } })
                 urls?.let {
                     this.urls.addAll(it.map { title ->
                         StringDbModel().apply {
@@ -48,10 +45,21 @@ class ReportDbHelper {
                     })
                 }
             }
-            realm.beginTransaction()
-            reportDb = realm.copyToRealm(reportDb)
-            realm.commitTransaction()
-            reportDb.toReport()
+            realm.executeTransaction {
+                val nextId = realm.where(ReportDbModel::class.java).max(ReportDbModel::internalId.name)?.toInt()
+                if (nextId != null) {
+                    reportDb.internalId = nextId + 1
+                }
+                reportDb = realm.copyToRealm(reportDb)
+            }
+            Pair(reportDb.toReport(), reportDb.internalId)
+        }
+    }
+
+    fun removeReport(reportInternalId: Int) {
+        realm.executeTransaction {
+            val reportDb = realm.where(ReportDbModel::class.java).equalTo(ReportDbModel::internalId.name, reportInternalId).findAll()
+            reportDb.deleteAllFromRealm()
         }
     }
 }

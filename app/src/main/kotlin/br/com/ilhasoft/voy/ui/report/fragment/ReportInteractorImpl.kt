@@ -18,15 +18,26 @@ class ReportInteractorImpl(private val status: Int) : ReportInteractor {
 
     override fun getReports(page: Int?, pageSize: Int?, theme: Int?, mapper: Int?, status: Int?): Flowable<List<Report>> {
         return if (ConnectivityManager.isConnected()) {
-            reportService.getReports(page = page, page_size = pageSize, theme = theme, mapper = mapper, status = status)
-                    .fromIoToMainThread()
-                    .map { it.results }.toFlowable()
+            if (this@ReportInteractorImpl.status == ReportFragment.PENDING_STATUS) {
+                Flowable.merge(getFromServer(page, pageSize, theme, mapper, status), getFromDb())
+            } else {
+                getFromServer(page, pageSize, theme, mapper, status)
+            }
         } else {
-            if (status == ReportFragment.PENDING_STATUS)
-                reportDbHelper.getReports().onMainThread()
-            else
+            if (this@ReportInteractorImpl.status == ReportFragment.PENDING_STATUS) {
+                getFromDb()
+            } else {
                 Flowable.empty()
+            }
         }
+    }
+
+    private fun getFromDb() = reportDbHelper.getReports().onMainThread()
+
+    private fun getFromServer(page: Int?, pageSize: Int?, theme: Int?, mapper: Int?, status: Int?): Flowable<List<Report>> {
+        return reportService.getReports(page = page, page_size = pageSize, theme = theme, mapper = mapper, status = status)
+                .fromIoToMainThread()
+                .map { it.results }.toFlowable()
     }
 
 }

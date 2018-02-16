@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report.holder
 
-import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.view.MenuItem
 import android.view.View
@@ -29,8 +28,7 @@ class ReportViewHolder(val binding: ItemReportBinding,
 
     override fun onBind(report: Report) {
         binding.let {
-            it.themeIndicator.setBackgroundColor(Color.parseColor(getString(R.string.color_hex,
-                    ThemeData.themeColor)))
+            it.themeIndicator.setBackgroundColor(ThemeData.themeColor)
             it.approved = report.status == ReportFragment.APPROVED_STATUS
             it.report = report
 
