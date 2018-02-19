@@ -34,9 +34,12 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
                     .concatMap { userService.getUser() }
                     .compose(RxHelper.defaultFlowableSchedulers())
                     .subscribe({
-                        if (it.isNotEmpty()) {
-                            preferences.put(User.ID, it[0].id)
+                        if (it.isNotEmpty() && it.first().isMapper) {
+                            preferences.put(User.ID, it.first().id)
                             view.navigateToHome()
+                        } else if (!it.first().isMapper) {
+                            preferences.clear()
+                            view.showMessage(R.string.invalid_user)
                         }
                     }, {
                         Timber.e(it)

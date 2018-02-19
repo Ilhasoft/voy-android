@@ -21,4 +21,6 @@ interface Preferences {
 
     fun remove(key: String)
 
+    fun clear()
+
 }

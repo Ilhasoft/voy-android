@@ -60,6 +60,7 @@
     <string name="feedback_list_title">Hey!</string>
     <string name="feedback_list_message">You can\'t add the same link twice :(</string>
     <string name="invalid_login">Invalid user or password</string>
+    <string name="invalid_user">Invalid user</string>
 
     <string name="themes_quantity">You are within %d themes</string>
     <string name="color_hex">#%s</string>
