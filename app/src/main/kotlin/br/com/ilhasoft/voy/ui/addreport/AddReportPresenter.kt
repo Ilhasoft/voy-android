@@ -12,7 +12,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.io.File
 
 /**
  * Created by lucasbarros on 23/11/17.
@@ -88,13 +87,13 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun saveReport() = with(reportViewModel) {
-         reportInteractor.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags,
+        reportInteractor.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags,
                 medias.map { getFile(it) }, links)
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }
+                .doOnComplete { view.navigateToThanks() }
                 .subscribe({
                     reportViewModel.report = it
-                    view.navigateToThanks()
                 }, {
                     Timber.e(it)
                 })
