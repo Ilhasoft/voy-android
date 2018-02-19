@@ -25,7 +25,7 @@ class ReportDbHelper {
     }
 
     fun saveReport(theme: Int, location: Location, description: String?, name: String,
-                   tags: List<String>, medias: List<String>, urls: List<String>?): Single<Pair<Report, Int>> {
+                   tags: List<String>, medias: List<String>, urls: List<String>?): Single<Report> {
         return Single.fromCallable {
             var reportDb = ReportDbModel().apply {
                 themeId = theme
@@ -52,7 +52,7 @@ class ReportDbHelper {
                 }
                 reportDb = realm.copyToRealm(reportDb)
             }
-            Pair(reportDb.toReport(), reportDb.internalId)
+            reportDb.toReport()
         }
     }
 

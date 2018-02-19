@@ -30,17 +30,12 @@ class AddReportInteractorImpl : AddReportInteractor {
 
     override fun saveReport(theme: Int, location: Location, description: String?, name: String,
                             tags: List<String>, medias: List<File>, urls: List<String>?): Observable<Report> {
-        var reportInternalId: Int? = null
         return reportDbHelper.saveReport(theme, location, description, name, tags, medias.map { it.absolutePath }, urls)
                 .onMainThread()
                 .observeOn(Schedulers.io())
-                .map {
-                    reportInternalId = it.second
-                    it.first
-                }
                 .flatMapObservable {
                     if (ConnectivityManager.isConnected()) {
-                        sendReport(theme, location, description, name, tags, urls, medias, reportInternalId!!)
+                        sendReport(theme, location, description, name, tags, urls, medias, it.internalId!!)
                     } else {
                         Observable.just(it)
                     }
@@ -51,22 +46,20 @@ class AddReportInteractorImpl : AddReportInteractor {
     private fun sendReport(theme: Int, location: Location, description: String?, name: String,
                            tags: List<String>, urls: List<String>?, medias: List<File>,
                            reportInternalId: Int): Observable<Report> {
-        var reportId = 0
-        var report = Report()
+        var auxReport = Report()
         return reportService.saveReport(theme, location, description, name, tags, urls)
                 .flatMapObservable {
-                    report = it
-                    reportId = it.id
+                    auxReport = it
                     Observable.fromIterable(medias)
                 }
-                .flatMapSingle { saveFile(it, reportId) }
+                .flatMapSingle { saveFile(it, auxReport.id) }
                 .doOnNext {
-                    report.files.add(it)
+                    auxReport.files.add(it)
                     if (it.mediaType == "image")
-                        report.lastImage = it
+                        auxReport.lastImage = it
                 }
                 .doOnComplete { reportDbHelper.removeReport(reportInternalId) }
-                .map { report }
+                .map { auxReport }
     }
 
     private fun saveFile(file: File, reportId: Int): Single<ReportFile> {

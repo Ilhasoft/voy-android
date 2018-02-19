@@ -5,6 +5,7 @@ import br.com.ilhasoft.voy.db.theme.StringDbModel
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
+import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -46,6 +47,7 @@ fun ReportDbModel.toReport(): Report {
             description = description,
             tags = tags.map { it.text }.toMutableList(),
             urls = urls.map { it.text }.toMutableList(),
+            status = ReportFragment.PENDING_STATUS,
             files = files,
             lastImage = lastImage,
             internalId = internalId)

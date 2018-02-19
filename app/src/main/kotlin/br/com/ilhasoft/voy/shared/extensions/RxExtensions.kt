@@ -1,10 +1,7 @@
 package br.com.ilhasoft.voy.shared.extensions
 
 import br.com.ilhasoft.voy.ui.base.LoadView
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -34,6 +31,7 @@ fun <T> Flowable<T>.loadControl(loadView: LoadView): Flowable<T> {
                 .doAfterTerminate { loadView.dismissLoading() }
     }
 }
+
 
 fun Completable.fromIoToMainThread(): Completable {
     return compose{ upstream ->
@@ -84,6 +82,22 @@ fun <T> Maybe<T>.fromIoToMainThread(): Maybe<T> {
 }
 
 fun <T> Maybe<T>.loadControl(loadView: LoadView): Maybe<T> {
+    return compose{ upstream ->
+        upstream
+                .doOnSubscribe { loadView.showLoading() }
+                .doAfterTerminate { loadView.dismissLoading() }
+    }
+}
+
+fun <T> Observable<T>.fromIoToMainThread(): Observable<T> {
+    return compose{ upstream ->
+        upstream
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+}
+
+fun <T> Observable<T>.loadControl(loadView: LoadView): Observable<T> {
     return compose{ upstream ->
         upstream
                 .doOnSubscribe { loadView.showLoading() }
