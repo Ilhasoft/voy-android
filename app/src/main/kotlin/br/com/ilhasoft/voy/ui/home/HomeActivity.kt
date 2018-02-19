@@ -32,7 +32,7 @@ class HomeActivity : BaseActivity(), HomeContract {
 
     companion object {
         @JvmField
-        var PROJECT_NAME: String = ""
+        var projectName: String = ""
 
         @JvmStatic
         fun createIntent(context: Context): Intent = Intent(context, HomeActivity::class.java)
@@ -105,7 +105,7 @@ class HomeActivity : BaseActivity(), HomeContract {
 
     override fun fillProjectsAdapter(projects: MutableList<Project>) {
         binding.viewToolbar?.projectName = projects.first().name
-        PROJECT_NAME = projects.first().name
+        projectName = projects.first().name
         projectsAdapter.clear()
         projectsAdapter.addAll(projects)
     }
@@ -132,7 +132,7 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.run {
             selectingProject = selectingProject?.not()
             viewToolbar?.projectName = project.name
-            PROJECT_NAME = project.name
+            projectName = project.name
         }
         projectsAdapter.notifyDataSetChanged()
     }

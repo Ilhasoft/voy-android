@@ -49,6 +49,7 @@
     <string name="send_report">Send</string>
     <string name="thanks">Thanks!</string>
     <string name="thanks_feedback">Thanks for reporting!\nPlease come back whenever\nyou have a new request</string>
+    <string name="share_text">Share by</string>
 
     <string name="comment_report_label">Comment</string>
     <string name="send_comment_hint">Send Comment</string>
