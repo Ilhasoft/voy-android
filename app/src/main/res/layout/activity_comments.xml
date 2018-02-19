@@ -68,10 +68,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_comment_edittext"
+                    android:background="@drawable/bg_border_white"
                     android:hint="@string/send_comment_hint"
                     android:padding="8dp"
-                    android:theme="@style/CommentEditText"
                     app:validateEmpty="@{true}" />
 
                 <ImageButton
