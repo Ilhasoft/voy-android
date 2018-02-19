@@ -5,6 +5,7 @@ import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -22,6 +23,7 @@ class AccountInteractorImpl(val context: Context) : AccountInteractor {
             userService.getUser()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .fromIoToMainThread()
                     .flatMap { saveUser(it.first()) }
 
         } else {

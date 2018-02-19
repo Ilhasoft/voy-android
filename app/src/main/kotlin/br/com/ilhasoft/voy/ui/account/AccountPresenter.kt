@@ -30,7 +30,6 @@ class AccountPresenter(
 
     private fun loadUser() {
         accountInteractor.getUser()
-                .fromIoToMainThread()
                 .subscribe(
                         {
                             setAvatarByPosition(it.first().avatar.extractNumbers())
