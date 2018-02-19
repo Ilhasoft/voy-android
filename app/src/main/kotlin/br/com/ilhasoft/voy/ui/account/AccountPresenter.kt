@@ -32,7 +32,7 @@ class AccountPresenter(
         accountInteractor.getUser()
                 .fromIoToMainThread()
                 .subscribe(
-                        { it ->
+                        {
                             setAvatarByPosition(it.first().avatar.extractNumbers())
                             view.setUser(it.first())
                         },
