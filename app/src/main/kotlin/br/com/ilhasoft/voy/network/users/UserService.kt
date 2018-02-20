@@ -12,17 +12,16 @@ import io.reactivex.Single
  */
 class UserService : ServiceFactory<UserApi>(UserApi::class.java) {
 
-    fun getUsers(): Flowable<MutableList<User>> = api.getUsers()
-
-    fun getUser(userId: Int): Single<User> = api.getUser(userId)
-
-    fun getUser(): Flowable<List<User>> = api.getUser(accessToken)
-
-    fun editUser(user: User): Completable {
-        val newUser = processUserAvatarToUpdate(user)
-        return api.editUser(user.id, newUser)
+    fun getUser(): Flowable<User?> = api.getUser(accessToken).map {
+        if(it.isNotEmpty())
+            it[0]
+        else
+            null
     }
 
-    private fun processUserAvatarToUpdate(user: User): User = user.copy(avatar = user.avatar.extractNumbers())
+    fun editUser(user: User):  Completable {
+        return api.editUser(user.id, user)
+    }
+
 
 }

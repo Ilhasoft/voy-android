@@ -16,7 +16,6 @@ class AccountPresenter(
 
     var avatarDrawableId: Int? = null
     private val compositeDisposable = CompositeDisposable()
-    private val userService = UserService()
 
     override fun start() {
         super.start()
@@ -29,25 +28,28 @@ class AccountPresenter(
     }
 
     private fun loadUser() {
-        accountInteractor.getUser()
-                .subscribe(
-                        {
-                            setAvatarByPosition(it.first().avatar.extractNumbers())
-                            view.setUser(it.first())
-                        },
-                        {
-                            ErrorHandlerHelper.showError(it) { msg ->
-                                view.showMessage(msg)
-                            }
-                        }
-                )
+        compositeDisposable.add(
+                accountInteractor.getUser()
+                        .subscribe(
+                                {
+                                    it?.apply {
+                                        setAvatarByPosition(avatar.extractNumbers())
+                                        view.setUser(it)
+                                    }
+                                },
+                                {
+                                    ErrorHandlerHelper.showError(it) { msg ->
+                                        view.showMessage(msg)
+                                    }
+                                }
+                        )
+        )
 
     }
 
     fun saveUser(user: User) {
         compositeDisposable.add(
-                userService.editUser(user)
-                        .fromIoToMainThread()
+                accountInteractor.editUser(user)
                         .loadControl(view)
                         .subscribe(
                                 { view.userUpdatedMessage() },
@@ -57,6 +59,17 @@ class AccountPresenter(
                                     }
                                 }
                         )
+//                userService.editUser(user)
+//                        .fromIoToMainThread()
+//                        .loadControl(view)
+//                        .subscribe(
+//                                { view.userUpdatedMessage() },
+//                                {
+//                                    ErrorHandlerHelper.showError(it) { msg ->
+//                                        view.showMessage(msg)
+//                                    }
+//                                }
+//                        )
         )
     }
 

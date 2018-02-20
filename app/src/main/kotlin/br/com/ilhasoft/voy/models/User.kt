@@ -17,6 +17,7 @@ data class User(val id: Int,
                 @SerializedName("is_mapper") val isMapper: Boolean,
                 @SerializedName("is_admin") val isAdmin: Boolean,
                 var password: String?) : Parcelable {
+
     companion object {
         @JvmStatic
         val TOKEN = "token"
@@ -39,15 +40,6 @@ data class User(val id: Int,
             override fun newArray(size: Int): Array<User?> = arrayOfNulls(size)
         }
 
-        @JvmStatic
-        fun createUserFromPreferencesMap(userMap: Map<String, *>) : User {
-            return userMap.let {
-                User(it[User.ID] as Int,
-                        it[User.AVATAR] as String,
-                        it[User.USERNAME] as String,
-                        it[User.EMAIL] as String)
-            }
-        }
     }
 
     constructor(id: Int, avatar: String, username: String, email: String) : this(

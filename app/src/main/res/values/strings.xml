@@ -82,7 +82,7 @@
     <string name="comment_created_message">Your comment was sent to moderation after approved it will available here!</string>
     <string name="comment_delete_error">We have a problem to remove this comment.</string>
     <string name="comment_create_error">We have a problem to create a new comment.</string>
-    <string name="http_request_error">We have a problem to process your request, try again latter!</string>
+    <string name="http_request_error">We have a problem to process your request, try again later!</string>
 
     <string name="report_was_approved">Your report was approved</string>
     <string name="report_was_not_approved">Your report was not approved</string>
