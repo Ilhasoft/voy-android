@@ -14,7 +14,7 @@ import br.com.ilhasoft.voy.connectivity.ConnectivityManager
  */
 abstract class BaseActivity : AppCompatActivity(), BaseView {
 
-    private val connectivityManager by lazy { ConnectivityManager() }
+    private val connectivityManager by lazy { ConnectivityManager(AutoSendInteractorImpl()) }
 
     private val progressDialog: IndeterminateProgressDialog by lazy {
         val dialog = IndeterminateProgressDialog(this)
@@ -30,9 +30,6 @@ abstract class BaseActivity : AppCompatActivity(), BaseView {
     override fun onStart() {
         super.onStart()
         connectivityManager.registerReceive(this)
-        connectivityManager.status.subscribe({
-            showMessage("isConnected: $it")
-        })
     }
 
     override fun onStop() {
