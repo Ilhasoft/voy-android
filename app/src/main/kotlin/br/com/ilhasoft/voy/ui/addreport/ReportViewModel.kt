@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
@@ -33,7 +34,7 @@ class ReportViewModel(private val addReportInteractor: AddReportInteractor) : Vi
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
     var medias = mutableListOf<Uri>()
-    var mediasFromServer = mutableListOf<Uri>()
+    var mediasFromServer = mutableListOf<ReportFile>()
     val selectedTags by lazy { mutableListOf<String>() }
 
     var report = Report()
@@ -79,7 +80,7 @@ class ReportViewModel(private val addReportInteractor: AddReportInteractor) : Vi
     fun getAllTags(): LiveData<MutableList<String>> {
         if (tags.value == null || tags.value?.isEmpty() == true) {
             addReportInteractor.getTags(ThemeData.themeId)
-                    .subscribe({ tags.value = it }, { Timber.e(it) })
+                .subscribe({ tags.value = it }, { Timber.e(it) })
         }
         return tags
     }
@@ -98,15 +99,22 @@ class ReportViewModel(private val addReportInteractor: AddReportInteractor) : Vi
         return mediasToSave().isNotEmpty()
     }
 
-    fun mediasToDelete() = mediasFromServer.minus(medias)
+    fun mediasToDelete(): List<ReportFile> {
+        val toDelete: MutableList<ReportFile> = mutableListOf()
+        mediasFromServer.forEach {
+            if(!medias.contains(Uri.parse(it.file)))
+                toDelete.add(it)
+        }
+        return toDelete
+    }
 
-    fun mediasToSave(): List<Uri> = medias.minus(mediasFromServer)
+    fun mediasToSave(): List<Uri> = medias.minus(mediasFromServer.map { Uri.parse(it.file) })
 
     fun setUpWithReport(report: Report) {
         this.report = report
-        report.files.map { mediasFromServer.add(Uri.parse(it.file)) }
+        mediasFromServer.addAll(report.files)
         medias.clear()
-        medias.addAll(mediasFromServer)
+        medias.addAll(mediasFromServer.map { Uri.parse(it.file) })
         name = report.name
         description = report.description
         links.clear()
