@@ -169,7 +169,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             true
         }
         R.id.share -> {
-            startActivity(Intent.createChooser(createShareIntent(), resources.getString(R.string.share_text)))
+            startActivity(Intent.createChooser(createShareIntent(), resources.getString(R.string.share_title)))
             true
         }
         else -> false
@@ -218,7 +218,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private fun createShareIntent(): Intent {
         return Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, "https://voy-dev.ilhasoft.mobi/project/${HomeActivity.projectName}/report/${report?.id}")
+            putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.share_text) +
+                    " https://voy-dev.ilhasoft.mobi/project/${HomeActivity.projectName}/report/${report?.id}")
             type = "text/plain"
         }
     }
