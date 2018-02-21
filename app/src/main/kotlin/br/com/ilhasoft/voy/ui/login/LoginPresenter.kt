@@ -18,10 +18,10 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
 
     override fun attachView(view: LoginContract) {
         super.attachView(view)
-//        if (preferences.contains(User.TOKEN)) {
-//            BaseFactory.accessToken = preferences.getString(User.TOKEN)
-//            view.navigateToHome()
-//        }
+        if(preferences.contains(User.TOKEN)) {
+            BaseFactory.accessToken = preferences.getString(User.TOKEN)
+            view.navigateToHome()
+        }
     }
 
     fun onClickLogin(credentials: Credentials) {

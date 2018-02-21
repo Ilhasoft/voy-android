@@ -20,9 +20,4 @@ class UserService : ServiceFactory<UserApi>(UserApi::class.java) {
     fun editUser(userRequest: UserChangeRequest):  Completable =
         api.editUser(userRequest.id, userRequest)
 
-
-    fun editAvatar(userRequest: UserAvatarRequest): Completable =
-        api.editAvatar(userRequest.id, userRequest)
-
-
 }

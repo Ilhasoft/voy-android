@@ -3,9 +3,9 @@ package br.com.ilhasoft.voy.ui.account
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.users.UserAvatarRequest
 import br.com.ilhasoft.voy.network.users.UserChangeRequest
 import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -29,15 +29,8 @@ class AccountInteractorImpl(val preferences: Preferences) : AccountInteractor {
     }
 
     override fun editUser(user: User): Completable {
-        val requestObject = UserChangeRequest(user.id, user.avatar, user.password)
+        val requestObject = UserChangeRequest(user.id, user.avatar.extractNumbers(), user.password)
         return userService.editUser(requestObject)
-                .fromIoToMainThread()
-                .doOnComplete { saveAvatar(user.avatar) }
-    }
-
-    override fun editAvatar(user: User): Completable {
-        val requestObject = UserAvatarRequest(user.id, user.avatar)
-         return userService.editAvatar(requestObject)
                 .fromIoToMainThread()
                 .doOnComplete { saveAvatar(user.avatar) }
     }
@@ -70,9 +63,6 @@ class AccountInteractorImpl(val preferences: Preferences) : AccountInteractor {
         }
     }
 
-    private fun saveAvatar(avatar: String) {
-        preferences.run {
-            put(User.AVATAR, avatar)
-        }
-    }
+    private fun saveAvatar(avatar: String) = preferences.put(User.AVATAR, avatar)
+
 }

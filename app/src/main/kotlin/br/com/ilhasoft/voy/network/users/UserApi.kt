@@ -16,6 +16,4 @@ interface UserApi {
     @PUT("/api/users/{id}/")
     fun editUser(@Path("id") userId: Int, @Body user: UserChangeRequest): Completable
 
-    @PUT("/api/users/{id}/")
-    fun editAvatar(@Path("id") userId: Int, @Body user: UserAvatarRequest): Completable
 }

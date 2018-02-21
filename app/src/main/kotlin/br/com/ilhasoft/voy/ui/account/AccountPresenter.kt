@@ -47,15 +47,8 @@ class AccountPresenter(
 
     fun saveUser(user: User) {
         compositeDisposable.add(
-                user.run {
-                    //TODO ask if its a bad practice
-                    //FIXME verify why when the internet connection is out the request stuck on loading
-                    //avatar.extractNumbers()
-                    if (user.password != null)
-                        accountInteractor.editUser(user)
-                    else
-                        accountInteractor.editAvatar(user)
-                }.loadControl(view)
+                accountInteractor.editUser(user)
+                        .loadControl(view)
                         .subscribe(
                                 { view.userUpdatedMessage() },
                                 {
