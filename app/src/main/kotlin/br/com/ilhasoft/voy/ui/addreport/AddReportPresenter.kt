@@ -2,11 +2,13 @@ package br.com.ilhasoft.voy.ui.addreport
 
 import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
+import br.com.ilhasoft.support.rxgraphics.FileCompressor
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.files.FilesService
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -87,8 +89,21 @@ class AddReportPresenter(private val reportViewModel: ReportViewModel, private v
     }
 
     private fun saveReport() = with(reportViewModel) {
-        reportInteractor.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags,
-                medias.map { getFile(it) }, links)
+        Flowable.fromIterable(medias)
+                .subscribeOn(Schedulers.io())
+                .flatMap {
+                    val file = getFile(it)
+                    if(getMimeType(it) == "image")
+                        FileCompressor.compressPicture(file, 1280, 720, 80)
+                    else
+                        FileCompressor.compressVideo(file)
+
+                }
+                .toList()
+                .flatMapObservable {
+                    reportInteractor.saveReport(ThemeData.themeId, userLocation, description, name, selectedTags,
+                            it, links)
+                }
                 .doOnSubscribe { view.showLoading() }
                 .doOnTerminate { view.dismissLoading() }
                 .doOnComplete { view.navigateToThanks() }
