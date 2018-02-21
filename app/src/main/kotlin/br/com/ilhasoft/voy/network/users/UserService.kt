@@ -2,10 +2,8 @@ package br.com.ilhasoft.voy.network.users
 
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.ServiceFactory
-import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 
 /**
  * Created by developer on 09/01/18.
@@ -19,9 +17,12 @@ class UserService : ServiceFactory<UserApi>(UserApi::class.java) {
             null
     }
 
-    fun editUser(user: User):  Completable {
-        return api.editUser(user.id, user)
-    }
+    fun editUser(userRequest: UserChangeRequest):  Completable =
+        api.editUser(userRequest.id, userRequest)
+
+
+    fun editAvatar(userRequest: UserAvatarRequest): Completable =
+        api.editAvatar(userRequest.id, userRequest)
 
 
 }

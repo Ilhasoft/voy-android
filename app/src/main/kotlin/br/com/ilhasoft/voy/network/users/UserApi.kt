@@ -14,8 +14,8 @@ interface UserApi {
     fun getUser(@Query("auth_token") token: String): Flowable<List<User>>
 
     @PUT("/api/users/{id}/")
-    fun editUser(@Path("id") userId: Int, @Body user: User): Completable
+    fun editUser(@Path("id") userId: Int, @Body user: UserChangeRequest): Completable
 
     @PUT("/api/users/{id}/")
-    fun editUser(@Path("id") userId: Int, @Body avatar: String): Completable
+    fun editAvatar(@Path("id") userId: Int, @Body user: UserAvatarRequest): Completable
 }

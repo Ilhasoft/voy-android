@@ -13,6 +13,8 @@ interface AccountInteractor {
 
     fun editUser(user: User): Completable
 
+    fun editAvatar(user: User): Completable
+
     fun removeUserPreferencesEntries()
 
 }

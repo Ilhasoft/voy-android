@@ -2,9 +2,7 @@ package br.com.ilhasoft.voy.ui.account
 
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
-import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import io.reactivex.Single
@@ -49,8 +47,15 @@ class AccountPresenter(
 
     fun saveUser(user: User) {
         compositeDisposable.add(
-                accountInteractor.editUser(user)
-                        .loadControl(view)
+                user.run {
+                    //TODO ask if its a bad practice
+                    //FIXME verify why when the internet connection is out the request stuck on loading
+                    //avatar.extractNumbers()
+                    if (user.password != null)
+                        accountInteractor.editUser(user)
+                    else
+                        accountInteractor.editAvatar(user)
+                }.loadControl(view)
                         .subscribe(
                                 { view.userUpdatedMessage() },
                                 {
@@ -59,17 +64,6 @@ class AccountPresenter(
                                     }
                                 }
                         )
-//                userService.editUser(user)
-//                        .fromIoToMainThread()
-//                        .loadControl(view)
-//                        .subscribe(
-//                                { view.userUpdatedMessage() },
-//                                {
-//                                    ErrorHandlerHelper.showError(it) { msg ->
-//                                        view.showMessage(msg)
-//                                    }
-//                                }
-//                        )
         )
     }
 

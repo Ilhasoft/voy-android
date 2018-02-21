@@ -3,12 +3,12 @@ package br.com.ilhasoft.voy.ui.account
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.users.UserAvatarRequest
+import br.com.ilhasoft.voy.network.users.UserChangeRequest
 import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by erickjones on 09/02/18.
@@ -29,12 +29,17 @@ class AccountInteractorImpl(val preferences: Preferences) : AccountInteractor {
     }
 
     override fun editUser(user: User): Completable {
-        val requestObject = user.password?.let {
-
-        }
-        return userService.editUser(user)
+        val requestObject = UserChangeRequest(user.id, user.avatar, user.password)
+        return userService.editUser(requestObject)
                 .fromIoToMainThread()
-                .doOnComplete { saveUser(user) }
+                .doOnComplete { saveAvatar(user.avatar) }
+    }
+
+    override fun editAvatar(user: User): Completable {
+        val requestObject = UserAvatarRequest(user.id, user.avatar)
+         return userService.editAvatar(requestObject)
+                .fromIoToMainThread()
+                .doOnComplete { saveAvatar(user.avatar) }
     }
 
     override fun removeUserPreferencesEntries() {
@@ -62,6 +67,12 @@ class AccountInteractorImpl(val preferences: Preferences) : AccountInteractor {
                 put(User.AVATAR, user.avatar)
             }
             user
+        }
+    }
+
+    private fun saveAvatar(avatar: String) {
+        preferences.run {
+            put(User.AVATAR, avatar)
         }
     }
 }
