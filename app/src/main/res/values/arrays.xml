@@ -25,5 +25,7 @@
         <item>@drawable/ic_avatar8</item>
         <item>@drawable/ic_avatar4</item>
         <item>@drawable/ic_avatar22</item>
+        <item>@drawable/ic_avatar24</item>
+        <item>@drawable/ic_avatar25</item>
     </integer-array>
 </resources>

@@ -46,11 +46,15 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.1" />
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp">
+            android:layout_gravity="center_horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="64dp"
@@ -67,15 +71,19 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginBottom="5dp"
                 android:onClick="@{() -> presenter.onClickSwitchAvatar()}"
-                android:src="@{editingPhoto ? @drawable/ic_check_avatar : @drawable/ic_change}"
-                tools:src="@drawable/ic_change" />
+                android:src="@{editingPhoto ? @drawable/ic_check_avatar : @drawable/ic_change_avatar}"
+                tools:src="@drawable/ic_change_avatar" />
 
         </FrameLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.1" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="44dp"
             android:layout_weight="1"
             android:orientation="vertical"
             app:isVisible="@{!editingPhoto}"
@@ -84,7 +92,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/cool_grey" />
+                android:background="@color/warm_grey" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -98,7 +106,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/cool_grey" />
+                android:background="@color/warm_grey" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -112,7 +120,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/cool_grey" />
+                android:background="@color/warm_grey" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -124,30 +132,30 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@null"
+                    android:enabled="@{!isPasswordLocked}"
                     android:hint="@string/new_password_hint"
                     android:inputType="textPassword"
                     android:padding="16dp"
                     android:text="@={user.password}"
-                    android:enabled="@{!isPasswordLocked}"
                     app:validateMinLength="@{6}"
                     app:validateMinLengthMessage="@{@string/password_min_length_error}" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:padding="8dp"
-                    android:layout_gravity="center"
                     android:onClick="@{() -> presenter.onClickLock()}"
+                    android:padding="8dp"
                     android:src="@{isPasswordLocked ? @drawable/ic_lock_outline : @drawable/ic_lock_open}"
-                    tools:src="@drawable/ic_lock_open"/>
+                    tools:src="@drawable/ic_lock_open" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/cool_grey" />
+                android:background="@color/warm_grey" />
 
         </LinearLayout>
 
