@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.network.reports
 
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
+import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -31,4 +32,7 @@ interface ReportsApi {
     @POST("/api/report-files/")
     fun saveFile(@PartMap map: Map<String, @JvmSuppressWildcards RequestBody>,
                  @Part file: MultipartBody.Part): Single<ReportFile>
+
+    @DELETE("/api/report-files/{id}/")
+    fun deleteFile(@Path("id") id: Int): Completable
 }

@@ -24,6 +24,14 @@ class ReportDbHelper {
         }
     }
 
+    fun getReportDbModels(): Flowable<List<ReportDbModel>> {
+        return Flowable.fromCallable {
+            val reportsDb = realm.where(ReportDbModel::class.java)
+                .equalTo(ReportDbModel::themeId.name, ThemeData.themeId).findAll()
+            reportsDb.toMutableList()
+        }
+    }
+
     fun saveReport(
         theme: Int,
         location: Location,

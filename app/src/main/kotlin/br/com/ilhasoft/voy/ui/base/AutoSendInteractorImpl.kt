@@ -1,13 +1,16 @@
 package br.com.ilhasoft.voy.ui.base
 
 import br.com.ilhasoft.voy.db.report.ReportDbHelper
+import br.com.ilhasoft.voy.db.report.ReportDbModel
+import br.com.ilhasoft.voy.db.report.toReport
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportService
+import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.io.File
 
@@ -23,39 +26,54 @@ class AutoSendInteractorImpl : AutoSendInteractor {
     private val reportService by lazy { ReportService() }
     private val reportDbHelper by lazy { ReportDbHelper() }
 
-    private fun getFromDb() = reportDbHelper.getReports().onMainThread()
+    private fun getFromDb() = reportDbHelper.getReportDbModels().onMainThread()
 
     override fun sendPendingReports() {
-        if (false) {
-//        if (!sendingPendingReports) {
-            getFromDb().observeOn(Schedulers.newThread())
+        if (!sendingPendingReports) {
+            getFromDb()
                 .doOnSubscribe { sendingPendingReports = true }
                 .doOnTerminate { sendingPendingReports = false }
                 .flatMap {
                     Flowable.fromIterable(it)
                 }
                 .flatMap {
-                    resendReport(it)
+                    resendReport(it).fromIoToMainThread()
                         //TODO: See other possibilities for backpressure strategy
                         .toFlowable(BackpressureStrategy.DROP)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete { reportDbHelper.removeReport(it.internalId) }
                 }
                 .subscribe({}, {
+                    //TODO: see this error: java.lang.IllegalStateException: Object is no longer valid to operate on. Was it deleted by another thread?
                     Timber.e(it)
                 })
         }
     }
 
-    private fun resendReport(report: Report): Observable<Report> {
-        val files = report.files.map { File(it.file) }
-        return reportService.saveReport(
-            report.theme,
-            report.location!!,
-            report.description,
-            report.name,
-            report.tags,
-            report.urls,
-            files
-        )
-            .doOnComplete { reportDbHelper.removeReport(report.internalId!!) }
+    private fun resendReport(reportDbModel: ReportDbModel): Observable<Report> {
+        val report = reportDbModel.toReport()
+        return if (report.id == 0) {
+            reportService.saveReport(
+                report.theme,
+                report.location!!,
+                report.description,
+                report.name,
+                report.tags,
+                report.urls,
+                report.files.map { File(it.file) }
+            )
+        } else {
+            reportService.updateReport(
+                report.id,
+                report.theme,
+                report.location!!,
+                report.description,
+                report.name,
+                report.tags,
+                report.urls,
+                reportDbModel.newFiles.map { File(it) },
+                reportDbModel.filesToDelete.map { it.id }
+            )
+        }
     }
 }

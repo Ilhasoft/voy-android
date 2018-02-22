@@ -88,7 +88,7 @@ class AddReportInteractorImpl : AddReportInteractor {
             .observeOn(Schedulers.io())
             .flatMapObservable {
                 if (ConnectivityManager.isConnected()) {
-                    val updateReportModel = UpdateReportModel(
+                    updateReportInternal(
                         reportId,
                         location,
                         description,
@@ -96,9 +96,9 @@ class AddReportInteractorImpl : AddReportInteractor {
                         tags,
                         urls,
                         newFiles,
+                        filesToDelete?.map { it.id },
                         it.internalId!!
                     )
-                    updateOnServer(updateReportModel, filesToDelete)
                 } else {
                     Observable.just(it)
                 }
@@ -109,44 +109,29 @@ class AddReportInteractorImpl : AddReportInteractor {
         return themeDbHelper.getThemeTags(themeId).onMainThread()
     }
 
-    private fun updateOnServer(
-        updateReportModel: UpdateReportModel,
-        filesToDelete: List<ReportFile>?
+    private fun updateReportInternal(
+        reportId: Int,
+        location: Location,
+        description: String?,
+        name: String,
+        tags: List<String>,
+        urls: List<String>?,
+        newFiles: List<File>?,
+        filesToDelete: List<Int>?,
+        reportInternalId: Int
     ): Observable<Report>? {
-        return if (filesToDelete?.isNotEmpty() == true) {
-            updateWithDeleteFiles(updateReportModel, filesToDelete)
-        } else {
-            updateReportInternal(updateReportModel)
-        }
+        return reportService.updateReport(
+            reportId,
+            ThemeData.themeId,
+            location,
+            description,
+            name,
+            tags,
+            urls,
+            newFiles,
+            filesToDelete
+        )
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete { reportDbHelper.removeReport(reportInternalId) }
     }
-
-    private fun updateWithDeleteFiles(
-        updateReportModel: UpdateReportModel,
-        filesToDelete: List<ReportFile>?
-    ): Observable<Report>? = with(updateReportModel) {
-        return Observable.fromIterable(filesToDelete)
-            .flatMapCompletable {
-                fileService.deleteFile(it.id)
-            }
-            .toSingleDefault(true)
-            .flatMapObservable {
-                updateReportInternal(updateReportModel)
-            }
-    }
-
-    private fun updateReportInternal(updateReportModel: UpdateReportModel): Observable<Report>? =
-        with(updateReportModel) {
-            return reportService.updateReport(
-                reportId,
-                ThemeData.themeId,
-                location,
-                description,
-                name,
-                tags,
-                urls,
-                newFiles
-            )
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete { reportDbHelper.removeReport(reportInternalId) }
-        }
 }

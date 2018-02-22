@@ -7,6 +7,7 @@ import br.com.ilhasoft.voy.network.ServiceFactory
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
 import br.com.ilhasoft.voy.shared.helpers.RetrofitHelper
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.RequestBody
@@ -83,15 +84,67 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         description: String?,
         name: String,
         tags: List<String>,
-        urls: List<String>?
-    ): Single<Report> {
-
-        val requestBody = ReportRequest(theme, location, description, name, tags, urls)
-
-        return api.updateReport(reportId, requestBody)
+        urls: List<String>?,
+        newFiles: List<File>?,
+        filesToDelete: List<Int>?
+    ): Observable<Report> {
+        return if (filesToDelete?.isNotEmpty() == true) {
+            deleteFilesAndUpdateReport(
+                reportId,
+                theme,
+                location,
+                description,
+                name,
+                tags,
+                urls,
+                newFiles,
+                filesToDelete
+            )
+        } else {
+            updateReportInternal(
+                reportId,
+                theme,
+                location,
+                description,
+                name,
+                tags,
+                urls,
+                newFiles
+            )
+        }
     }
 
-    fun updateReport(
+    private fun deleteFilesAndUpdateReport(
+        reportId: Int,
+        theme: Int,
+        location: Location,
+        description: String?,
+        name: String,
+        tags: List<String>,
+        urls: List<String>?,
+        newFiles: List<File>? = null,
+        filesToDelete: List<Int>?
+    ): Observable<Report> {
+        return Observable.fromIterable(filesToDelete)
+            .flatMapCompletable {
+                deleteFile(it)
+            }
+            .toSingleDefault(true)
+            .flatMapObservable {
+                updateReportInternal(
+                    reportId,
+                    theme,
+                    location,
+                    description,
+                    name,
+                    tags,
+                    urls,
+                    newFiles
+                )
+            }
+    }
+
+    private fun updateReportInternal(
         reportId: Int,
         theme: Int,
         location: Location,
@@ -123,6 +176,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         }
 
     }
+
+    private fun deleteFile(fileId: Int): Completable = api.deleteFile(fileId)
 
     private fun saveReportInternal(
         theme: Int,
