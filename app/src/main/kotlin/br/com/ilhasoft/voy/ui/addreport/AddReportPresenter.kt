@@ -3,12 +3,13 @@ package br.com.ilhasoft.voy.ui.addreport
 import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.models.*
+import br.com.ilhasoft.voy.models.AddReportFragmentType
+import br.com.ilhasoft.voy.models.Location
+import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.files.FilesService
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
-import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -23,8 +24,6 @@ class AddReportPresenter(
     private val reportInteractor: AddReportInteractor
 ) : Presenter<AddReportContract>(AddReportContract::class.java) {
 
-    private val reportService = ReportService()
-    private val fileService = FilesService()
     private val boundPairs: List<Pair<Double, Double>> by lazy {
         if (bound.isNotEmpty())
             bound.map { Pair(it[0], it[1]) }
@@ -96,14 +95,6 @@ class AddReportPresenter(
         }
     }
 
-    private fun updateReport() {
-        if (reportViewModel.mediasToDelete().isNotEmpty()) {
-            deleteFilesAndUpdateReport()
-        } else {
-            updateReportIntern()
-        }
-    }
-
     private fun sendReport() {
         isFinalStep = true
         view.checkLocation()
@@ -129,35 +120,7 @@ class AddReportPresenter(
             })
     }
 
-    private fun deleteFilesAndUpdateReport() {
-        Observable.fromIterable(reportViewModel.mediasToDelete())
-            .flatMapCompletable { fileUrl ->
-                var fileToDelete: ReportFile? = null
-                reportViewModel.report.files.forEach {
-                    if (it.file == fileUrl.toString())
-                        fileToDelete = it
-                }
-                fileToDelete?.let { fileService.deleteFile(it.id) }
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { view.showLoading() }
-            .doOnTerminate { view.dismissLoading() }
-            .doOnComplete { updateReportIntern() }
-            .subscribe({}, {
-                Timber.e(it)
-            })
-    }
-
-    private fun updateReportIntern() {
-//        if (reportViewModel.hasNewMedias()) {
-//            updateReportWithFiles()
-//        } else {
-            updateReportWithoutFiles()
-//        }
-    }
-
-    private fun updateReportWithoutFiles() = with(reportViewModel) {
+    private fun updateReport() = with(reportViewModel) {
         reportInteractor.updateReport(
             report.id,
             ThemeData.themeId,
@@ -180,51 +143,9 @@ class AddReportPresenter(
             })
     }
 
-//    private fun updateReportWithFiles() = with(reportViewModel) {
-//        reportService.updateReport(
-//            report.id,
-//            ThemeData.themeId,
-//            report.location!!,
-//            description,
-//            name,
-//            selectedTags,
-//            links
-//        )
-//            .flatMapObservable {
-//                reportViewModel.report = report
-//                Observable.fromIterable(reportViewModel.mediasToSave())
-//            }
-//            .flatMapSingle { saveFile(it) }
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .doOnSubscribe { view.showLoading() }
-//            .doOnTerminate { view.dismissLoading() }
-//            .doOnComplete { view.navigateToThanks() }
-//            .subscribe({
-//                onFileSaved(it)
-//            }, {
-//                Timber.e(it)
-//            })
-//    }
-
-//    private fun onFileSaved(reportFile: ReportFile) {
-//        reportViewModel.report.files.add(reportFile)
-//        if (reportFile.mediaType == "image")
-//            reportViewModel.report.lastImage = reportFile
-//    }
-//
-//    private fun saveFile(uri: Uri): Single<ReportFile> {
-//        val file = getFile(uri)
-//        val mimeType = getMimeType(uri)
-//        return fileService.saveFile(
-//            file.nameWithoutExtension, file.name, file,
-//            mimeType, reportViewModel.report.id
-//        )
-//    }
-
     private fun getFile(uri: Uri) = view.getFileFromUri(uri)
 
-//    private fun getMimeType(uri: Uri) = view.getMimeTypeFromUri(uri)
+    private fun getMimeType(uri: Uri) = view.getMimeTypeFromUri(uri)
 
     private fun checkedToContinue(isInsideBounds: Boolean) {
         if (!isInsideBounds) {

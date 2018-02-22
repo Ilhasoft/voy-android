@@ -12,7 +12,6 @@ import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
@@ -30,8 +29,13 @@ class AddReportInteractorImpl : AddReportInteractor {
     private val themeDbHelper by lazy { ThemeDbHelper() }
 
     override fun saveReport(
-        theme: Int, location: Location, description: String?, name: String,
-        tags: List<String>, medias: List<File>, urls: List<String>?
+        theme: Int,
+        location: Location,
+        description: String?,
+        name: String,
+        tags: List<String>,
+        medias: List<File>,
+        urls: List<String>?
     ): Observable<Report> {
         return reportDbHelper.saveReport(
             theme,
@@ -54,14 +58,6 @@ class AddReportInteractorImpl : AddReportInteractor {
                 }
             }
             .observeOn(Schedulers.io())
-    }
-
-    override fun updateReport(
-        report: Report,
-        newFiles: List<File>?,
-        filesToDelete: List<ReportFile>?
-    ): Single<Report> {
-        return Single.just(Report())
     }
 
     override fun updateReport(
@@ -90,22 +86,67 @@ class AddReportInteractorImpl : AddReportInteractor {
         )
             .onMainThread()
             .observeOn(Schedulers.io())
-            .flatMapObservable { report ->
-                reportService.updateReport(
-                    reportId,
-                    ThemeData.themeId,
-                    location,
-                    description,
-                    name,
-                    tags,
-                    urls,
-                    newFiles)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete { reportDbHelper.removeReport(report.internalId!!) }
+            .flatMapObservable {
+                if (ConnectivityManager.isConnected()) {
+                    val updateReportModel = UpdateReportModel(
+                        reportId,
+                        location,
+                        description,
+                        name,
+                        tags,
+                        urls,
+                        newFiles,
+                        it.internalId!!
+                    )
+                    updateOnServer(updateReportModel, filesToDelete)
+                } else {
+                    Observable.just(it)
+                }
             }
     }
 
     override fun getTags(themeId: Int): Flowable<MutableList<String>> {
         return themeDbHelper.getThemeTags(themeId).onMainThread()
     }
+
+    private fun updateOnServer(
+        updateReportModel: UpdateReportModel,
+        filesToDelete: List<ReportFile>?
+    ): Observable<Report>? {
+        return if (filesToDelete?.isNotEmpty() == true) {
+            updateWithDeleteFiles(updateReportModel, filesToDelete)
+        } else {
+            updateReportInternal(updateReportModel)
+        }
+    }
+
+    private fun updateWithDeleteFiles(
+        updateReportModel: UpdateReportModel,
+        filesToDelete: List<ReportFile>?
+    ): Observable<Report>? = with(updateReportModel) {
+        return Observable.fromIterable(filesToDelete)
+            .flatMapCompletable {
+                fileService.deleteFile(it.id)
+            }
+            .toSingleDefault(true)
+            .flatMapObservable {
+                updateReportInternal(updateReportModel)
+            }
+    }
+
+    private fun updateReportInternal(updateReportModel: UpdateReportModel): Observable<Report>? =
+        with(updateReportModel) {
+            return reportService.updateReport(
+                reportId,
+                ThemeData.themeId,
+                location,
+                description,
+                name,
+                tags,
+                urls,
+                newFiles
+            )
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete { reportDbHelper.removeReport(reportInternalId) }
+        }
 }

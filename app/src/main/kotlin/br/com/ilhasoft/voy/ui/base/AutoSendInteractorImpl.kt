@@ -26,7 +26,8 @@ class AutoSendInteractorImpl : AutoSendInteractor {
     private fun getFromDb() = reportDbHelper.getReports().onMainThread()
 
     override fun sendPendingReports() {
-        if (!sendingPendingReports) {
+        if (false) {
+//        if (!sendingPendingReports) {
             getFromDb().observeOn(Schedulers.newThread())
                 .doOnSubscribe { sendingPendingReports = true }
                 .doOnTerminate { sendingPendingReports = false }

@@ -5,7 +5,6 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.Single
 import java.io.File
 
 /**
@@ -21,12 +20,6 @@ interface AddReportInteractor {
         medias: List<File>,
         urls: List<String>?
     ): Observable<Report>
-
-    fun updateReport(
-        report: Report,
-        newFiles: List<File>?,
-        filesToDelete: List<ReportFile>?
-    ): Single<Report>
 
     fun updateReport(
         reportId: Int,
