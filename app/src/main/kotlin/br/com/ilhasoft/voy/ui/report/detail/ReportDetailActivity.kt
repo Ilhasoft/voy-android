@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.PopupMenu
@@ -35,6 +36,7 @@ import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
+import br.com.ilhasoft.voy.ui.home.HomeActivity
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
@@ -166,7 +168,10 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             navigateToEditReport()
             true
         }
-        R.id.share -> true
+        R.id.share -> {
+            startActivity(Intent.createChooser(createShareIntent(), resources.getString(R.string.share_title)))
+            true
+        }
         else -> false
     }
 
@@ -197,6 +202,26 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         popupMenu = PopupMenu(this, expandedMenu)
         popupMenu.setOnMenuItemClickListener(this)
         popupMenu.menuInflater.inflate(R.menu.report_detail, popupMenu.menu)
+        showMenuOptionBasedOnReportState(popupMenu.menu)
+    }
+
+    private fun showMenuOptionBasedOnReportState(menu: Menu) {
+        report?.status.let {
+            if (it == ReportFragment.APPROVED_STATUS)
+                menu.apply {
+                    findItem(R.id.edit).isVisible = false
+                    findItem(R.id.share).isVisible = true
+                }
+        }
+    }
+
+    private fun createShareIntent(): Intent {
+        return Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.share_text) +
+                    " https://voy-dev.ilhasoft.mobi/project/${HomeActivity.projectName}/report/${report?.id}")
+            type = "text/plain"
+        }
     }
 
     private fun setupRecyclerView(tags: RecyclerView) = with(tags) {
