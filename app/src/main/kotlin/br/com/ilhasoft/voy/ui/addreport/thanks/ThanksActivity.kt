@@ -23,11 +23,7 @@ class ThanksActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.run {
-            done.setOnClickListener {
-                val homeIntent = HomeActivity.createIntent(this@ThanksActivity)
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(homeIntent)
-            }
+            done.setOnClickListener { startActivity(HomeActivity.createIntent(this@ThanksActivity)) }
         }
     }
 
