@@ -2,14 +2,15 @@ package br.com.ilhasoft.voy.ui.addreport
 
 import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
+import br.com.ilhasoft.support.rxgraphics.FileCompressor
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.network.files.FilesService
-import br.com.ilhasoft.voy.network.reports.ReportService
+import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -101,15 +102,27 @@ class AddReportPresenter(
     }
 
     private fun saveReport() = with(reportViewModel) {
-        reportInteractor.saveReport(
-            ThemeData.themeId,
-            userLocation,
-            description,
-            name,
-            selectedTags,
-            medias.map { getFile(it) },
-            links
-        )
+        Flowable.fromIterable(medias)
+            .subscribeOn(Schedulers.io())
+            .flatMap {
+                val file = getFile(it)
+                if (FileHelper.imageTypes.contains(getMimeType(it)))
+                    FileCompressor.compressPicture(file, 1280, 720, 80)
+                else
+                    FileCompressor.compressVideo(file)
+            }
+            .toList()
+            .flatMapObservable {
+                reportInteractor.saveReport(
+                    ThemeData.themeId,
+                    userLocation,
+                    description,
+                    name,
+                    selectedTags,
+                    it,
+                    links
+                )
+            }
             .doOnSubscribe { view.showLoading() }
             .doOnTerminate { view.dismissLoading() }
             .doOnComplete { view.navigateToThanks() }
@@ -121,23 +134,36 @@ class AddReportPresenter(
     }
 
     private fun updateReport() = with(reportViewModel) {
-        reportInteractor.updateReport(
-            report.id,
-            ThemeData.themeId,
-            report.location!!,
-            description,
-            name,
-            selectedTags,
-            links,
-            medias.map { it.toString() },
-            mediasToSave().map { getFile(it) },
-            mediasToDelete()
-        )
+        val mediasToSave = mediasToSave()
+        Flowable.fromIterable(mediasToSave)
+            .subscribeOn(Schedulers.io())
+            .flatMap {
+                val file = getFile(it)
+                if (FileHelper.imageTypes.contains(getMimeType(it)))
+                    FileCompressor.compressPicture(file, 1280, 720, 80)
+                else
+                    FileCompressor.compressVideo(file)
+            }
+            .toList()
+            .flatMapObservable {
+                reportInteractor.updateReport(
+                    report.id,
+                    ThemeData.themeId,
+                    report.location!!,
+                    description,
+                    name,
+                    selectedTags,
+                    links,
+                    medias.map { it.toString() },
+                    it,
+                    mediasToDelete()
+                )
+            }
             .doOnSubscribe { view.showLoading() }
             .doAfterTerminate { view.dismissLoading() }
+            .doOnComplete { view.navigateToThanks() }
             .subscribe({
                 reportViewModel.report = it
-                view.navigateToThanks()
             }, {
                 Timber.e(it)
             })

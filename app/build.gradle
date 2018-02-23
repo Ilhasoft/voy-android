@@ -99,6 +99,7 @@ dependencies {
 
     compile "org.bitbucket.ilhasoft.support-core:databinding:${versions.supportCore}"
     compile "org.bitbucket.ilhasoft.support-core:media:${versions.supportCore}"
+    compile "org.bitbucket.ilhasoft.support-core:rx-graphics:${versions.supportCore}"
     compile("org.bitbucket.ilhasoft.support-core:core:${versions.supportCore}") {
         exclude group: "com.android.support", module: "appcompat-v7"
     }
