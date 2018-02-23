@@ -60,7 +60,7 @@ class ReportDetailPresenter(
                 mapper = preferences.getInt(User.ID), status = report?.status ?: 0)
                 .fromIoToMainThread()
                 .doOnSubscribe { view.showLoading() }
-                .doAfterSuccess { view.dismissLoading() }
+                .doAfterTerminate { view.dismissLoading() }
                 .doOnSuccess { view.showReportData(it) }
                 .doOnSuccess { view.populateIndicator(getIndicators(it)) }
                 .subscribe(

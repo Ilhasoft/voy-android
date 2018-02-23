@@ -20,6 +20,7 @@ import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.holder.NotificationViewHolder
@@ -34,6 +35,8 @@ class HomeActivity : BaseActivity(), HomeContract {
         @JvmField
         var projectName: String = ""
 
+        private const val ACCOUNT_REQUEST_CODE = 100
+
         @JvmStatic
         fun createIntent(context: Context): Intent {
             val intent = Intent(context, HomeActivity::class.java)
@@ -45,7 +48,7 @@ class HomeActivity : BaseActivity(), HomeContract {
     private val binding: ActivityHomeBinding by lazy {
         DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
     }
-    private val presenter: HomePresenter by lazy { HomePresenter(SharedPreferences(this)) }
+    private val presenter: HomePresenter by lazy { HomePresenter(SharedPreferences(this), HomeInteractorImpl()) }
     private val projectViewHolder: OnCreateViewHolder<Project, ProjectViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ProjectViewHolder(ItemMapBinding.inflate(layoutInflater, parent, false), presenter)
@@ -126,7 +129,15 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.viewToolbar?.hasNotification = notificationsAdapter.isNotEmpty()
     }
 
-    override fun navigateToMyAccount() = startActivity(AccountActivity.createIntent(this))
+    override fun navigateToMyAccount() = startActivityForResult(AccountActivity.createIntent(this), ACCOUNT_REQUEST_CODE)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ACCOUNT_REQUEST_CODE) {
+            val position = presenter.getAvatarPositionFromPreferences()
+            binding.viewToolbar?.drawableResId = ResourcesHelper.getAvatarsResources(this)[position]
+        }
+    }
 
     override fun selectProject() {
         binding.selectingProject = binding.selectingProject?.not()
@@ -174,6 +185,8 @@ class HomeActivity : BaseActivity(), HomeContract {
         this!!.run {
             hasNotification = notificationsAdapter.isNotEmpty()
             presenter = this@HomeActivity.presenter
+            val position = this@HomeActivity.presenter.getAvatarPositionFromPreferences()
+            drawableResId = ResourcesHelper.getAvatarsResources(this@HomeActivity)[position]
         }
     }
 

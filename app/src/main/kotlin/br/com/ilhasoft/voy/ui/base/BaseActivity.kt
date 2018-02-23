@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.core.app.IndeterminateProgressDialog
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
+
 
 /**
  * Created by lucasbarros on 22/11/17.
  */
 abstract class BaseActivity : AppCompatActivity(), BaseView {
+
+    private val connectivityManager by lazy { ConnectivityManager(AutoSendInteractorImpl()) }
 
     private val progressDialog: IndeterminateProgressDialog by lazy {
         val dialog = IndeterminateProgressDialog(this)
@@ -21,6 +25,16 @@ abstract class BaseActivity : AppCompatActivity(), BaseView {
 
     override fun showLoading() {
         progressDialog.show()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        connectivityManager.registerReceive(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        connectivityManager.unregisterReceiver(this)
     }
 
     override fun dismissLoading() {
@@ -42,5 +56,4 @@ abstract class BaseActivity : AppCompatActivity(), BaseView {
         }
         return window.decorView.rootView
     }
-
 }

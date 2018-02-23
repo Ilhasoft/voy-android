@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -11,6 +12,10 @@
         <variable
             name="hasNotification"
             type="Boolean" />
+
+        <variable
+            name="drawableResId"
+            type="Integer" />
 
         <variable
             name="presenter"
@@ -31,7 +36,8 @@
             android:layout_weight="0.2"
             android:onClick="@{() -> presenter.onClickMyAccount()}"
             android:padding="8dp"
-            android:src="@drawable/ic_default_img_profile" />
+            app:drawableRes="@{drawableResId}"
+            tools:src="@drawable/ic_default_img_profile" />
 
         <Space
             android:layout_width="0dp"

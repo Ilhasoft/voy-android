@@ -25,7 +25,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
         @JvmStatic
         fun createIntent(context: Context, themeId: Int,
-                         themeName: String, themeColor: String, themeBounds: ArrayList<ArrayList<Double>>): Intent {
+                         themeName: String, themeColor: String, themeBounds: List<List<Double>>): Intent {
             ThemeData.themeId = themeId
             ThemeData.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds

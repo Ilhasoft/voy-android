@@ -21,7 +21,6 @@ interface FilesApi {
     fun saveFile(@PartMap map: Map<String, @JvmSuppressWildcards RequestBody>,
                  @Part file: MultipartBody.Part): Single<ReportFile>
 
-    // FIXME: Server error (returning "undefined")
     @DELETE("/api/report-files/{id}/")
     fun deleteFile(@Path("id") id: Int): Completable
 
