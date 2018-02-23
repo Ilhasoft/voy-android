@@ -32,7 +32,6 @@ class AutoSendInteractorImpl : AutoSendInteractor {
         if (!sendingPendingReports) {
             getFromDb()
                 .doOnSubscribe { sendingPendingReports = true }
-                .doOnTerminate { sendingPendingReports = false }
                 .flatMap {
                     Flowable.fromIterable(it)
                 }
@@ -43,8 +42,8 @@ class AutoSendInteractorImpl : AutoSendInteractor {
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete { reportDbHelper.removeReport(it.internalId) }
                 }
+                .doAfterTerminate { sendingPendingReports = false }
                 .subscribe({}, {
-                    //TODO: see this error: java.lang.IllegalStateException: Object is no longer valid to operate on. Was it deleted by another thread?
                     Timber.e(it)
                 })
         }
