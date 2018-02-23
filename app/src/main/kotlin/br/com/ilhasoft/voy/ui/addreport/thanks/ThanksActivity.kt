@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityThanksBinding
-import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
+import br.com.ilhasoft.voy.ui.home.HomeActivity
 
 class ThanksActivity : BaseActivity() {
 
@@ -24,11 +23,7 @@ class ThanksActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.run {
-            newReport.setOnClickListener {
-                startActivity(AddReportActivity.createIntent(this@ThanksActivity))
-                finish()
-            }
-            close.setOnClickListener { finish() }
+            done.setOnClickListener { startActivity(HomeActivity.createIntent(this@ThanksActivity)) }
         }
     }
 

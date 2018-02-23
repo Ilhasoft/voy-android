@@ -44,17 +44,17 @@
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="0.9" />
+            android:layout_weight="0.3" />
 
         <Button
-            android:id="@+id/new_report"
+            android:id="@+id/done"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/rounded_button_blue"
             android:fontFamily="sans-serif"
-            android:text="@string/new_report"
+            android:text="@string/done"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
@@ -62,24 +62,7 @@
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="0.10" />
-
-        <Button
-            android:id="@+id/close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/bg_rounded_white"
-            android:fontFamily="sans-serif"
-            android:text="@string/close"
-            android:textAllCaps="false"
-            android:textSize="16sp" />
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.2" />
+            android:layout_weight="0.7" />
 
     </LinearLayout>
 

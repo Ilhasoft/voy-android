@@ -35,7 +35,11 @@ class HomeActivity : BaseActivity(), HomeContract {
         var projectName: String = ""
 
         @JvmStatic
-        fun createIntent(context: Context): Intent = Intent(context, HomeActivity::class.java)
+        fun createIntent(context: Context): Intent {
+            val intent = Intent(context, HomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            return intent
+        }
     }
 
     private val binding: ActivityHomeBinding by lazy {
