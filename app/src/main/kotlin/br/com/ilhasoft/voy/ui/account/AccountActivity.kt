@@ -35,7 +35,7 @@ class AccountActivity : BaseActivity(), AccountContract {
         DataBindingUtil.setContentView<ActivityAccountBinding>(this, R.layout.activity_account)
     }
     private val presenter: AccountPresenter by lazy {
-        AccountPresenter(UserService(), SharedPreferences(applicationContext))
+        AccountPresenter(AccountInteractorImpl(SharedPreferences(this@AccountActivity)))
     }
     private val avatarViewHolder: OnCreateViewHolder<Int, AvatarViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
@@ -95,7 +95,7 @@ class AccountActivity : BaseActivity(), AccountContract {
     }
 
     override fun saveUser() {
-        binding.user?.let{
+        binding.user?.let {
             val newUser = it.copy(avatar = "${getAvatarFromSelectedResource().plus(1)}")
             presenter.saveUser(newUser)
         }

@@ -17,6 +17,7 @@ data class User(val id: Int,
                 @SerializedName("is_mapper") val isMapper: Boolean,
                 @SerializedName("is_admin") val isAdmin: Boolean,
                 var password: String?) : Parcelable {
+
     companion object {
         @JvmStatic
         val TOKEN = "token"
@@ -24,12 +25,35 @@ data class User(val id: Int,
         @JvmStatic
         val ID = "id"
 
+        @JvmStatic
+        val USERNAME = "username"
+
+        @JvmStatic
+        val AVATAR = "avatar"
+
+        @JvmStatic
+        val EMAIL = "email"
+
         @JvmField
         val CREATOR: Parcelable.Creator<User> = object : Parcelable.Creator<User> {
             override fun createFromParcel(source: Parcel): User = User(source)
             override fun newArray(size: Int): Array<User?> = arrayOfNulls(size)
         }
+
     }
+
+    constructor(id: Int, avatar: String, username: String, email: String) : this(
+            id,
+            "",
+            "",
+            "",
+            avatar,
+            username,
+            email,
+            false,
+            false,
+            null
+    )
 
     constructor(source: Parcel) : this(
             source.readInt(),

@@ -1,19 +1,15 @@
 package br.com.ilhasoft.voy.ui.account
 
 import br.com.ilhasoft.support.core.mvp.Presenter
-import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
-import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class AccountPresenter(
-        private val userService: UserService,
-        private val preferences: Preferences
+        private val accountInteractor: AccountInteractor
 ) : Presenter<AccountContract>(AccountContract::class.java) {
 
     var avatarDrawableId: Int? = null
@@ -21,7 +17,7 @@ class AccountPresenter(
 
     override fun start() {
         super.start()
-        getUser()
+        loadUser()
     }
 
     override fun detachView() {
@@ -29,15 +25,16 @@ class AccountPresenter(
         super.detachView()
     }
 
-    private fun getUser() {
+    private fun loadUser() {
         compositeDisposable.add(
-                userService.getUser()
-                        .fromIoToMainThread()
-                        .loadControl(view)
-                        .filter { it.isNotEmpty() }
-                        .doOnNext { setAvatarByPosition(it.first().avatar.extractNumbers()) }
+                accountInteractor.getUser()
                         .subscribe(
-                                { view.setUser(it.first()) },
+                                {
+                                    it?.apply {
+                                        setAvatarByPosition(avatar.extractNumbers())
+                                        view.setUser(it)
+                                    }
+                                },
                                 {
                                     ErrorHandlerHelper.showError(it) { msg ->
                                         view.showMessage(msg)
@@ -45,12 +42,12 @@ class AccountPresenter(
                                 }
                         )
         )
+
     }
 
     fun saveUser(user: User) {
         compositeDisposable.add(
-                userService.editUser(user)
-                        .fromIoToMainThread()
+                accountInteractor.editUser(user)
                         .loadControl(view)
                         .subscribe(
                                 { view.userUpdatedMessage() },
@@ -84,8 +81,7 @@ class AccountPresenter(
     }
 
     fun onClickLogout() {
-        preferences.remove(User.TOKEN)
-        preferences.remove(User.ID)
+        accountInteractor.removeUserPreferencesEntries();
         view.navigateToMakeLogout()
     }
 

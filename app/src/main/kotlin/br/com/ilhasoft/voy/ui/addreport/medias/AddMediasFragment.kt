@@ -95,7 +95,7 @@ class AddMediasFragment :
         image4.setImageListener(this@AddMediasFragment)
 
         for (index in reportViewModel.mediasFromServer.indices) {
-            insertMedia(index, reportViewModel.mediasFromServer[index])
+            insertMedia(index, Uri.parse(reportViewModel.mediasFromServer[index].file))
         }
     }
 

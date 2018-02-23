@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,7 +15,7 @@ import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
-import br.com.ilhasoft.voy.shared.helpers.FileHelper
+import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
@@ -113,6 +112,8 @@ class ReportFragment : BaseFragment(), ReportContract {
         binding.run {
             setupRecyclerView(reports)
             presenter = this@ReportFragment.presenter
+            val position = presenter!!.getAvatarPositionFromPreferences()
+            drawableResId = ResourcesHelper.getAvatarsResources(activity)[position]
         }
     }
 
