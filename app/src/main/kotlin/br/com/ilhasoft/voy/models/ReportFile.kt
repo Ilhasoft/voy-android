@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by developer on 05/01/18.
  */
-data class ReportFile(val id: Int,
-                      @SerializedName("title") val title: String,
-                      @SerializedName("description") val description: String,
-                      @SerializedName("media_type") val mediaType: String,
-                      @SerializedName("file") val file: String,
-                      @SerializedName("created_by") val createdBy: User,
-                      @SerializedName("report_id") val reportId: Int) : Parcelable {
+data class ReportFile(val id: Int = 0,
+                      val title: String = "",
+                      val description: String = "",
+                      @SerializedName("media_type") val mediaType: String = "",
+                      val file: String = "",
+                      @SerializedName("created_by") val createdBy: User? = null,
+                      @SerializedName("report_id") val reportId: Int = 0) : Parcelable {
 
     companion object {
         val TAG = "reportFile"

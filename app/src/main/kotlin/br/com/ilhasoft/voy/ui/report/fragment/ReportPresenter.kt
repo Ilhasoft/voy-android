@@ -5,27 +5,28 @@ import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
-import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import br.com.ilhasoft.voy.shared.extensions.loadControl
+import timber.log.Timber
 
-class ReportPresenter(private val preferences: Preferences) :
-        Presenter<ReportContract>(ReportContract::class.java) {
-
-    private val reportService: ReportService by lazy { ReportService() }
+class ReportPresenter(
+    private val preferences: Preferences,
+    private val reportInteractor: ReportInteractor
+) :
+    Presenter<ReportContract>(ReportContract::class.java) {
 
     override fun attachView(view: ReportContract?) {
         super.attachView(view)
-        view?.showLoading()
         loadReportsData()
-        view?.dismissLoading()
     }
 
     private fun loadReportsData() {
-        reportService.getReports(page = 1, page_size = 50,
-                theme = ThemeData.themeId, mapper = preferences.getInt(User.ID), status = getStatus())
-                .compose(RxHelper.defaultSingleSchedulers())
-                .subscribe({ fillReportsAdapter(it.results) }, {})
+        reportInteractor.getReports(
+            page = 1, pageSize = 50,
+            theme = ThemeData.themeId, mapper = preferences.getInt(User.ID), status = getStatus()
+        )
+            .loadControl(view)
+            .subscribe({ fillReportsAdapter(it) }, { Timber.e(it) })
     }
 
     private fun getStatus(): Int? = view?.getStatus()
@@ -36,10 +37,6 @@ class ReportPresenter(private val preferences: Preferences) :
 
     fun navigateToReportDetail(report: Report) {
         view.navigateToReportDetail(report)
-    }
-
-    fun onClickEditReport(report: Report?) {
-        view?.navigateToEditReport(report)
     }
 
     fun getAvatarPositionFromPreferences(): Int =

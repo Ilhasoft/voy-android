@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
 import br.com.ilhasoft.voy.shared.widget.AddImageView
+import br.com.ilhasoft.voy.ui.addreport.AddReportInteractorImpl
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
+import br.com.ilhasoft.voy.ui.addreport.ReportViewModelFactory
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.shared.OnAddImageClickListener
 
@@ -22,8 +24,9 @@ class AddMediasFragment :
         FragmentAddMediasBinding.inflate(LayoutInflater.from(context))
     }
 
-    private val reportViewModel: ReportViewModel by lazy {
-        ViewModelProviders.of(activity).get(ReportViewModel::class.java)
+    private val reportViewModel by lazy {
+        val factory = ReportViewModelFactory(AddReportInteractorImpl())
+        ViewModelProviders.of(activity, factory).get(ReportViewModel::class.java)
     }
 
     private val delegate: MediaSelectorDelegate by lazy {
@@ -92,7 +95,7 @@ class AddMediasFragment :
         image4.setImageListener(this@AddMediasFragment)
 
         for (index in reportViewModel.mediasFromServer.indices) {
-            insertMedia(index, reportViewModel.mediasFromServer[index])
+            insertMedia(index, Uri.parse(reportViewModel.mediasFromServer[index].file))
         }
     }
 

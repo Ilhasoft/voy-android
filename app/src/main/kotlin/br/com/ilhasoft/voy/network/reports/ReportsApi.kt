@@ -1,7 +1,11 @@
 package br.com.ilhasoft.voy.network.reports
 
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ReportFile
+import io.reactivex.Completable
 import io.reactivex.Single
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 /**
@@ -19,15 +23,16 @@ interface ReportsApi {
     @POST("/api/reports/")
     fun saveReport(@Body body: ReportRequest): Single<Report>
 
-    // FIXME: Server with error (returning error 500)
     @PUT("/api/reports/{id}/")
     fun updateReport(@Path("id") id: Int,
                      @Body body: ReportRequest): Single<Report>
 
-    // TODO: implement partial update
+    //Files
+    @Multipart
+    @POST("/api/report-files/")
+    fun saveFile(@PartMap map: Map<String, @JvmSuppressWildcards RequestBody>,
+                 @Part file: MultipartBody.Part): Single<ReportFile>
 
-    // FIXME: Server with error (returning undefined)
-    @DELETE("/api/reports/{id}/")
-    fun deleteReport(@Path("id") id: Int,
-                     @QueryMap parameters: Map<String, Int?>): Single<Void>
+    @DELETE("/api/report-files/{id}/")
+    fun deleteFile(@Path("id") id: Int): Completable
 }

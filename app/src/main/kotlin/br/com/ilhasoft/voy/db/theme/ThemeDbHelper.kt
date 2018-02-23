@@ -33,7 +33,7 @@ class ThemeDbHelper {
                             lng = bound[1]
                         }
                     })
-                    tags.addAll(theme.tags.map { title -> TagDbModel().apply { tag = title } })
+                    tags.addAll(theme.tags)
                     color = theme.color
                     allowLinks = theme.allowLinks
                 }
@@ -42,6 +42,13 @@ class ThemeDbHelper {
             themesDb = realm.copyToRealmOrUpdate(themesDb)
             realm.commitTransaction()
             themesDb.map { it.toTheme() }.toMutableList()
+        }
+    }
+
+    fun getThemeTags(themeId: Int): Flowable<MutableList<String>> {
+        return Flowable.fromCallable {
+            val theme = realm.where(ThemeDbModel::class.java).equalTo("id", themeId).findFirst()
+            theme?.tags?.toMutableList() ?: mutableListOf()
         }
     }
 }

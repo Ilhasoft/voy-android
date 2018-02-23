@@ -12,8 +12,9 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentAddTagBinding
 import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
-import br.com.ilhasoft.voy.models.Tag
+import br.com.ilhasoft.voy.ui.addreport.AddReportInteractorImpl
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
+import br.com.ilhasoft.voy.ui.addreport.ReportViewModelFactory
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -26,7 +27,10 @@ class AddTagsFragment : BaseFragment() {
         FragmentAddTagBinding.inflate(LayoutInflater.from(context))
     }
 
-    private val reportViewModel by lazy { ViewModelProviders.of(activity).get(ReportViewModel::class.java) }
+    private val reportViewModel by lazy {
+        val factory = ReportViewModelFactory(AddReportInteractorImpl())
+        ViewModelProviders.of(activity, factory).get(ReportViewModel::class.java)
+    }
 
     private val tagsAdapter by lazy {
         AutoRecyclerAdapter<String, TagViewHolder>(tagsViewHolder).apply {

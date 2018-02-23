@@ -2,7 +2,6 @@ package br.com.ilhasoft.voy.ui.addreport.tag
 
 import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
 import br.com.ilhasoft.voy.databinding.ItemTagThemeBinding
-import br.com.ilhasoft.voy.models.Tag
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
 
 /**

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.core.helpers.DimensionHelper
-import br.com.ilhasoft.support.core.helpers.ResourceHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.LinearSpaceItemDecoration
@@ -25,7 +24,6 @@ class ReportFragment : BaseFragment(), ReportContract {
 
     companion object {
         private const val EXTRA_STATUS = "status"
-        private const val EXTRA_THEME_ID = "themeId"
         const val APPROVED_STATUS = 1
         const val PENDING_STATUS = 2
         const val NOT_APPROVED_STATUS = 3
@@ -47,7 +45,7 @@ class ReportFragment : BaseFragment(), ReportContract {
     private val binding: FragmentReportsBinding by lazy {
         FragmentReportsBinding.inflate(LayoutInflater.from(context))
     }
-    private val presenter: ReportPresenter by lazy { ReportPresenter(SharedPreferences(context)) }
+    private val presenter: ReportPresenter by lazy { ReportPresenter(SharedPreferences(context), ReportInteractorImpl(status)) }
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
@@ -109,8 +107,6 @@ class ReportFragment : BaseFragment(), ReportContract {
     override fun navigateToReportDetail(report: Report) {
         startActivity(ReportDetailActivity.createIntent(context, report))
     }
-
-    override fun navigateToEditReport(report: Report?) {}
 
     private fun setupView() {
         binding.run {

@@ -91,4 +91,6 @@
 
     <string name="password_min_length_error">Password should be at least 6 characters.</string>
     <string name="user_updated_message">Your user was updated!</string>
+
+    <string name="offline_error">Couldn\'t find connection. Check it and try again</string>
 </resources>
