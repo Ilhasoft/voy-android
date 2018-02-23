@@ -18,7 +18,7 @@ buildscript {
             'flexboxLayout'      : '0.3.1',
             'timber'             : '4.6.0',
             'dispatcher'         : '3.1.0',
-            'playServiceLocation': '11.8.0',
+            'playServiceLocation': '11.8.0'
     ]
     repositories {
         google()
