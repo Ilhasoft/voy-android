@@ -18,7 +18,7 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
 
     override fun attachView(view: LoginContract) {
         super.attachView(view)
-        if (preferences.contains(User.TOKEN)) {
+        if(preferences.contains(User.TOKEN)) {
             BaseFactory.accessToken = preferences.getString(User.TOKEN)
             view.navigateToHome()
         }
@@ -34,8 +34,13 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
                     .concatMap { userService.getUser() }
                     .compose(RxHelper.defaultFlowableSchedulers())
                     .subscribe({
-                        if (it.isNotEmpty()) {
-                            preferences.put(User.ID, it[0].id)
+                        it?.apply {
+                            preferences.apply {
+                                put(User.ID, id)
+                                put(User.USERNAME, username)
+                                put(User.AVATAR, avatar)
+                                put(User.EMAIL, email)
+                            }
                             view.navigateToHome()
                         }
                     }, {

@@ -59,4 +59,8 @@ class SharedPreferences(context: Context) : Preferences {
         editor.remove(key).apply()
     }
 
+    override fun clear() {
+        editor.clear().apply()
+    }
+
 }

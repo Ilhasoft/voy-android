@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivitySplashBinding
-import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.login.LoginActivity
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
