@@ -13,12 +13,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bg_no_report"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_bg_no_report">
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -28,23 +29,17 @@
                 app:drawableRes="@{drawableResId}"
                 tools:src="@drawable/ic_avatar_thanks" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:fontFamily="sans-serif"
-                android:letterSpacing="-0.02"
-                android:text="@string/thanks"
-                android:textColor="@color/bright_sky_blue"
-                android:textSize="35sp"
-                android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="-0.02"
+            android:text="@string/thanks"
+            android:textColor="@color/bright_sky_blue"
+            android:textSize="35sp"
+            android:textStyle="bold" />
 
-        </FrameLayout>
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.1" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -60,17 +55,17 @@
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="0.9" />
+            android:layout_weight="0.3" />
 
         <Button
-            android:id="@+id/new_report"
+            android:id="@+id/done"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/rounded_button_blue"
             android:fontFamily="sans-serif"
-            android:text="@string/new_report"
+            android:text="@string/done"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
@@ -78,24 +73,7 @@
         <Space
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="0.10" />
-
-        <Button
-            android:id="@+id/close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/bg_rounded_white"
-            android:fontFamily="sans-serif"
-            android:text="@string/close"
-            android:textAllCaps="false"
-            android:textSize="16sp" />
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.2" />
+            android:layout_weight="0.7" />
 
     </LinearLayout>
 

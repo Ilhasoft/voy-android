@@ -68,19 +68,16 @@ class LoginActivity : BaseActivity(), LoginContract {
     override fun showErrorMessage(message: CharSequence) {}
 
     override fun navigateToHome() {
-        showMessage(getString(R.string.login_success))
-        Observable.timer(1, TimeUnit.SECONDS)
-                .subscribe({
-                    startActivity(HomeActivity.createIntent(this))
-                    finish()
-                })
+        startActivity(HomeActivity.createIntent(this))
+        finish()
     }
 
     private fun setupView() {
         binding.run {
-            credentials = if (BuildConfig.DEBUG)
-                Credentials(getString(R.string.username_dev), getString(R.string.password_dev))
-            else
+            credentials =
+//                    if (BuildConfig.DEBUG)
+//                Credentials("pirralho", "123456")
+//            else
                 this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }

@@ -106,7 +106,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_themes_white"
+                    android:background="@drawable/bg_border_white"
                     android:enabled="@{hasLinks}"
                     android:imeOptions="actionDone"
                     android:inputType="text"

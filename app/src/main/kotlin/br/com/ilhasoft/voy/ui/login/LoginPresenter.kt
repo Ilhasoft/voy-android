@@ -9,7 +9,9 @@ import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationService
 import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
+import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class LoginPresenter(private val preferences: Preferences) : Presenter<LoginContract>(LoginContract::class.java) {
 
@@ -18,7 +20,7 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
 
     override fun attachView(view: LoginContract) {
         super.attachView(view)
-        if(preferences.contains(User.TOKEN)) {
+        if (preferences.contains(User.TOKEN)) {
             BaseFactory.accessToken = preferences.getString(User.TOKEN)
             view.navigateToHome()
         }
@@ -33,15 +35,26 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
                     })
                     .concatMap { userService.getUser() }
                     .compose(RxHelper.defaultFlowableSchedulers())
+                    .doOnNext {
+                        if (it != null && it.isMapper)
+                            view.showMessage(R.string.login_success)
+                    }
+                    .delay(1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        it?.apply {
-                            preferences.apply {
-                                put(User.ID, id)
-                                put(User.USERNAME, username)
-                                put(User.AVATAR, avatar)
-                                put(User.EMAIL, email)
+                        if (it != null && it.isMapper) {
+                            it.apply {
+                                preferences.apply {
+                                    put(User.ID, id)
+                                    put(User.USERNAME, username)
+                                    put(User.AVATAR, avatar)
+                                    put(User.EMAIL, email)
+                                }
                             }
                             view.navigateToHome()
+                        } else {
+                            preferences.clear()
+                            view.showMessage(R.string.invalid_user)
                         }
                     }, {
                         Timber.e(it)

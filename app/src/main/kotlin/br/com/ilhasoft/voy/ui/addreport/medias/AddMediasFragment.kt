@@ -20,6 +20,8 @@ class AddMediasFragment :
         BaseFragment(),
         OnAddImageClickListener {
 
+    private val VIDEO_DURATION = 30
+
     private val binding: FragmentAddMediasBinding by lazy {
         FragmentAddMediasBinding.inflate(LayoutInflater.from(context))
     }
@@ -36,7 +38,9 @@ class AddMediasFragment :
         MediaSelectorDelegate(context, "br.com.ilhasoft.voy.provider")
                 .setOnLoadImageListener(listener)
                 .setOnLoadVideoListener(listener)
+                .setVideoDuration(VIDEO_DURATION)
     }
+
     private var imageViewSelected: AddImageView? = null
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {

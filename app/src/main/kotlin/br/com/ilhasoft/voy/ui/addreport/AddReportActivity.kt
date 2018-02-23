@@ -133,6 +133,13 @@ class AddReportActivity : BaseActivity(), AddReportContract {
         super.onDestroy()
     }
 
+    override fun onBackPressed() {
+        if (getVisibleFragmentType() == AddReportFragmentType.MEDIAS)
+            finish()
+        else
+            super.onBackPressed()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS) {
@@ -177,10 +184,7 @@ class AddReportActivity : BaseActivity(), AddReportContract {
     }
 
     override fun navigateBack() {
-        if (getVisibleFragmentType() == AddReportFragmentType.MEDIAS)
-            finish()
-        else
-            super.onBackPressed()
+        onBackPressed()
     }
 
     override fun getVisibleFragmentType(): AddReportFragmentType {

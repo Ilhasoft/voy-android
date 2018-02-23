@@ -32,10 +32,17 @@ import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 class HomeActivity : BaseActivity(), HomeContract {
 
     companion object {
+        @JvmField
+        var projectName: String = ""
+
         private const val ACCOUNT_REQUEST_CODE = 100
 
         @JvmStatic
-        fun createIntent(context: Context): Intent = Intent(context, HomeActivity::class.java)
+        fun createIntent(context: Context): Intent {
+            val intent = Intent(context, HomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            return intent
+        }
     }
 
     private val binding: ActivityHomeBinding by lazy {
@@ -104,13 +111,10 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
 
     override fun fillProjectsAdapter(projects: MutableList<Project>) {
-        if (projects.size > 0) {
-            binding.viewToolbar?.projectName = projects.first().name
-            projectsAdapter.clear()
-            projectsAdapter.addAll(projects)
-        } else {
-            projectsAdapter.clear()
-        }
+        binding.viewToolbar?.projectName = projects.first().name
+        projectName = projects.first().name
+        projectsAdapter.clear()
+        projectsAdapter.addAll(projects)
     }
 
     override fun fillThemesAdapter(themes: MutableList<Theme>) {
@@ -134,6 +138,7 @@ class HomeActivity : BaseActivity(), HomeContract {
             binding.viewToolbar?.drawableResId = ResourcesHelper.getAvatarsResources(this)[position]
         }
     }
+
     override fun selectProject() {
         binding.selectingProject = binding.selectingProject?.not()
     }
@@ -142,6 +147,7 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.run {
             selectingProject = selectingProject?.not()
             viewToolbar?.projectName = project.name
+            projectName = project.name
         }
         projectsAdapter.notifyDataSetChanged()
     }
