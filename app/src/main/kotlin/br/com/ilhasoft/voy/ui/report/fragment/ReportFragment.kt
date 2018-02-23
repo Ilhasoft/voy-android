@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.core.helpers.DimensionHelper
+import br.com.ilhasoft.support.core.helpers.ResourceHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.LinearSpaceItemDecoration
@@ -15,6 +16,7 @@ import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
@@ -114,6 +116,8 @@ class ReportFragment : BaseFragment(), ReportContract {
         binding.run {
             setupRecyclerView(reports)
             presenter = this@ReportFragment.presenter
+            val position = presenter!!.getAvatarPositionFromPreferences()
+            drawableResId = ResourcesHelper.getAvatarsResources(activity)[position]
         }
     }
 

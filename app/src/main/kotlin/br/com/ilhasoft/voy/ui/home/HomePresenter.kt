@@ -4,12 +4,13 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.notification.NotificationService
 import br.com.ilhasoft.voy.network.themes.ThemeService
+import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class HomePresenter(preferences: Preferences,
+class HomePresenter(val preferences: Preferences,
                     private val homeInteractor: HomeInteractor) : Presenter<HomeContract>(HomeContract::class.java) {
 
 //    private val projectService: ProjectService by lazy { ProjectService() }
@@ -60,6 +61,11 @@ class HomePresenter(preferences: Preferences,
     }
 
     fun isSelectedProject(project: Project): Boolean = selectedProject?.id == project.id
+
+    fun getAvatarPositionFromPreferences(): Int =
+            preferences.getString(User.AVATAR).extractNumbers().toInt().minus(1) // minus() being used to get the correct position from resources Array
+
+
 
     private fun loadData() {
         homeInteractor.getProjects()

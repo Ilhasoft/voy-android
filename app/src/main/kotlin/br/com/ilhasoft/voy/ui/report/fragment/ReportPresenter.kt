@@ -6,6 +6,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportService
+import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 
 class ReportPresenter(private val preferences: Preferences) :
@@ -40,5 +41,8 @@ class ReportPresenter(private val preferences: Preferences) :
     fun onClickEditReport(report: Report?) {
         view?.navigateToEditReport(report)
     }
+
+    fun getAvatarPositionFromPreferences(): Int =
+            preferences.getString(User.AVATAR).extractNumbers().toInt().minus(1)
 
 }

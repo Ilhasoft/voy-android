@@ -35,7 +35,12 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
                     .compose(RxHelper.defaultFlowableSchedulers())
                     .subscribe({
                         it?.apply {
-                            preferences.put(User.ID, id)
+                            preferences.apply {
+                                put(User.ID, id)
+                                put(User.USERNAME, username)
+                                put(User.AVATAR, avatar)
+                                put(User.EMAIL, email)
+                            }
                             view.navigateToHome()
                         }
                     }, {
