@@ -10,6 +10,8 @@ import br.com.ilhasoft.support.media.view.models.ImageMedia
 import br.com.ilhasoft.voy.GlideApp
 import br.com.ilhasoft.voy.databinding.FragmentCarouselBinding
 import br.com.ilhasoft.voy.models.ReportFile
+import br.com.ilhasoft.voy.shared.extensions.toFilePath
+import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 
 class CarouselFragment : BaseFragment(), CarouselContract {
@@ -37,8 +39,12 @@ class CarouselFragment : BaseFragment(), CarouselContract {
 
     private val presenter: CarouselPresenter by lazy { CarouselPresenter() }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            binding.root
+    override fun onCreateView(
+        inflater: LayoutInflater?,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
+        binding.root
 
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -67,15 +73,12 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         presenter.detachView()
     }
 
-    override fun displayMedia(media: ReportFile?) {
-        media?.apply {
-            if (mediaType == ReportFile.TYPE_VIDEO) {
-                //FIXME handle unsupported media files type and codec (3gp, mp4 codec)
-                startActivity(VideoViewActivity.createIntent(context, file))
-            } else {
-                startActivity(MediaViewOptions(ImageMedia(file)).createIntent(context))
-            }
-        }
+    override fun displayImage(filePath: String) {
+        startActivity(MediaViewOptions(ImageMedia(filePath)).createIntent(context))
+    }
+
+    override fun displayVideo(filePath: String) {
+        startActivity(VideoViewActivity.createIntent(context, filePath))
     }
 
     private fun setupView() {
@@ -90,9 +93,9 @@ class CarouselFragment : BaseFragment(), CarouselContract {
             //TODO implement database query for local uris before requesting from url
 
             GlideApp.with(context)
-                    .load(Uri.parse(it.file))
-                    .centerCrop()
-                    .into(binding.image)
+                .load(it.file)
+                .centerCrop()
+                .into(binding.image)
         }
     }
 }
