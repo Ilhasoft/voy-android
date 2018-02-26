@@ -3,12 +3,15 @@ package br.com.ilhasoft.voy.ui.home
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.db.project.ProjectDbHelper
 import br.com.ilhasoft.voy.db.theme.ThemeDbHelper
+import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.network.notification.NotificationService
 import br.com.ilhasoft.voy.network.projects.ProjectService
 import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import io.reactivex.Completable
 import io.reactivex.Flowable
 
 /**
@@ -21,6 +24,8 @@ class HomeInteractorImpl : HomeInteractor {
 
     private val themeService by lazy { ThemeService() }
     private val themeDbHelper by lazy { ThemeDbHelper() }
+
+    private val notificationService by lazy { NotificationService() }
 
     override fun getProjects(userId: Int): Flowable<MutableList<Project>> {
         return if (ConnectivityManager.isConnected()) {
@@ -49,4 +54,10 @@ class HomeInteractorImpl : HomeInteractor {
             themeDbHelper.getThemes(projectId).onMainThread()
         }
     }
+
+    override fun getNotifications(): Flowable<List<Notification>> =
+        notificationService.getNotifications().fromIoToMainThread()
+
+    override fun markAsRead(notificationId: Int): Completable =
+        notificationService.markAsRead(notificationId).fromIoToMainThread()
 }
