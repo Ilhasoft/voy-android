@@ -66,7 +66,7 @@ class HomePresenter(
         preferences.getString(User.AVATAR).extractNumbers().toInt().minus(1) // minus() being used to get the correct position from resources Array
 
     private fun loadData() {
-        homeInteractor.getProjects()
+        homeInteractor.getProjects(userId)
             .doOnSubscribe { view.showLoading() }
             .doOnTerminate { view.dismissLoading() }
             .doOnNext { fillProjectsAdapter(it) }

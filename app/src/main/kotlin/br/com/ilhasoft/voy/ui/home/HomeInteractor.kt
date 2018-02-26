@@ -8,7 +8,7 @@ import io.reactivex.Flowable
  * Created by lucas on 07/02/18.
  */
 interface HomeInteractor {
-    fun getProjects(): Flowable<MutableList<Project>>
+    fun getProjects(userId: Int): Flowable<MutableList<Project>>
 
     fun getThemes(projectId: Int, userId: Int): Flowable<MutableList<Theme>>
 }

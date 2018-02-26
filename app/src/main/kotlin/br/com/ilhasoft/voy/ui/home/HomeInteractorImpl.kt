@@ -10,8 +10,6 @@ import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by lucas on 07/02/18.
@@ -24,11 +22,18 @@ class HomeInteractorImpl : HomeInteractor {
     private val themeService by lazy { ThemeService() }
     private val themeDbHelper by lazy { ThemeDbHelper() }
 
-    override fun getProjects(): Flowable<MutableList<Project>> {
+    override fun getProjects(userId: Int): Flowable<MutableList<Project>> {
         return if (ConnectivityManager.isConnected()) {
+            var projects = mutableListOf<Project>()
             projectsService.getProjects()
-                    .fromIoToMainThread()
-                    .flatMap { projectsDbHelper.saveProjects(it) }
+                .fromIoToMainThread()
+                .flatMap { projectsDbHelper.saveProjects(it) }
+                .flatMap {
+                    projects = it
+                    Flowable.fromIterable(it)
+                }
+                .flatMap { getThemes(it.id, userId) }
+                .map { projects }
 
         } else {
             projectsDbHelper.getProjects().onMainThread()
@@ -38,8 +43,8 @@ class HomeInteractorImpl : HomeInteractor {
     override fun getThemes(projectId: Int, userId: Int): Flowable<MutableList<Theme>> {
         return if (ConnectivityManager.isConnected()) {
             themeService.getThemes(projectId, userId)
-                    .fromIoToMainThread()
-                    .flatMap { themeDbHelper.saveThemes(it) }
+                .fromIoToMainThread()
+                .flatMap { themeDbHelper.saveThemes(it) }
         } else {
             themeDbHelper.getThemes(projectId).onMainThread()
         }
