@@ -5,7 +5,7 @@ import br.com.ilhasoft.voy.models.Location
 /**
  * Created by lucasbarros on 09/01/18.
  */
-data class CreateReportRequest(
+data class ReportRequest(
         var theme: Int,
         var location: Location,
         var description: String?,

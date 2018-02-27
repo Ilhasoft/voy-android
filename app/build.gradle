@@ -2,26 +2,28 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
 
 android {
 
-    loadProperties("signature")
+//    loadProperties("signature")
 
     compileSdkVersion 26
     defaultConfig {
         applicationId "br.com.ilhasoft.voy"
         minSdkVersion 16
         targetSdkVersion 26
+        multiDexEnabled true
         versionCode 1
         versionName "0.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         signature {
-            keyAlias signatureProperties.alias
-            keyPassword signatureProperties.keyPassword
-            storeFile file(signatureProperties.keyPath)
-            storePassword signatureProperties.storePassword
+//            keyAlias signatureProperties.alias
+//            keyPassword signatureProperties.keyPassword
+//            storeFile file(signatureProperties.keyPath)
+//            storePassword signatureProperties.storePassword
         }
     }
     buildTypes {
@@ -31,7 +33,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.signature
+//            signingConfig signingConfigs.signature
         }
     }
     dataBinding {
@@ -74,6 +76,7 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:${versions.androidSupport}"
+    implementation "com.android.support:multidex:${versions.multidex}"
 
     testImplementation 'junit:junit:4.12'
 
@@ -96,6 +99,7 @@ dependencies {
 
     compile "org.bitbucket.ilhasoft.support-core:databinding:${versions.supportCore}"
     compile "org.bitbucket.ilhasoft.support-core:media:${versions.supportCore}"
+    compile "org.bitbucket.ilhasoft.support-core:rx-graphics:${versions.supportCore}"
     compile("org.bitbucket.ilhasoft.support-core:core:${versions.supportCore}") {
         exclude group: "com.android.support", module: "appcompat-v7"
     }
@@ -132,8 +136,12 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:${versions.playServiceLocation}"
 }
 
-def loadProperties(propertyName) {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
-    ext."${propertyName}Properties" = properties
+realm {
+    syncEnabled = true
 }
+
+//def loadProperties(propertyName) {
+//    Properties properties = new Properties()
+//    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
+//    ext."${propertyName}Properties" = properties
+//}

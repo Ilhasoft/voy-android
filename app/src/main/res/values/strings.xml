@@ -36,8 +36,7 @@
     <string name="title_activity_add_report">Add Report</string>
     <string name="next">Next</string>
     <string name="add_photos_videos">Add photos\nand videos</string>
-    <string name="new_report">New Report</string>
-    <string name="close">Close</string>
+    <string name="done">Done</string>
     <string name="add_title_and_description">Title and\nDescription</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Description</string>
@@ -85,7 +84,7 @@
     <string name="comment_created_message">Your comment was sent to moderation after approved it will available here!</string>
     <string name="comment_delete_error">We have a problem to remove this comment.</string>
     <string name="comment_create_error">We have a problem to create a new comment.</string>
-    <string name="http_request_error">We have a problem to process your request, try again latter!</string>
+    <string name="http_request_error">We have a problem to process your request, try again later!</string>
 
     <string name="report_was_approved">Your report was approved</string>
     <string name="report_was_not_approved">Your report was not approved</string>
@@ -94,4 +93,6 @@
 
     <string name="password_min_length_error">Password should be at least 6 characters.</string>
     <string name="user_updated_message">Your user was updated!</string>
+
+    <string name="offline_error">Couldn\'t find connection. Check it and try again</string>
 </resources>

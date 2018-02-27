@@ -5,16 +5,15 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.network.tags.TagService
-import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 
 /**
  * Created by lucasbarros on 15/01/18.
  */
-class ReportViewModel : ViewModel() {
+class ReportViewModel(private val addReportInteractor: AddReportInteractor) : ViewModel() {
 
     companion object {
         private const val LIST_MAX_SIZE = 4
@@ -29,15 +28,14 @@ class ReportViewModel : ViewModel() {
     var buttonTitle: MutableLiveData<Int> = MutableLiveData()
         private set
 
-    private var tagsFromSever = MutableLiveData<MutableList<String>>()
-    private val tagService by lazy { TagService() }
+    private var tags = MutableLiveData<MutableList<String>>()
 
     var name: String = ""
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
     var medias = mutableListOf<Uri>()
-    var mediasFromServer = mutableListOf<Uri>()
-    val tags by lazy { mutableListOf<String>() }
+    var mediasFromServer = mutableListOf<ReportFile>()
+    val selectedTags by lazy { mutableListOf<String>() }
 
     var report = Report()
 
@@ -80,47 +78,49 @@ class ReportViewModel : ViewModel() {
     }
 
     fun getAllTags(): LiveData<MutableList<String>> {
-        if (tagsFromSever.value == null || tagsFromSever.value?.isEmpty() == true) {
-            tagService.getTags(ThemeData.themeId)
-                    .compose(RxHelper.defaultFlowableSchedulers())
-                    .subscribe({
-                        tagsFromSever.value = it.map { it.tag }.toMutableList()
-                    }, {
-                        Timber.e(it)
-                    })
+        if (tags.value == null || tags.value?.isEmpty() == true) {
+            addReportInteractor.getTags(ThemeData.themeId)
+                .subscribe({ tags.value = it }, { Timber.e(it) })
         }
-        return tagsFromSever
+        return tags
     }
 
     fun addTag(tag: String) {
-        tags.add(tag)
+        selectedTags.add(tag)
     }
 
     fun removeTag(tag: String) {
-        tags.remove(tag)
+        selectedTags.remove(tag)
     }
 
-    fun isTagSelected(tag: String): Boolean = tags.contains(tag)
+    fun isTagSelected(tag: String): Boolean = selectedTags.contains(tag)
 
     fun hasNewMedias(): Boolean {
         return mediasToSave().isNotEmpty()
     }
 
-    fun mediasToDelete() = mediasFromServer.minus(medias)
+    fun mediasToDelete(): List<ReportFile> {
+        val toDelete: MutableList<ReportFile> = mutableListOf()
+        mediasFromServer.forEach {
+            if(!medias.contains(Uri.parse(it.file)))
+                toDelete.add(it)
+        }
+        return toDelete
+    }
 
-    fun mediasToSave(): List<Uri> = medias.minus(mediasFromServer)
+    fun mediasToSave(): List<Uri> = medias.minus(mediasFromServer.map { Uri.parse(it.file) })
 
     fun setUpWithReport(report: Report) {
         this.report = report
-        report.files.map { mediasFromServer.add(Uri.parse(it.file)) }
+        mediasFromServer.addAll(report.files)
         medias.clear()
-        medias.addAll(mediasFromServer)
+        medias.addAll(mediasFromServer.map { Uri.parse(it.file) })
         name = report.name
         description = report.description
         links.clear()
         links.addAll(report.urls)
-        tags.clear()
-        tags.addAll(report.tags)
+        selectedTags.clear()
+        selectedTags.addAll(report.tags)
     }
 
 }

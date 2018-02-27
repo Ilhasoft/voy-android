@@ -15,7 +15,9 @@ import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentAddDescriptionBinding
 import br.com.ilhasoft.voy.databinding.ItemLinkBinding
+import br.com.ilhasoft.voy.ui.addreport.AddReportInteractorImpl
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
+import br.com.ilhasoft.voy.ui.addreport.ReportViewModelFactory
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,7 +30,10 @@ class AddTitleFragment : BaseFragment() {
         FragmentAddDescriptionBinding.inflate(LayoutInflater.from(context))
     }
 
-    private val reportViewModel by lazy { ViewModelProviders.of(activity).get(ReportViewModel::class.java) }
+    private val reportViewModel by lazy {
+        val factory = ReportViewModelFactory(AddReportInteractorImpl())
+        ViewModelProviders.of(activity, factory).get(ReportViewModel::class.java)
+    }
 
     private lateinit var compositeDisposable: CompositeDisposable
 

@@ -15,6 +15,7 @@ import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
@@ -23,7 +24,6 @@ class ReportFragment : BaseFragment(), ReportContract {
 
     companion object {
         private const val EXTRA_STATUS = "status"
-        private const val EXTRA_THEME_ID = "themeId"
         const val APPROVED_STATUS = 1
         const val PENDING_STATUS = 2
         const val NOT_APPROVED_STATUS = 3
@@ -45,7 +45,7 @@ class ReportFragment : BaseFragment(), ReportContract {
     private val binding: FragmentReportsBinding by lazy {
         FragmentReportsBinding.inflate(LayoutInflater.from(context))
     }
-    private val presenter: ReportPresenter by lazy { ReportPresenter(SharedPreferences(context)) }
+    private val presenter: ReportPresenter by lazy { ReportPresenter(SharedPreferences(context), ReportInteractorImpl(status)) }
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
@@ -108,12 +108,12 @@ class ReportFragment : BaseFragment(), ReportContract {
         startActivity(ReportDetailActivity.createIntent(context, report))
     }
 
-    override fun navigateToEditReport(report: Report?) {}
-
     private fun setupView() {
         binding.run {
             setupRecyclerView(reports)
             presenter = this@ReportFragment.presenter
+            val position = presenter!!.getAvatarPositionFromPreferences()
+            drawableResId = ResourcesHelper.getAvatarsResources(activity)[position]
         }
     }
 
