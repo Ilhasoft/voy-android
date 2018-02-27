@@ -1,11 +1,7 @@
 package br.com.ilhasoft.voy.network
 
-import br.com.ilhasoft.voy.models.Credentials
-import br.com.ilhasoft.voy.network.authorization.AuthorizationResponse
-import br.com.ilhasoft.voy.network.authorization.AuthorizationService
 import br.com.ilhasoft.voy.network.users.UserChangeRequest
 import br.com.ilhasoft.voy.network.users.UserService
-import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
@@ -15,35 +11,35 @@ import retrofit2.HttpException
  */
 class UserServiceTest {
 
-    private lateinit var authService: AuthorizationService
     private lateinit var userService: UserService
     private lateinit var userChangeRequest: UserChangeRequest
 
-    private val userMockId = 44
-    private val userMockAvatar = "20"
-    private val userMockPassword = null
+    private var mockUserId = 44
+    private var mockUserAvatar = "22"
+    private var mockUserUsername = "jones"
+    private var mockUserPassword = "123456"
+    private var mockUserToken = "77722a7b1c8491e12701a32b6b1c067f911492ce"
 
     @Before
     fun setup() {
-        authService = AuthorizationService()
         userService = UserService()
-        userChangeRequest = UserChangeRequest(userMockId, userMockAvatar, userMockPassword)
+        BaseFactory.accessToken = mockUserToken
+        userChangeRequest = UserChangeRequest(mockUserId, mockUserAvatar, mockUserPassword)
     }
 
     @Test
-    fun shouldReturnValidUser() {
-        doLogin("pirralho", "123456")
-                .concatMap { userService.getUser() }
+    fun shouldReturnLoggedUserFromAPI() {
+        userService.getUser()
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()
                 .assertComplete()
+                .assertValue { it.id == mockUserId }
     }
 
     @Test
-    fun shouldReturnInvalidUser() {
-        doLogin("invalid!?/", "unknown")
-                .concatMap { userService.getUser() }
+    fun shouldNotReturnLoggedUserFromAPI() {
+        userService.getUser()
                 .test()
                 .assertSubscribed()
                 .assertError(HttpException::class.java)
@@ -51,16 +47,20 @@ class UserServiceTest {
 
     @Test
     fun shouldEditUser() {
-        doLogin("jones", "123456")
-                .map { userService.editUser(userChangeRequest) }
+        userService.editUser(userChangeRequest)
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()
                 .assertComplete()
+        //TODO change to verify the api returned changes
     }
 
-    private fun doLogin(username: String, password: String): Flowable<AuthorizationResponse> =
-        authService.loginWithCredentials(Credentials(username, password))
-                .doOnNext { BaseFactory.accessToken = it.token }
+    @Test
+    fun shouldNotEditUser() {
+        userService.editUser(userChangeRequest)
+                .test()
+                .assertSubscribed()
+                .assertError(HttpException::class.java)
+    }
 
 }
