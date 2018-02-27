@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report.detail.carousel
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +9,6 @@ import br.com.ilhasoft.support.media.view.models.ImageMedia
 import br.com.ilhasoft.voy.GlideApp
 import br.com.ilhasoft.voy.databinding.FragmentCarouselBinding
 import br.com.ilhasoft.voy.models.ReportFile
-import br.com.ilhasoft.voy.shared.extensions.toFilePath
-import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 
 class CarouselFragment : BaseFragment(), CarouselContract {
@@ -90,7 +87,6 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         media?.let {
             if (it.mediaType == ReportFile.TYPE_VIDEO)
                 binding.play.visibility = View.VISIBLE
-            //TODO implement database query for local uris before requesting from url
 
             GlideApp.with(context)
                 .load(it.file)

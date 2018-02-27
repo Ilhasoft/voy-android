@@ -13,9 +13,8 @@ import io.reactivex.Flowable
 /**
  * Created by erickjones on 09/02/18.
  */
-class AccountInteractorImpl(val preferences: Preferences) : AccountInteractor {
-
-    private val userService by lazy { UserService() }
+class AccountInteractorImpl(val preferences: Preferences,
+                            private val userService: UserService) : AccountInteractor {
 
     override fun getUser(): Flowable<User?> {
         return if (ConnectivityManager.isConnected()) {
