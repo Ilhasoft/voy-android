@@ -13,6 +13,6 @@ interface AccountInteractor {
 
     fun editUser(user: User): Completable
 
-    fun removeUserPreferencesEntries()
+    fun clearAllLocalData()
 
 }
