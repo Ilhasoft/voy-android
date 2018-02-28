@@ -1,39 +1,53 @@
 package br.com.ilhasoft.voy.network
 
-import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.Project
-import br.com.ilhasoft.voy.network.authorization.AuthorizationResponse
-import br.com.ilhasoft.voy.network.authorization.AuthorizationService
-import br.com.ilhasoft.voy.network.projects.ProjectService
+import br.com.ilhasoft.voy.network.projects.ProjectApi
 import io.reactivex.Flowable
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
+import retrofit2.HttpException
+import java.net.UnknownHostException
 
 /**
  * Created by jones on 2/27/18.
  */
 class ProjectServiceTest {
 
-    private lateinit var authService: AuthorizationService
-    private lateinit var projectService: ProjectService
-    private val credentials: Credentials = Credentials("pirralho", "123456")
-    private val mockProjectId = 2
+    lateinit var projectService: MockProjectService
+
+    val mockProjectId = 2
 
     @Before
     fun setup() {
-        authService = AuthorizationService()
-        getToken(credentials).subscribe()
-        projectService = ProjectService()
+        projectService = MockProjectService()
     }
 
     @Test
-    fun shouldReturnUserProjects() {
+    fun shouldReturnProjects() {
         projectService.getProjects()
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()
                 .assertComplete()
                 .assertValue { projects: List<Project> -> projects.isNotEmpty() }
+    }
+
+    @Test
+    fun shouldNotReturnProjects() {
+        projectService.getProjects()
+                .test()
+                .assertSubscribed()
+                .assertError(HttpException::class.java)
+    }
+
+    //when the app runs for the first time and after login the user has no internet connection
+    @Test
+    fun shouldNotReturnProjectsOffline() {
+        projectService.getProjects()
+                .test()
+                .assertSubscribed()
+                .assertError(UnknownHostException::class.java)
     }
 
     @Test
@@ -46,8 +60,20 @@ class ProjectServiceTest {
                 .assertValue { it.id == mockProjectId }
     }
 
-    private fun getToken(credentials: Credentials): Flowable<AuthorizationResponse> =
-            authService.loginWithCredentials(credentials)
-                    .doOnNext { BaseFactory.accessToken = it.token }
+}
+
+class MockProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java) {
+
+    val mockName = "A Fake Project"
+    val mockProjectList = mutableListOf(
+            Project(1, "Fake Project"),
+            Project(2, "Fake Project 2"))
+
+    fun getProjects(): Flowable<MutableList<Project>> =
+            Flowable.just(mockProjectList)
+
+
+    fun getProject(projectId: Int): Single<Project> =
+            Single.just(Project(projectId, mockName))
 
 }
