@@ -3,21 +3,24 @@ package br.com.ilhasoft.voy.ui.report.detail
 import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
+import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselFragment
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class ReportDetailPresenter(
-        private val report: Report?,
-        private val preferences: Preferences,
-        private val reportService: ReportService
+    private val report: Report,
+    private val preferences: Preferences,
+    private val reportService: ReportService
 ) : Presenter<ReportDetailContract>(ReportDetailContract::class.java) {
 
     var indicator = Indicator(Uri.EMPTY, true)
@@ -53,23 +56,32 @@ class ReportDetailPresenter(
         view.swapPage(indicator)
     }
 
-    fun getThemeColor(): String? = view.getThemeColor()
-
     private fun loadReportData() {
-        compositeDisposable.add(reportService.getReport(id = report?.id ?: 0, theme = report?.theme ?: 0,
-                mapper = preferences.getInt(User.ID), status = report?.status ?: 0)
-                .fromIoToMainThread()
+
+        val getReportFlow: Single<Report> = if (ConnectivityManager.isConnected()) {
+            reportService.getReport(
+                id = report.id, theme = report.theme,
+                mapper = preferences.getInt(User.ID), status = report.status
+            ).fromIoToMainThread()
+        } else {
+            Single.just(report).onMainThread()
+        }
+
+        compositeDisposable.add(
+            getReportFlow
                 .doOnSubscribe { view.showLoading() }
                 .doAfterTerminate { view.dismissLoading() }
                 .doOnSuccess { view.showReportData(it) }
                 .doOnSuccess { view.populateIndicator(getIndicators(it)) }
                 .subscribe(
-                        { view.populateCarousel(getCarouselItems(it)) },
-                        {
-                            ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
-                                view.showMessage(msg)
-                            }
+                    {
+                        view.populateCarousel(getCarouselItems(it))
+                    },
+                    {
+                        ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                            view.showMessage(msg)
                         }
+                    }
                 )
         )
     }

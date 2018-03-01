@@ -12,6 +12,7 @@ import java.io.File
  */
 interface AddReportInteractor {
     fun saveReport(
+        reportInternalId: Int?,
         theme: Int,
         location: Location,
         description: String?,
@@ -22,6 +23,7 @@ interface AddReportInteractor {
     ): Observable<Report>
 
     fun updateReport(
+        reportInternalId: Int?,
         reportId: Int,
         theme: Int,
         location: Location,

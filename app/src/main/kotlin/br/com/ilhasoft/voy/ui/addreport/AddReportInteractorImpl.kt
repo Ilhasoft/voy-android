@@ -24,11 +24,10 @@ class AddReportInteractorImpl : AddReportInteractor {
     private val reportService by lazy { ReportService() }
     private val reportDbHelper by lazy { ReportDbHelper() }
 
-    private val fileService by lazy { FilesService() }
-
     private val themeDbHelper by lazy { ThemeDbHelper() }
 
     override fun saveReport(
+        reportInternalId: Int?,
         theme: Int,
         location: Location,
         description: String?,
@@ -38,13 +37,14 @@ class AddReportInteractorImpl : AddReportInteractor {
         urls: List<String>?
     ): Observable<Report> {
         return reportDbHelper.saveReport(
+            reportInternalId,
             theme,
             location,
             description,
             name,
             tags,
-            medias.map { it.absolutePath },
-            urls
+            urls,
+            medias.map { it.absolutePath }
         )
             .onMainThread()
             .observeOn(Schedulers.io())
@@ -61,6 +61,7 @@ class AddReportInteractorImpl : AddReportInteractor {
     }
 
     override fun updateReport(
+        reportInternalId: Int?,
         reportId: Int,
         theme: Int,
         location: Location,
@@ -73,7 +74,7 @@ class AddReportInteractorImpl : AddReportInteractor {
         filesToDelete: List<ReportFile>?
     ): Observable<Report> {
         return reportDbHelper.saveReport(
-            reportId,
+            reportInternalId,
             theme,
             location,
             description,
@@ -81,6 +82,7 @@ class AddReportInteractorImpl : AddReportInteractor {
             tags,
             urls,
             medias,
+            reportId,
             newFiles?.map { it.absolutePath },
             filesToDelete
         )
