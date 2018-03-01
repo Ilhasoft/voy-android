@@ -15,3 +15,11 @@ fun String.extractNumbers(): String {
         this
     }
 }
+
+fun String.toFilePath(): String {
+    return  if (this.startsWith("/")) {
+        "file:///$this"
+    } else {
+        this
+    }
+}

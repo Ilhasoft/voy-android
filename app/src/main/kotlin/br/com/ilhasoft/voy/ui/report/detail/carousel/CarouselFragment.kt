@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report.detail.carousel
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,8 +36,12 @@ class CarouselFragment : BaseFragment(), CarouselContract {
 
     private val presenter: CarouselPresenter by lazy { CarouselPresenter() }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            binding.root
+    override fun onCreateView(
+        inflater: LayoutInflater?,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
+        binding.root
 
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -67,15 +70,12 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         presenter.detachView()
     }
 
-    override fun displayMedia(media: ReportFile?) {
-        media?.apply {
-            if (mediaType == ReportFile.TYPE_VIDEO) {
-                //FIXME handle unsupported media files type and codec (3gp, mp4 codec)
-                startActivity(VideoViewActivity.createIntent(context, file))
-            } else {
-                startActivity(MediaViewOptions(ImageMedia(file)).createIntent(context))
-            }
-        }
+    override fun displayImage(filePath: String) {
+        startActivity(MediaViewOptions(ImageMedia(filePath)).createIntent(context))
+    }
+
+    override fun displayVideo(filePath: String) {
+        startActivity(VideoViewActivity.createIntent(context, filePath))
     }
 
     private fun setupView() {
@@ -87,12 +87,11 @@ class CarouselFragment : BaseFragment(), CarouselContract {
         media?.let {
             if (it.mediaType == ReportFile.TYPE_VIDEO)
                 binding.play.visibility = View.VISIBLE
-            //TODO implement database query for local uris before requesting from url
 
             GlideApp.with(context)
-                    .load(Uri.parse(it.file))
-                    .centerCrop()
-                    .into(binding.image)
+                .load(it.file)
+                .centerCrop()
+                .into(binding.image)
         }
     }
 }

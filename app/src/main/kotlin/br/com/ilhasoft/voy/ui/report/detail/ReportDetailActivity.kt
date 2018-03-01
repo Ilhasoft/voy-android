@@ -26,6 +26,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
 import br.com.ilhasoft.voy.databinding.ItemIndicatorBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
+import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
@@ -62,7 +63,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
     }
     private val presenter: ReportDetailPresenter by lazy {
-        ReportDetailPresenter(report, SharedPreferences(this), ReportService())
+        ReportDetailPresenter(report!!, SharedPreferences(this), ReportService())
     }
     private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, mutableListOf()) }
     private val indicatorViewHolder: OnCreateViewHolder<Indicator, IndicatorViewHolder> by lazy {
@@ -141,12 +142,10 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     override fun getThemeColor(): String? = binding.report?.themeColor
 
     override fun showReportData(report: Report) {
-        val themeColor = Color.parseColor(getString(R.string.color_hex, report.themeColor))
-
         binding.apply {
-            viewToolbar?.name?.setTextColor(themeColor)
-            name.setTextColor(themeColor)
-            createdOn.setTextColor(themeColor)
+            viewToolbar?.name?.setTextColor(ThemeData.themeColor)
+            name.setTextColor(ThemeData.themeColor)
+            createdOn.setTextColor(ThemeData.themeColor)
             this.report = report
         }
         setupMediasView()
@@ -219,7 +218,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         return Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.share_text) +
-                    " https://voy-dev.ilhasoft.mobi/project/${HomeActivity.projectName}/report/${report?.id}")
+                    " http://voy-dev.ilhasoft.mobi/project/${HomeActivity.projectName}/report/${report?.id}")
             type = "text/plain"
         }
     }
@@ -262,7 +261,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     private fun setupTagData(): TagDataUI {
         return TagDataUI().apply {
-            selectedColor = Color.parseColor("#${presenter.getThemeColor()}")
+            selectedColor = ThemeData.themeColor
             textSelectedColor = ContextCompat.getColor(this@ReportDetailActivity, R.color.white_three)
             textSize = 10F
         }
