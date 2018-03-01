@@ -48,7 +48,12 @@ class HomeActivity : BaseActivity(), HomeContract {
     private val binding: ActivityHomeBinding by lazy {
         DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
     }
-    private val presenter: HomePresenter by lazy { HomePresenter(SharedPreferences(this), HomeInteractorImpl()) }
+    private val presenter: HomePresenter by lazy {
+        HomePresenter(
+            SharedPreferences(this),
+            HomeInteractorImpl()
+        )
+    }
     private val projectViewHolder: OnCreateViewHolder<Project, ProjectViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ProjectViewHolder(ItemMapBinding.inflate(layoutInflater, parent, false), presenter)
@@ -61,8 +66,10 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
     private val notificationViewHolder: OnCreateViewHolder<Notification, NotificationViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
-            NotificationViewHolder(ItemNotificationBinding
-                    .inflate(layoutInflater, parent, false), presenter)
+            NotificationViewHolder(
+                ItemNotificationBinding
+                    .inflate(layoutInflater, parent, false), presenter
+            )
         }
     }
     private val notificationsAdapter: AutoRecyclerAdapter<Notification, NotificationViewHolder> by lazy {
@@ -90,6 +97,11 @@ class HomeActivity : BaseActivity(), HomeContract {
     override fun onStart() {
         super.onStart()
         presenter.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.resume()
     }
 
     override fun onStop() {
@@ -129,7 +141,8 @@ class HomeActivity : BaseActivity(), HomeContract {
         binding.viewToolbar?.hasNotification = notificationsAdapter.isNotEmpty()
     }
 
-    override fun navigateToMyAccount() = startActivityForResult(AccountActivity.createIntent(this), ACCOUNT_REQUEST_CODE)
+    override fun navigateToMyAccount() =
+        startActivityForResult(AccountActivity.createIntent(this), ACCOUNT_REQUEST_CODE)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -167,7 +180,15 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
 
     override fun navigateToThemeReports(theme: Theme) {
-        startActivity(ReportsActivity.createIntent(this, theme.id, theme.name, theme.color, theme.bounds))
+        startActivity(
+            ReportsActivity.createIntent(
+                this,
+                theme.id,
+                theme.name,
+                theme.color,
+                theme.bounds
+            )
+        )
     }
 
     private fun setupView() {
