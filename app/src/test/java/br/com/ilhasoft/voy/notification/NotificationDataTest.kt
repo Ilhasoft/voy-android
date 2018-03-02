@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.network
+package br.com.ilhasoft.voy.notification
 
 import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Report
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by erickjones on 28/02/18.
  */
-class NotificationServiceTest {
+class NotificationDataTest {
 
     @Mock
     private lateinit var notificationService: NotificationDataSource

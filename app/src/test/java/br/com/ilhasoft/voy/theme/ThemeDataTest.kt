@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.network
+package br.com.ilhasoft.voy.theme
 
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.themes.ThemeDataSource
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by erickjones on 28/02/18.
  */
-class ThemeServiceTest {
+class ThemeDataTest {
 
     @Mock
     lateinit var themeService: ThemeDataSource

@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.network
+package br.com.ilhasoft.voy.user
 
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserChangeRequest
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by erickjones on 26/02/18.
  */
-class UserServiceTest {
+class UserDataTest {
 
     @Mock
     lateinit var userService: UserDataSource

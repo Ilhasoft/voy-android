@@ -1,4 +1,4 @@
-package br.com.ilhasoft.voy.network
+package br.com.ilhasoft.voy.project
 
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.network.projects.ProjectDataSource
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by jones on 2/27/18.
  */
-class ProjectServiceTest {
+class ProjectDataTest {
 
     @Mock
     lateinit var projectService: ProjectDataSource
