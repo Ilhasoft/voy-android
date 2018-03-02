@@ -4,6 +4,8 @@ import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserChangeRequest
+import br.com.ilhasoft.voy.network.users.UserDataSource
+import br.com.ilhasoft.voy.network.users.UserRepository
 import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
@@ -13,13 +15,12 @@ import io.reactivex.Flowable
 /**
  * Created by erickjones on 09/02/18.
  */
-class AccountInteractorImpl(val preferences: Preferences) : AccountInteractor {
-
-    private val userService by lazy { UserService() }
+class AccountInteractorImpl(val preferences: Preferences,
+                            val userRepository: UserRepository) : AccountInteractor {
 
     override fun getUser(): Flowable<User?> {
         return if (ConnectivityManager.isConnected()) {
-            userService.getUser()
+            userRepository.getUser()
                     .fromIoToMainThread()
                     .flatMap { saveUser(it) }
 
@@ -30,7 +31,7 @@ class AccountInteractorImpl(val preferences: Preferences) : AccountInteractor {
 
     override fun editUser(user: User): Completable {
         val requestObject = UserChangeRequest(user.id, user.avatar.extractNumbers(), user.password)
-        return userService.editUser(requestObject)
+        return userRepository.editUser(requestObject)
                 .fromIoToMainThread()
                 .doOnComplete { saveAvatar(user.avatar) }
     }

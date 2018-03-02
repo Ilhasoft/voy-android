@@ -12,6 +12,8 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.network.users.UserRepository
+import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.HomeActivity
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -37,8 +39,12 @@ class LoginActivity : BaseActivity(), LoginContract {
         DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
     }
 
-    private val presenter: LoginPresenter by lazy { LoginPresenter(SharedPreferences(this@LoginActivity)) }
+    private val presenter: LoginPresenter by lazy {
+        LoginPresenter(SharedPreferences(this@LoginActivity), UserRepository(UserService()))
+    }
+
     private val validator: Validator by lazy { Validator(binding) }
+
     private val credentials by lazy { Credentials() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +84,7 @@ class LoginActivity : BaseActivity(), LoginContract {
 //                    if (BuildConfig.DEBUG)
 //                Credentials("pirralho", "123456")
 //            else
-                this@LoginActivity.credentials
+                    this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }
     }

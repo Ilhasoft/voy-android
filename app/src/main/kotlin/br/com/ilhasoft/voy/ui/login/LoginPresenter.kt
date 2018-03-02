@@ -7,16 +7,17 @@ import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationService
-import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.network.users.UserRepository
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class LoginPresenter(private val preferences: Preferences) : Presenter<LoginContract>(LoginContract::class.java) {
+class LoginPresenter(
+        private val preferences: Preferences,
+        private val userRepository: UserRepository) : Presenter<LoginContract>(LoginContract::class.java) {
 
     private var authorizationService: AuthorizationService = AuthorizationService()
-    private var userService = UserService()
 
     override fun attachView(view: LoginContract) {
         super.attachView(view)
@@ -33,7 +34,7 @@ class LoginPresenter(private val preferences: Preferences) : Presenter<LoginCont
                         preferences.put(User.TOKEN, it.token)
                         BaseFactory.accessToken = it.token
                     })
-                    .concatMap { userService.getUser() }
+                    .concatMap { userRepository.getUser() }
                     .compose(RxHelper.defaultFlowableSchedulers())
                     .doOnNext {
                         if (it != null && it.isMapper)

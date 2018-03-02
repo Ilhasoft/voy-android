@@ -20,6 +20,12 @@ import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.network.notification.NotificationRepository
+import br.com.ilhasoft.voy.network.notification.NotificationService
+import br.com.ilhasoft.voy.network.projects.ProjectRepository
+import br.com.ilhasoft.voy.network.projects.ProjectService
+import br.com.ilhasoft.voy.network.themes.ThemeRepository
+import br.com.ilhasoft.voy.network.themes.ThemeService
 import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.account.AccountActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
@@ -51,7 +57,11 @@ class HomeActivity : BaseActivity(), HomeContract {
     private val presenter: HomePresenter by lazy {
         HomePresenter(
             SharedPreferences(this),
-            HomeInteractorImpl()
+            HomeInteractorImpl(
+                    ThemeRepository(ThemeService()),
+                    ProjectRepository(ProjectService()),
+                    NotificationRepository(NotificationService())
+            )
         )
     }
     private val projectViewHolder: OnCreateViewHolder<Project, ProjectViewHolder> by lazy {

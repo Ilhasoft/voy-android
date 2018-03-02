@@ -25,7 +25,7 @@ class AccountPresenter(
         super.detachView()
     }
 
-    private fun loadUser() {
+    fun loadUser() {
         compositeDisposable.add(
                 accountInteractor.getUser()
                         .subscribe(
