@@ -12,24 +12,17 @@ import timber.log.Timber
 class ReportPresenter(
     private val preferences: Preferences,
     private val reportInteractor: ReportInteractor
-) :
-    Presenter<ReportContract>(ReportContract::class.java) {
+) : Presenter<ReportContract>(ReportContract::class.java) {
 
-    override fun attachView(view: ReportContract?) {
-        super.attachView(view)
-        loadReportsData()
-    }
-
-    private fun loadReportsData() {
+    fun loadReportsData(status: Int) {
         reportInteractor.getReports(
             page = 1, pageSize = 50,
-            theme = ThemeData.themeId, mapper = preferences.getInt(User.ID), status = getStatus()
+            theme = ThemeData.themeId, mapper = preferences.getInt(User.ID), status = status
         )
             .loadControl(view)
+            .doOnTerminate { view?.checkGreetings() }
             .subscribe({ fillReportsAdapter(it) }, { Timber.e(it) })
     }
-
-    private fun getStatus(): Int? = view?.getStatus()
 
     private fun fillReportsAdapter(reports: List<Report>) {
         view?.fillReportsAdapter(reports)

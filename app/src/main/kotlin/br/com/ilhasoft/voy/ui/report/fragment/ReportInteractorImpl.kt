@@ -16,13 +16,7 @@ class ReportInteractorImpl(private val status: Int) : ReportInteractor {
     private val reportService by lazy { ReportService() }
     private val reportDbHelper by lazy { ReportDbHelper() }
 
-    override fun getReports(
-        page: Int?,
-        pageSize: Int?,
-        theme: Int?,
-        mapper: Int?,
-        status: Int?
-    ): Flowable<List<Report>> {
+    override fun getReports(page: Int?, pageSize: Int?, theme: Int?, mapper: Int?, status: Int?): Flowable<List<Report>> {
         return if (ConnectivityManager.isConnected()) {
             if (this@ReportInteractorImpl.status == ReportFragment.PENDING_STATUS) {
                 Flowable.merge(getFromServer(page, pageSize, theme, mapper, status), getFromDb())
@@ -30,32 +24,30 @@ class ReportInteractorImpl(private val status: Int) : ReportInteractor {
                 getFromServer(page, pageSize, theme, mapper, status)
             }
         } else {
-            if (this@ReportInteractorImpl.status == ReportFragment.PENDING_STATUS) {
-                getFromDb()
-            } else {
-                Flowable.empty()
-            }
+            getFromDb()
         }
     }
 
     private fun getFromDb() = reportDbHelper.getReports().onMainThread()
 
-    private fun getFromServer(
-        page: Int?,
-        pageSize: Int?,
-        theme: Int?,
-        mapper: Int?,
-        status: Int?
-    ): Flowable<List<Report>> {
+    private fun getFromServer(page: Int?, pageSize: Int?, theme: Int?, mapper: Int?, status: Int?): Flowable<List<Report>> {
         return reportService.getReports(
-            page = page,
-            page_size = pageSize,
-            theme = theme,
-            mapper = mapper,
-            status = status
+            page = page, page_size = pageSize, theme = theme,
+            mapper = mapper, status = status
         )
+            .map { it.results }
+            .toFlowable()
             .fromIoToMainThread()
-            .map { it.results }.toFlowable()
+    }
+
+
+    // TODO save reports on cache when take it from the API
+    private fun saveOnCache(reports: List<Report>): Flowable<List<Report>> {
+        return Flowable.just(reports)
+            .flatMap { Flowable.fromIterable(it) }
+            .flatMapSingle { reportDbHelper.saveReport(it) }
+            .toList()
+            .toFlowable()
     }
 
 }

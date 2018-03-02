@@ -74,6 +74,14 @@ class ReportDbHelper {
         }
     }
 
+    fun saveReport(report: Report): Single<Report> {
+        return saveReport(0,
+            theme = report.theme, location = report.location!!,
+            description = report.description, name = report.name, tags = report.tags,
+            urls = report.urls, medias = report.files.map { it.file }, reportId = report.id
+        )
+    }
+
     fun removeReport(reportInternalId: Int) {
         realm.executeTransaction {
             val reportDb = realm.where(ReportDbModel::class.java)
