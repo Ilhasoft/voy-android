@@ -44,7 +44,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListFromReport() {
+    fun loadCommentsList() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(Flowable.just(mockedComments))
 
@@ -57,7 +57,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadEmptyCommentsListFromReport() {
+    fun loadEmptyCommentsList() {
         `when`(getCommentsRef((mockedInvalidReportId)))
                 .thenReturn(Flowable.empty())
 
@@ -70,7 +70,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListFromReportWithTimeout() {
+    fun loadCommentsListWithTimeout() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(TimeoutException()))
 
@@ -81,7 +81,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListFromReportWithNetworkException() {
+    fun loadCommentsListWithNetworkException() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(NetworkErrorException()))
 
@@ -92,7 +92,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListFromReportWithUnknownHostException() {
+    fun loadCommentsListWithUnknownHostException() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(UnknownHostException()))
 
@@ -103,7 +103,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitReportComment() {
+    fun submitComment() {
         `when`(getSaveCommentRef())
                 .thenReturn(Maybe.just(mockedComment))
 
@@ -116,7 +116,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitReportCommentWithTimeout() {
+    fun submitCommentWithTimeout() {
         `when`(getSaveCommentRef())
                 .thenReturn(emitMaybeError(TimeoutException()))
 
@@ -127,7 +127,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitReportCommentWithNetworkException() {
+    fun submitCommentWithNetworkException() {
         `when`(getSaveCommentRef())
                 .thenReturn(emitMaybeError(NetworkErrorException()))
 
@@ -138,7 +138,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitReportCommentWithUnknownHostException() {
+    fun submitCommentWithUnknownHostException() {
         `when`(getSaveCommentRef())
                 .thenReturn(emitMaybeError(UnknownHostException()))
 
@@ -149,7 +149,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteReportComment() {
+    fun deleteComment() {
         `when`(getDeleteCommentRef())
                 .thenReturn(Completable.complete())
 
@@ -160,7 +160,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteReportCommentWithTimeout() {
+    fun deleteCommentWithTimeout() {
         `when`(getDeleteCommentRef())
                 .thenReturn(emitCompletableError(TimeoutException()))
 
@@ -171,7 +171,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteReportCommentWithNetworkException() {
+    fun deleteCommentWithNetworkException() {
         `when`(getDeleteCommentRef())
                 .thenReturn(emitCompletableError(NetworkErrorException()))
 
@@ -182,7 +182,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteReportCommentWithUnknownHostException() {
+    fun deleteCommentWithUnknownHostException() {
         `when`(getDeleteCommentRef())
                 .thenReturn(emitCompletableError(UnknownHostException()))
 
@@ -192,21 +192,17 @@ class CommentDataTest {
                 .assertError { it is UnknownHostException }
     }
 
-    private fun getDataSource() = commentDataSource
+    private fun getCommentsRef(reportId: Int) = commentDataSource.getComments(reportId)
 
-    private fun getCommentsRef(reportId: Int) = getDataSource().getComments(reportId)
+    private fun getSaveCommentRef() = commentDataSource.saveComment(mockedCommentText, mockedValidReportId)
 
-    private fun getSaveCommentRef() = getDataSource().saveComment(mockedCommentText, mockedValidReportId)
+    private fun getDeleteCommentRef() = commentDataSource.deleteComment(mockedCommentId)
 
-    private fun getDeleteCommentRef() = getDataSource().deleteComment(mockedCommentId)
+    private fun setupCommentsImpl(reportId: Int) = commentRepository.getComments(reportId)
 
-    private fun getRepository() = commentRepository
+    private fun setupSaveCommentImpl() = commentRepository.saveComment(mockedCommentText, mockedValidReportId)
 
-    private fun setupCommentsImpl(reportId: Int) = getRepository().getComments(reportId)
-
-    private fun setupSaveCommentImpl() = getRepository().saveComment(mockedCommentText, mockedValidReportId)
-
-    private fun setupDeleteCommentImpl() = getRepository().deleteComment(mockedCommentId)
+    private fun setupDeleteCommentImpl() = commentRepository.deleteComment(mockedCommentId)
 
     private fun emitFlowableError(throwable: Throwable): Flowable<List<ReportComment>> =
             Flowable.error(throwable)
