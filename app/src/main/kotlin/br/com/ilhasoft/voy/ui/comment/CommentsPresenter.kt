@@ -4,7 +4,7 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.comments.CommentsService
+import br.com.ilhasoft.voy.network.comments.CommentRepository
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
@@ -14,7 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class CommentsPresenter(
-        private val commentsService: CommentsService,
+        private val commentRepository: CommentRepository,
         private val commentsUIMapper: CommentsUIMapper,
         private val preferences: Preferences
 ) : Presenter<CommentsContract>(CommentsContract::class.java) {
@@ -28,7 +28,7 @@ class CommentsPresenter(
 
     fun loadComments(reportId: Int) {
         compositeDisposable.add(
-                commentsService.getComments(reportId)
+                commentRepository.getComments(reportId)
                         .fromIoToMainThread()
                         .loadControl(view)
                         .map(commentsUIMapper)
@@ -46,7 +46,7 @@ class CommentsPresenter(
 
     fun onClickRemoveComment(comment: CommentUIModel) {
         compositeDisposable.add(
-                commentsService.deleteComment(comment.commentId, comment.reportId)
+                commentRepository.deleteComment(comment.commentId, comment.reportId)
                         .fromIoToMainThread()
                         .loadControl(view)
                         .subscribe(
@@ -66,7 +66,7 @@ class CommentsPresenter(
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .filter { view.isValidCommentBodyState() }
                         .observeOn(Schedulers.io())
-                        .flatMap { (text, id) -> commentsService.saveComment(text, id) }
+                        .flatMap { (text, id) -> commentRepository.saveComment(text, id) }
                         .observeOn(AndroidSchedulers.mainThread())
                         .loadControl(view)
                         .subscribe(

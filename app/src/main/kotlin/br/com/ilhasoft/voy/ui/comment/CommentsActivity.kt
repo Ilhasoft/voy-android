@@ -15,6 +15,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityCommentsBinding
 import br.com.ilhasoft.voy.databinding.ItemCommentBinding
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.network.comments.CommentRepository
 import br.com.ilhasoft.voy.network.comments.CommentsService
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 
@@ -33,7 +34,7 @@ class CommentsActivity : BaseActivity(), CommentsContract {
     }
     private val presenter: CommentsPresenter by lazy {
         val mapper = CommentsUIMapper()
-        CommentsPresenter(CommentsService(), mapper, SharedPreferences(applicationContext))
+        CommentsPresenter(CommentRepository(CommentsService()), mapper, SharedPreferences(applicationContext))
     }
     private val reportCommentViewHolder: OnCreateViewHolder<CommentUIModel, CommentViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
