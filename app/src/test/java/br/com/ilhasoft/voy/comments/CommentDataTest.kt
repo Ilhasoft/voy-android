@@ -13,6 +13,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 
@@ -43,7 +44,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListFromReport() {
+    fun loadCommentsList() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(Flowable.just(mockedComments))
 
@@ -56,7 +57,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadEmptyCommentsListFromReport() {
+    fun loadEmptyCommentsList() {
         `when`(getCommentsRef((mockedInvalidReportId)))
                 .thenReturn(Flowable.empty())
 
@@ -69,29 +70,40 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListFromReportWithTimeout() {
+    fun loadCommentsListWithTimeout() {
         `when`(getCommentsRef(mockedValidReportId))
-                .thenReturn(Flowable.error(TimeoutException()))
+                .thenReturn(emitFlowableError(TimeoutException()))
 
         setupCommentsImpl(mockedValidReportId)
                 .test()
                 .assertSubscribed()
-                .assertError(TimeoutException::class.java)
+                .assertError { it is TimeoutException }
     }
 
     @Test
-    fun loadCommentsListFromReportWithNetworkException() {
+    fun loadCommentsListWithNetworkException() {
         `when`(getCommentsRef(mockedValidReportId))
-                .thenReturn(Flowable.error(NetworkErrorException()))
+                .thenReturn(emitFlowableError(NetworkErrorException()))
 
         setupCommentsImpl(mockedValidReportId)
                 .test()
                 .assertSubscribed()
-                .assertError(NetworkErrorException::class.java)
+                .assertError { it is NetworkErrorException }
     }
 
     @Test
-    fun submitReportComment() {
+    fun loadCommentsListWithUnknownHostException() {
+        `when`(getCommentsRef(mockedValidReportId))
+                .thenReturn(emitFlowableError(UnknownHostException()))
+
+        setupCommentsImpl(mockedValidReportId)
+                .test()
+                .assertSubscribed()
+                .assertError { it is UnknownHostException }
+    }
+
+    @Test
+    fun submitComment() {
         `when`(getSaveCommentRef())
                 .thenReturn(Maybe.just(mockedComment))
 
@@ -104,29 +116,40 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitReportCommentWithTimeout() {
+    fun submitCommentWithTimeout() {
         `when`(getSaveCommentRef())
-                .thenReturn(Maybe.error(TimeoutException()))
+                .thenReturn(emitMaybeError(TimeoutException()))
 
         setupSaveCommentImpl()
                 .test()
                 .assertSubscribed()
-                .assertError(TimeoutException::class.java)
+                .assertError { it is TimeoutException }
     }
 
     @Test
-    fun submitReportCommentWithNetworkException() {
+    fun submitCommentWithNetworkException() {
         `when`(getSaveCommentRef())
-                .thenReturn(Maybe.error(NetworkErrorException()))
+                .thenReturn(emitMaybeError(NetworkErrorException()))
 
         setupSaveCommentImpl()
                 .test()
                 .assertSubscribed()
-                .assertError(NetworkErrorException::class.java)
+                .assertError { it is NetworkErrorException }
     }
 
     @Test
-    fun deleteReportComment() {
+    fun submitCommentWithUnknownHostException() {
+        `when`(getSaveCommentRef())
+                .thenReturn(emitMaybeError(UnknownHostException()))
+
+        setupSaveCommentImpl()
+                .test()
+                .assertSubscribed()
+                .assertError { it is UnknownHostException }
+    }
+
+    @Test
+    fun deleteComment() {
         `when`(getDeleteCommentRef())
                 .thenReturn(Completable.complete())
 
@@ -137,41 +160,57 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteReportCommentWithTimeout() {
+    fun deleteCommentWithTimeout() {
         `when`(getDeleteCommentRef())
-                .thenReturn(Completable.error(TimeoutException()))
+                .thenReturn(emitCompletableError(TimeoutException()))
 
         setupDeleteCommentImpl()
                 .test()
                 .assertSubscribed()
-                .assertError(TimeoutException::class.java)
+                .assertError { it is TimeoutException }
     }
 
     @Test
-    fun deleteReportCommentWithNetworkException() {
+    fun deleteCommentWithNetworkException() {
         `when`(getDeleteCommentRef())
-                .thenReturn(Completable.error(NetworkErrorException()))
+                .thenReturn(emitCompletableError(NetworkErrorException()))
 
         setupDeleteCommentImpl()
                 .test()
                 .assertSubscribed()
-                .assertError(NetworkErrorException::class.java)
+                .assertError { it is NetworkErrorException }
     }
 
-    private fun getDataSource() = commentDataSource
+    @Test
+    fun deleteCommentWithUnknownHostException() {
+        `when`(getDeleteCommentRef())
+                .thenReturn(emitCompletableError(UnknownHostException()))
 
-    private fun getCommentsRef(reportId: Int) = getDataSource().getComments(reportId)
+        setupDeleteCommentImpl()
+                .test()
+                .assertSubscribed()
+                .assertError { it is UnknownHostException }
+    }
 
-    private fun getSaveCommentRef() = getDataSource().saveComment(mockedCommentText, mockedValidReportId)
+    private fun getCommentsRef(reportId: Int) = commentDataSource.getComments(reportId)
 
-    private fun getDeleteCommentRef() = getDataSource().deleteComment(mockedCommentId)
+    private fun getSaveCommentRef() = commentDataSource.saveComment(mockedCommentText, mockedValidReportId)
 
-    private fun getRepository() = commentRepository
+    private fun getDeleteCommentRef() = commentDataSource.deleteComment(mockedCommentId)
 
-    private fun setupCommentsImpl(reportId: Int) = getRepository().getComments(reportId)
+    private fun setupCommentsImpl(reportId: Int) = commentRepository.getComments(reportId)
 
-    private fun setupSaveCommentImpl() = getRepository().saveComment(mockedCommentText, mockedValidReportId)
+    private fun setupSaveCommentImpl() = commentRepository.saveComment(mockedCommentText, mockedValidReportId)
 
-    private fun setupDeleteCommentImpl() = getRepository().deleteComment(mockedCommentId)
+    private fun setupDeleteCommentImpl() = commentRepository.deleteComment(mockedCommentId)
+
+    private fun emitFlowableError(throwable: Throwable): Flowable<List<ReportComment>> =
+            Flowable.error(throwable)
+
+    private fun emitMaybeError(throwable: Throwable): Maybe<ReportComment> =
+            Maybe.error(throwable)
+
+    private fun emitCompletableError(throwable: Throwable): Completable =
+            Completable.error(throwable)
 
 }
