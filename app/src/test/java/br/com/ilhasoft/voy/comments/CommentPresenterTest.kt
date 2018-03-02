@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.comments
 
 import android.accounts.NetworkErrorException
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.models.User
@@ -92,7 +93,7 @@ class CommentPresenterTest {
 
         commentsPresenter.onClickRemoveComment(mockedCommentUiModel)
 
-        verify(commentsContract, atLeastOnce()).navigateToRemoveComment(mockedCommentUiModel)
+        verify(commentsContract, atLeastOnce()).showMessage(R.string.login_network_error)
     }
 
     @Test
@@ -102,7 +103,7 @@ class CommentPresenterTest {
 
         commentsPresenter.onClickRemoveComment(mockedCommentUiModel)
 
-        verify(commentsContract, atLeastOnce()).navigateToRemoveComment(mockedCommentUiModel)
+        verify(commentsContract, atLeastOnce()).showMessage(R.string.login_network_error)
     }
 
     private fun emitCompletableError(throwable: Throwable): Completable =
