@@ -65,7 +65,7 @@
 
     <string name="themes_quantity">You are within %d themes</string>
     <string name="color_hex">#%s</string>
-    <string name="reports_quantity">You have %d reports</string>
+    <string name="reports_quantity">You have %1$d reports %2$s</string>
 
     <string name="issues_related_report">Issues reported in your report</string>
     <string name="edit_report_label">Edit Report</string>

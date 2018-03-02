@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.ui.report.fragment
 
+import android.databinding.ObservableBoolean
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -58,16 +59,19 @@ class ReportFragment : BaseFragment(), ReportContract {
         }
     }
     private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
+    private val itemsQuantityObserver by lazy { ObservableBoolean(false) }
+    private val emptyStateObserver by lazy { ObservableBoolean(false) }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        setupView()
         return binding.root
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView(binding)
         presenter.attachView(this)
+        presenter.loadReportsData(status)
     }
 
     override fun onStart() {
@@ -85,22 +89,21 @@ class ReportFragment : BaseFragment(), ReportContract {
         presenter.detachView()
     }
 
-    override fun getStatus(): Int? = status
-
     override fun fillReportsAdapter(reports: List<Report>) {
-        reports.let {
-            binding.noReports = it.isNotEmpty().not()
-            if (it.isNotEmpty()) {
-                binding.reportsQuantity = it.size
-                reportsAdapter.addAll(it)
-                reportsAdapter.notifyDataSetChanged()
-            } else {
-                binding.run {
-                    greetings = getGreetings(status)
-                    createReportTip = getGreetingsTip(status)
-                }
-            }
+        if (reports.isNotEmpty()) {
+            binding.reportsQuantity = reports.size
+            reportsAdapter.addAll(reports)
         }
+    }
+
+    override fun checkGreetings() {
+        emptyStateObserver.set(reportsAdapter.itemCount <= 0)
+        binding.run {
+            greetings = getGreetings(status)
+            createReportTip = getGreetingsTip(status)
+            quantity.text = getQuantityMessage(reportsAdapter.itemCount, status)
+        }
+        itemsQuantityObserver.set(reportsAdapter.itemCount > 0)
     }
 
     //TODO pass projectID to query
@@ -108,33 +111,46 @@ class ReportFragment : BaseFragment(), ReportContract {
         startActivity(ReportDetailActivity.createIntent(context, report))
     }
 
-    private fun setupView() {
-        binding.run {
-            setupRecyclerView(reports)
-            presenter = this@ReportFragment.presenter
-            val position = presenter!!.getAvatarPositionFromPreferences()
-            drawableResId = ResourcesHelper.getAvatarsResources(activity)[position]
-        }
+    private fun setupView(binding: FragmentReportsBinding) = with(binding) {
+        isBiggerThenZero = this@ReportFragment.itemsQuantityObserver
+        isEmptyState = this@ReportFragment.emptyStateObserver
+        setupRecyclerView(reports)
+        this.presenter = this@ReportFragment.presenter
+        val position = presenter!!.getAvatarPositionFromPreferences()
+        drawableResId = ResourcesHelper.getAvatarsResources(activity)[position]
     }
 
-    private fun getGreetings(status: Int): String {
-        status.let {
-            return when (it) {
-                APPROVED_STATUS -> getString(R.string.approved_greetings)
-                PENDING_STATUS -> getString(R.string.pending_greetings)
-                else -> getString(R.string.rejected_greetings)
-            }
-        }
+    private fun getGreetings(status: Int): String = when (status) {
+        APPROVED_STATUS -> getString(R.string.approved_greetings)
+        PENDING_STATUS -> getString(R.string.pending_greetings)
+        else -> getString(R.string.rejected_greetings)
     }
 
-    private fun getGreetingsTip(status: Int): String {
-        status.let {
-            return when (it) {
-                APPROVED_STATUS -> getString(R.string.approved_greetings_tip)
-                PENDING_STATUS -> getString(R.string.pending_greetings_tip)
-                else -> getString(R.string.rejected_greetings_tip)
-            }
-        }
+    private fun getGreetingsTip(status: Int): String = when (status) {
+        APPROVED_STATUS -> getString(R.string.approved_greetings_tip)
+        PENDING_STATUS -> getString(R.string.pending_greetings_tip)
+        else -> getString(R.string.rejected_greetings_tip)
+    }
+
+    private fun getQuantityMessage(qtd: Int, status: Int): String = when (status) {
+        APPROVED_STATUS ->
+            getString(
+                R.string.reports_quantity,
+                qtd,
+                getString(R.string.approved_fragment_title).toLowerCase()
+            )
+        PENDING_STATUS ->
+            getString(
+                R.string.reports_quantity,
+                qtd,
+                getString(R.string.pending_fragment_title).toLowerCase()
+            )
+        else ->
+            getString(
+                R.string.reports_quantity,
+                qtd,
+                getString(R.string.not_approved_fragment_title).toLowerCase()
+            )
     }
 
     private fun setupRecyclerView(reports: RecyclerView) = with(reports) {
