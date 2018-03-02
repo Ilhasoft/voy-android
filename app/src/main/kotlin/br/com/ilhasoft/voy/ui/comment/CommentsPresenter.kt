@@ -8,15 +8,15 @@ import br.com.ilhasoft.voy.network.comments.CommentRepository
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
 class CommentsPresenter(
         private val commentRepository: CommentRepository,
         private val commentsUIMapper: CommentsUIMapper,
-        private val preferences: Preferences
+        private val preferences: Preferences,
+        private val scheduler: BaseScheduler
 ) : Presenter<CommentsContract>(CommentsContract::class.java) {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -29,7 +29,7 @@ class CommentsPresenter(
     fun loadComments(reportId: Int) {
         compositeDisposable.add(
                 commentRepository.getComments(reportId)
-                        .fromIoToMainThread()
+                        .fromIoToMainThread(scheduler)
                         .loadControl(view)
                         .map(commentsUIMapper)
                         .doOnNext { if (it.isEmpty()) view.showEmptyView() }
@@ -47,7 +47,7 @@ class CommentsPresenter(
     fun onClickRemoveComment(comment: CommentUIModel) {
         compositeDisposable.add(
                 commentRepository.deleteComment(comment.commentId, comment.reportId)
-                        .fromIoToMainThread()
+                        .fromIoToMainThread(scheduler)
                         .loadControl(view)
                         .subscribe(
                                 { view.navigateToRemoveComment(comment) },
@@ -63,11 +63,11 @@ class CommentsPresenter(
     fun onClickSendComment(body: String, reportId: Int) {
         compositeDisposable.add(
                 Single.just(body to reportId)
-                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(scheduler.ui())
                         .filter { view.isValidCommentBodyState() }
-                        .observeOn(Schedulers.io())
+                        .observeOn(scheduler.io())
                         .flatMap { (text, id) -> commentRepository.saveComment(text, id) }
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .observeOn(scheduler.ui())
                         .loadControl(view)
                         .subscribe(
                                 { view.commentCreated() },

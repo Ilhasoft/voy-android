@@ -1,6 +1,9 @@
 package br.com.ilhasoft.voy.comments
 
 import android.accounts.NetworkErrorException
+import br.com.ilhasoft.voy.extensions.emitCompletableError
+import br.com.ilhasoft.voy.extensions.emitFlowableError
+import br.com.ilhasoft.voy.extensions.emitMaybeError
 import br.com.ilhasoft.voy.models.ReportComment
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.comments.CommentDataSource
@@ -203,14 +206,5 @@ class CommentDataTest {
     private fun setupSaveCommentImpl() = commentRepository.saveComment(mockedCommentText, mockedValidReportId)
 
     private fun setupDeleteCommentImpl() = commentRepository.deleteComment(mockedCommentId)
-
-    private fun emitFlowableError(throwable: Throwable): Flowable<List<ReportComment>> =
-            Flowable.error(throwable)
-
-    private fun emitMaybeError(throwable: Throwable): Maybe<ReportComment> =
-            Maybe.error(throwable)
-
-    private fun emitCompletableError(throwable: Throwable): Completable =
-            Completable.error(throwable)
 
 }
