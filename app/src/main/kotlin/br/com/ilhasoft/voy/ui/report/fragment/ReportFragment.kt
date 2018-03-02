@@ -101,7 +101,7 @@ class ReportFragment : BaseFragment(), ReportContract {
         binding.run {
             greetings = getGreetings(status)
             createReportTip = getGreetingsTip(status)
-            quantity.text = getQuantityMessage(reportsAdapter.itemCount, status)
+            quantity = getQuantityMessage(reportsAdapter.itemCount, status)
         }
         itemsQuantityObserver.set(reportsAdapter.itemCount > 0)
     }
