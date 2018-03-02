@@ -9,10 +9,10 @@ import io.reactivex.Single
 /**
  * Created by developer on 09/01/18.
  */
-class ProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java) {
+class ProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java), ProjectDataSource {
 
-    fun getProjects(): Flowable<MutableList<Project>> = api.getProjects(BaseFactory.accessToken)
+    override fun getProjects(): Flowable<MutableList<Project>> = api.getProjects(BaseFactory.accessToken)
 
-    fun getProject(projectId: Int): Single<Project> = api.getProject(projectId)
+    override fun getProject(projectId: Int): Single<Project> = api.getProject(projectId)
 
 }
