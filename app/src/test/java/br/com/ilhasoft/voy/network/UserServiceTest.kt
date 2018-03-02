@@ -1,35 +1,41 @@
 package br.com.ilhasoft.voy.network
 
+import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserChangeRequest
-import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.network.users.UserDataSource
+import br.com.ilhasoft.voy.network.users.UserRepository
+import io.reactivex.Completable
+import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
-import retrofit2.HttpException
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by erickjones on 26/02/18.
  */
 class UserServiceTest {
 
-    private lateinit var userService: UserService
-    private lateinit var userChangeRequest: UserChangeRequest
+    @Mock
+    lateinit var userService: UserDataSource
 
-    private var mockUserId = 44
-    private var mockUserAvatar = "22"
-    private var mockUserUsername = "jones"
-    private var mockUserPassword = "123456"
-    private var mockUserToken = "77722a7b1c8491e12701a32b6b1c067f911492ce"
+    lateinit var userRepository: UserRepository
+
+    private var mockUserId = 1
 
     @Before
     fun setup() {
-        userService = UserService()
-        BaseFactory.accessToken = mockUserToken
-        userChangeRequest = UserChangeRequest(mockUserId, mockUserAvatar, mockUserPassword)
+        MockitoAnnotations.initMocks(this)
+        userRepository = UserRepository(userService)
     }
 
     @Test
-    fun shouldReturnLoggedUserFromAPI() {
-        userService.getUser()
+    fun shouldReturnUserFromAPI() {
+        `when`(userService.getUser()).thenReturn(Flowable.just(createMockUser()))
+
+        userRepository.getUser()
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()
@@ -38,29 +44,45 @@ class UserServiceTest {
     }
 
     @Test
-    fun shouldNotReturnLoggedUserFromAPI() {
-        userService.getUser()
+    fun shouldNotReturnUserFromAPI() {
+        `when`(userService.getUser()).thenReturn(Flowable.error(TimeoutException()))
+
+        userRepository.getUser()
                 .test()
                 .assertSubscribed()
-                .assertError(HttpException::class.java)
+                .assertError { it is TimeoutException }
     }
 
     @Test
     fun shouldEditUser() {
-        userService.editUser(userChangeRequest)
+        `when`(userService.editUser(createMockUserChangeRequest()))
+                .thenReturn(Completable.complete())
+
+        userRepository.editUser(createMockUserChangeRequest())
                 .test()
                 .assertSubscribed()
-                .assertNoErrors()
                 .assertComplete()
-        //TODO change to verify the api returned changes
+                .assertNoErrors()
     }
 
     @Test
     fun shouldNotEditUser() {
-        userService.editUser(userChangeRequest)
+         `when`(userService.editUser(createMockUserChangeRequest()))
+                .thenReturn(Completable.error(TimeoutException()))
+
+        userRepository.editUser(createMockUserChangeRequest())
                 .test()
                 .assertSubscribed()
-                .assertError(HttpException::class.java)
+                .assertError { it is TimeoutException }
     }
+
+    private fun createMockUser(): User =
+        User(mockUserId, "2", "mockeduser", "mockuser@test.test")
+
+
+    private fun createMockUserChangeRequest() =
+            UserChangeRequest(mockUserId, "2", "usermockchange@test.test")
+
+
 
 }

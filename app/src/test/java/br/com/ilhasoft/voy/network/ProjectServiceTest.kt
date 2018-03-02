@@ -1,31 +1,43 @@
 package br.com.ilhasoft.voy.network
 
 import br.com.ilhasoft.voy.models.Project
-import br.com.ilhasoft.voy.network.projects.ProjectApi
+import br.com.ilhasoft.voy.network.projects.ProjectDataSource
+import br.com.ilhasoft.voy.network.projects.ProjectRepository
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
-import retrofit2.HttpException
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 import java.net.UnknownHostException
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by jones on 2/27/18.
  */
 class ProjectServiceTest {
 
-    lateinit var projectService: MockProjectService
+    @Mock
+    lateinit var projectService: ProjectDataSource
+
+    lateinit var projectRepository: ProjectRepository
 
     val mockProjectId = 2
 
     @Before
     fun setup() {
-        projectService = MockProjectService()
+        MockitoAnnotations.initMocks(this)
+        projectRepository = ProjectRepository(projectService)
     }
 
     @Test
     fun shouldReturnProjects() {
-        projectService.getProjects()
+        `when`(projectService.getProjects())
+                .thenReturn(Flowable.just(createMockProjectList()))
+
+
+        projectRepository.getProjects()
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()
@@ -35,45 +47,47 @@ class ProjectServiceTest {
 
     @Test
     fun shouldNotReturnProjects() {
+        `when`(projectService.getProjects())
+                .thenReturn(Flowable.error(TimeoutException()))
+
         projectService.getProjects()
                 .test()
                 .assertSubscribed()
-                .assertError(HttpException::class.java)
+                .assertError { it is TimeoutException }
     }
 
-    //when the app runs for the first time and after login the user has no internet connection
     @Test
-    fun shouldNotReturnProjectsOffline() {
-        projectService.getProjects()
+    fun shouldNotReturnProjectsUnknownHost() {
+        `when`(projectService.getProjects()).thenReturn(Flowable.error(UnknownHostException()))
+
+        projectRepository.getProjects()
                 .test()
                 .assertSubscribed()
-                .assertError(UnknownHostException::class.java)
+                .assertError { it is UnknownHostException }
     }
 
     @Test
-    fun shouldReturnProjectById() {
-        projectService.getProject(mockProjectId)
+    fun shouldReturnSingleProject() {
+        `when`(projectService.getProject(mockProjectId))
+                .thenReturn(Single.just(createMockProject()))
+
+        projectRepository.getProject(mockProjectId)
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()
                 .assertComplete()
-                .assertValue { it.id == mockProjectId }
+                .assertValue { project -> project.id == mockProjectId }
     }
 
-}
+    private fun createMockProject(): Project =
+            Project(mockProjectId, "FakeProject")
 
-class MockProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java) {
-
-    val mockName = "A Fake Project"
-    val mockProjectList = mutableListOf(
-            Project(1, "Fake Project"),
-            Project(2, "Fake Project 2"))
-
-    fun getProjects(): Flowable<MutableList<Project>> =
-            Flowable.just(mockProjectList)
-
-
-    fun getProject(projectId: Int): Single<Project> =
-            Single.just(Project(projectId, mockName))
-
+    private fun createMockProjectList(): MutableList<Project> {
+        return mutableListOf(
+                Project(1, "FakeProject 1"),
+                Project(2, "FakeProject 2"),
+                Project(3, "FakeProject 3"),
+                Project(4, "FakeProject 4")
+        )
+    }
 }
