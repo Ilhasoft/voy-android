@@ -1,10 +1,8 @@
 package br.com.ilhasoft.voy.ui.home
 
-import br.com.ilhasoft.voy.models.Preferences
-import br.com.ilhasoft.voy.models.Project
-import br.com.ilhasoft.voy.models.Theme
-import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import org.junit.After
 import org.junit.Before
@@ -30,10 +28,24 @@ class HomePresenterTest {
 
     private val mockedUserId = 1
     private val mockedProject = Project(1, "", "", "", "", null, "", "", arrayListOf(), arrayListOf())
+    private val mockedProjectList = mutableListOf(
+            mockedProject.copy(id = 1),
+            mockedProject.copy(id = 2),
+            mockedProject.copy(id = 3)
+    )
+
+    private val mockedTheme = Theme(1, "", listOf(), "", listOf(), "", false)
     private val mockedThemeList = mutableListOf(
-            Theme(1, "", listOf(), "", listOf(), "", false),
-            Theme(2, "", listOf(), "", listOf(), "", false),
-            Theme(3, "", listOf(), "", listOf(), "", false)
+            mockedTheme.copy(id = 1),
+            mockedTheme.copy(id = 2),
+            mockedTheme.copy(id = 3)
+    )
+
+    private val mockedNotification = Notification(1, 1, 1, false, "", Report(), "")
+    private val mockedNotificationList = mutableListOf(
+            mockedNotification.copy(id = 1),
+            mockedNotification.copy(id = 2),
+            mockedNotification.copy(id = 3)
     )
 
     @Before
@@ -51,6 +63,54 @@ class HomePresenterTest {
     }
 
     @Test
+    fun shouldLoadProjectsOnStart() {
+        `when`(interactor.getProjects(mockedUserId)).thenReturn(Flowable.just(mockedProjectList))
+
+        presenter.start()
+
+        verify(view).showLoading()
+        verify(view).fillProjectsAdapter(mockedProjectList)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldLoadNotificationsWhenOnResume() {
+        `when`(interactor.getNotifications()).thenReturn(Flowable.just(mockedNotificationList))
+
+        presenter.resume()
+
+        verify(view).fillNotificationAdapter(mockedNotificationList)
+    }
+
+    @Test
+    fun shouldNavigateToUserAccountWhenOnClickMyAccount() {
+        presenter.onClickMyAccount()
+
+        verify(view).navigateToMyAccount()
+    }
+
+    @Test
+    fun shouldSelectProjectWhenOnClickChooseProject() {
+        presenter.onClickChooseProject()
+
+        verify(view).selectProject()
+    }
+
+    @Test
+    fun shouldShowNotificationsWhenOnClickNotifications() {
+        presenter.onClickNotifications()
+
+        verify(view).showNotifications()
+    }
+
+    @Test
+    fun shouldCloseNotificationsWhenOnClickHeaderNavView() {
+        presenter.onClickHeaderNavView()
+
+        verify(view).dismissNotifications()
+    }
+
+    @Test
     fun shouldLoadThemesDataWhenOnClickProject() {
         `when`(interactor.getThemes(mockedProject.id, mockedUserId)).thenReturn(Flowable.just(mockedThemeList))
 
@@ -60,6 +120,22 @@ class HomePresenterTest {
         verify(view).showLoading()
         verify(view).fillThemesAdapter(mockedThemeList)
         verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldNavigateToNotificationDetailsWhenOnClickItemNotification() {
+        `when`(interactor.markAsRead(mockedNotification.id)).thenReturn(Completable.complete())
+
+        presenter.onClickItemNotification(mockedNotification)
+
+        verify(view).navigateToNotificationDetail(mockedNotification)
+    }
+
+    @Test
+    fun shouldNavigateToThemeReportsWhenOnClickTheme() {
+        presenter.onClickTheme(mockedTheme)
+
+        verify(view).navigateToThemeReports(mockedTheme)
     }
 
 }

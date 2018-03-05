@@ -70,7 +70,7 @@ class HomePresenter(
             .doOnNext { selectedProject = it.first() }
             .observeOn(scheduler.io())
             .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
-            .subscribeOn(scheduler.ui())
+            .observeOn(scheduler.ui())
             .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
     }
 
