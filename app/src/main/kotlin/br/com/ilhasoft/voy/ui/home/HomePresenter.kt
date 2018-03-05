@@ -3,13 +3,15 @@ package br.com.ilhasoft.voy.ui.home
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class HomePresenter(
     private val preferences: Preferences,
-    private val homeInteractor: HomeInteractor
+    private val homeInteractor: HomeInteractor,
+    private val scheduler: BaseScheduler
 ) : Presenter<HomeContract>(HomeContract::class.java) {
 
     private var selectedProject: Project? = null
@@ -68,9 +70,9 @@ class HomePresenter(
             .doOnNext { fillProjectsAdapter(it) }
             .filter { it.isNotEmpty() }
             .doOnNext { selectedProject = it.first() }
-            .observeOn(Schedulers.io())
+            .observeOn(scheduler.io())
             .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(scheduler.ui())
             .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
     }
 
