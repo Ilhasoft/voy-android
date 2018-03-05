@@ -7,7 +7,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
+import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter
 
 /**
@@ -27,7 +27,7 @@ class ReportViewHolder(
     override fun onBind(report: Report) {
         binding.let {
             it.themeIndicator.setBackgroundColor(ThemeData.themeColor)
-            it.pending = report.status == ReportFragment.PENDING_STATUS
+            it.pending = report.status == ReportStatus.PENDING.value
             it.report = report
 
             it.expandedMenu.run {

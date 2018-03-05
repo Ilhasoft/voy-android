@@ -16,7 +16,12 @@ import java.io.File
 /**
  * Created by lucasbarros on 08/01/18.
  */
-class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
+class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), ReportDataSource {
+
+    override fun getReports(): Single<List<Report>> {
+        return api.getReports(createReportQuery())
+            .map { it.results }
+    }
 
     fun getReports(
         page: Int? = null,
@@ -37,6 +42,17 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
             putIfNotNull("status", status)
         }
         return api.getReports(reportsRequest)
+    }
+
+    private fun createReportQuery(): Map<String, Int?> {
+        return mutableMapOf<String, Int?>().apply {
+            putIfNotNull("page", 1)
+            putIfNotNull("page_size", 50)
+            putIfNotNull("theme", 39)
+            putIfNotNull("project", null)
+            putIfNotNull("mapper", 22)
+            putIfNotNull("status", 2)
+        }
     }
 
     fun getReport(

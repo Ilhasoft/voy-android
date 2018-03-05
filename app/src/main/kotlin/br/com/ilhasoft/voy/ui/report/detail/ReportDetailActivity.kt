@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
@@ -26,22 +25,17 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
 import br.com.ilhasoft.voy.databinding.ItemIndicatorBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
-import br.com.ilhasoft.voy.db.report.ReportDbHelper
-import br.com.ilhasoft.voy.models.Indicator
-import br.com.ilhasoft.voy.models.Report
-import br.com.ilhasoft.voy.models.SharedPreferences
-import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.models.TagDataUI
+import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
 import br.com.ilhasoft.voy.ui.home.HomeActivity
+import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
-import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import br.com.ilhasoft.voy.ui.shared.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -95,7 +89,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
-        if (report?.status == ReportFragment.NOT_APPROVED_STATUS) showReportAlert()
+        if (report?.status == ReportStatus.UNAPPROVED.value) showReportAlert()
     }
 
     override fun onStart() {
@@ -206,7 +200,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     private fun showMenuOptionBasedOnReportState(menu: Menu) {
         report?.status.let {
-            if (it == ReportFragment.APPROVED_STATUS)
+            if (it ==  ReportStatus.APPROVED.value)
                 menu.apply {
                     findItem(R.id.edit).isVisible = false
                     findItem(R.id.share).isVisible = true

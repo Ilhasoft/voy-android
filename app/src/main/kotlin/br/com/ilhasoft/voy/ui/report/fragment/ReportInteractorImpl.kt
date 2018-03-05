@@ -6,6 +6,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.reactivex.Flowable
 
 /**
@@ -18,7 +19,7 @@ class ReportInteractorImpl(private val status: Int) : ReportInteractor {
 
     override fun getReports(page: Int?, pageSize: Int?, theme: Int?, mapper: Int?, status: Int?): Flowable<List<Report>> {
         return if (ConnectivityManager.isConnected()) {
-            if (this@ReportInteractorImpl.status == ReportFragment.PENDING_STATUS) {
+            if (this@ReportInteractorImpl.status == ReportStatus.PENDING.value) {
                 Flowable.merge(getFromServer(page, pageSize, theme, mapper, status), getFromDb())
             } else {
                 getFromServer(page, pageSize, theme, mapper, status)
@@ -35,8 +36,9 @@ class ReportInteractorImpl(private val status: Int) : ReportInteractor {
             page = page, page_size = pageSize, theme = theme,
             mapper = mapper, status = status
         )
-            .map { it.results }
-            .toFlowable()
+            .flatMapPublisher { saveOnCache(it.results) }
+//            .map { it.results }
+//            .toFlowable()
             .fromIoToMainThread()
     }
 

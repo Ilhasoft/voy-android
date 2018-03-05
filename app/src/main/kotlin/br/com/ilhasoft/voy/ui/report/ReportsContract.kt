@@ -1,11 +1,11 @@
 package br.com.ilhasoft.voy.ui.report
 
-import br.com.ilhasoft.support.core.mvp.BasicView
+import br.com.ilhasoft.voy.ui.base.BaseView
 
 /**
  * Created by developer on 11/01/18.
  */
-interface ReportsContract : BasicView {
+interface ReportsContract : BaseView {
 
     fun navigateBack()
 
