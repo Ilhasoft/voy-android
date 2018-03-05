@@ -51,7 +51,7 @@ class HomePresenterTest {
     }
 
     @Test
-    fun shouldLoadThemesDataWhenProjectIdIsValid() {
+    fun shouldLoadThemesDataWhenOnClickProject() {
         `when`(interactor.getThemes(mockedProject.id, mockedUserId)).thenReturn(Flowable.just(mockedThemeList))
 
         presenter.onClickProject(mockedProject)

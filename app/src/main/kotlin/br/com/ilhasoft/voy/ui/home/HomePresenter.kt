@@ -4,8 +4,6 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class HomePresenter(
@@ -17,8 +15,8 @@ class HomePresenter(
     private var selectedProject: Project? = null
     private val userId = preferences.getInt(User.ID)
 
-    override fun attachView(view: HomeContract) {
-        super.attachView(view)
+    override fun start() {
+        super.start()
         loadData()
     }
 
