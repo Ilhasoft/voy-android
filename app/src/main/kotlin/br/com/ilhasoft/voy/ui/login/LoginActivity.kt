@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import br.com.ilhasoft.support.validation.Validator
-import br.com.ilhasoft.voy.BuildConfig
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
@@ -15,10 +14,8 @@ import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.HomeActivity
 import com.jakewharton.rxbinding2.widget.RxTextView
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
-
 import java.util.concurrent.TimeUnit
 
 class LoginActivity : BaseActivity(), LoginContract {
