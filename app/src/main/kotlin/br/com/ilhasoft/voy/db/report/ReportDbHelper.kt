@@ -5,6 +5,7 @@ import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.realm.Realm
@@ -43,7 +44,8 @@ class ReportDbHelper {
         medias: List<String>,
         reportId: Int? = null,
         newFiles: List<String>? = null,
-        filesToDelete: List<ReportFile>? = null
+        filesToDelete: List<ReportFile>? = null,
+        status: Int = ReportStatus.PENDING.value
     ): Single<Report> {
 
         return Single.fromCallable {
@@ -57,7 +59,8 @@ class ReportDbHelper {
                 urls,
                 reportId,
                 newFiles,
-                filesToDelete
+                filesToDelete,
+                status
             )
             realm.executeTransaction {
                 reportInternalId?.let {
@@ -78,7 +81,8 @@ class ReportDbHelper {
         return saveReport(0,
             theme = report.theme, location = report.location!!,
             description = report.description, name = report.name, tags = report.tags,
-            urls = report.urls, medias = report.files.map { it.file }, reportId = report.id
+            urls = report.urls, medias = report.files.map { it.file },
+            reportId = report.id, status = report.status
         )
     }
 
@@ -100,7 +104,8 @@ class ReportDbHelper {
         urls: List<String>?,
         reportId: Int?,
         newFiles: List<String>?,
-        filesToDelete: List<ReportFile>?
+        filesToDelete: List<ReportFile>?,
+        status: Int = ReportStatus.PENDING.value
     ): ReportDbModel {
         return ReportDbModel().apply {
             themeId = theme
@@ -109,13 +114,14 @@ class ReportDbHelper {
                 lng = location.coordinates[0]
             }
             this.name = name
+            this.status = status
             this.description = description
             this.tags.addAll(tags)
             this.mediasPath.addAll(medias)
             urls?.let {
                 this.urls.addAll(it)
             }
-            reportId?.let {  id = it }
+            reportId?.let { id = it }
             newFiles?.let {
                 this.newFiles.addAll(it)
             }

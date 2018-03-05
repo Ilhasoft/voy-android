@@ -8,7 +8,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.shared.extensions.toFilePath
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
-import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
+import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -21,6 +21,7 @@ open class ReportDbModel : RealmObject() {
     var internalId: Int = 0
     var id: Int = 0
     var themeId: Int = 0
+    var status: Int = ReportStatus.PENDING.value
     var location: BoundDbModel? = BoundDbModel()
     var name: String = "ReportName"
     var description: String? = null
@@ -56,7 +57,7 @@ fun ReportDbModel.toReport(): Report {
         description = description,
         tags = tags.toMutableList(),
         urls = urls.toMutableList(),
-        status = ReportFragment.PENDING_STATUS,
+        status = status,
         files = files,
         lastImage = lastImage,
         internalId = internalId
