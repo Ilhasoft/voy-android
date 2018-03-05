@@ -3,10 +3,37 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.0'
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = [
+            '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*$[0-9].*'
+    ]
+    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def mainSrc = "$project.projectDir/src/main/kotlin"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+    ])
+}
 
 android {
-
-//    loadProperties("signature")
 
     compileSdkVersion 26
     defaultConfig {
@@ -18,22 +45,16 @@ android {
         versionName "0.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    signingConfigs {
-        signature {
-//            keyAlias signatureProperties.alias
-//            keyPassword signatureProperties.keyPassword
-//            storeFile file(signatureProperties.keyPath)
-//            storePassword signatureProperties.storePassword
-        }
-    }
+
     buildTypes {
-        debug {}
+        debug {
+            testCoverageEnabled true
+        }
         release {
             debuggable false
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.signature
         }
     }
     dataBinding {
@@ -45,25 +66,16 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        debug.java.srcDirs += 'src/debug/kotlin'
-        release.java.srcDirs += 'src/release/kotlin'
-        debugWithProGuard {
-            manifest.srcFile '/src/debug/AndroidManifest.xml'
-            java.srcDirs = ['src/debug/java', 'src/debug/kotlin']
-            resources.srcDirs = ['src/debug/java', 'src/debug/kotlin']
-            aidl.srcDirs = ['src/debug/java', 'src/debug/kotlin']
-            renderscript.srcDirs = ['src/debug/java', 'src/debug/kotlin']
-            res.srcDirs = ['src/debug/res']
-            assets.srcDirs = ['src/debug/assets']
-        }
-        releaseDebuggable {
-            manifest.srcFile '/src/release/AndroidManifest.xml'
-            java.srcDirs = ['src/release/java', 'src/release/kotlin']
-            resources.srcDirs = ['src/release/java', 'src/release/kotlin']
-            aidl.srcDirs = ['src/release/java', 'src/release/kotlin']
-            renderscript.srcDirs = ['src/release/java', 'src/release/kotlin']
-            res.srcDirs = ['src/release/res']
-            assets.srcDirs = ['src/release/assets']
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
+    testOptions {
+        execution 'ANDROID_TEST_ORCHESTRATOR'
+        animationsDisabled true
+
+        unitTests {
+            includeAndroidResources = true
         }
     }
 }
@@ -84,6 +96,7 @@ dependencies {
 
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestUtil 'com.android.support.test:orchestrator:1.0.2-alpha1'
 
     kapt "com.android.databinding:compiler:${versions.gradle}"
 
@@ -141,9 +154,3 @@ dependencies {
 realm {
     syncEnabled = true
 }
-
-//def loadProperties(propertyName) {
-//    Properties properties = new Properties()
-//    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
-//    ext."${propertyName}Properties" = properties
-//}

@@ -21,7 +21,8 @@ buildscript {
             'playServiceLocation': '11.8.0',
             'realm'              : '4.3.3',
             'multidex'           : '1.0.2',
-            'mockito'            : '2.15.0'
+            'mockito'            : '2.15.0',
+            'jacoco'             : '0.8.0',
     ]
     repositories {
         google()
@@ -31,6 +32,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:${versions.gradle}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "io.realm:realm-gradle-plugin:${versions.realm}"
+        classpath "org.jacoco:org.jacoco.core:${versions.jacoco}"
     }
 }
 
