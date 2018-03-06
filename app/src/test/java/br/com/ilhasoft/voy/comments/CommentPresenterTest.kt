@@ -59,8 +59,12 @@ class CommentPresenterTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        presenter = CommentsPresenter(CommentRepository(dataSource),
-                CommentsUIMapper(), preferences, ImmediateScheduler())
+        presenter = CommentsPresenter(
+            CommentRepository(dataSource),
+            CommentsUIMapper(),
+            preferences,
+            ImmediateScheduler()
+        )
         presenter.attachView(view)
     }
 
@@ -69,12 +73,14 @@ class CommentPresenterTest {
         presenter.detachView()
     }
 
+
     @Test
     fun shouldBackWhenOnBackPressed() {
         presenter.onClickNavigateBack()
 
         verify(view).navigateBack()
     }
+
 
     @Test
     fun loadEmptyCommentsList() {
@@ -83,145 +89,154 @@ class CommentPresenterTest {
 
         presenter.loadComments(mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).showEmptyView()
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).showEmptyView()
+        verify(view, times(1)).dismissLoading()
     }
 
+
     @Test
-    fun loadCommentsListTimeout() {
+    fun shouldShowErrorMessageWhenLoadCommentsTimeout() {
         `when`(dataSource.getComments(mockedValidReportId))
                 .thenReturn(emitFlowableError(TimeoutException()))
 
         presenter.loadComments(mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).showMessage(0)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).showMessage(0)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun loadCommentsListUnknownHost() {
+    fun shouldShowErrorMessageWhenLoadCommentsUnknownHost() {
         `when`(dataSource.getComments(mockedValidReportId))
                 .thenReturn(emitFlowableError(UnknownHostException()))
 
         presenter.loadComments(mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).showMessage(R.string.login_network_error)
+        verify(view, times(1)).dismissLoading()
     }
 
+
     @Test
-    fun loadCommentsListNetworkError() {
+    fun shouldShowErrorMessageWhenLoadCommentsNetworkError() {
         `when`(dataSource.getComments(mockedValidReportId))
                 .thenReturn(emitFlowableError(NetworkErrorException()))
 
         presenter.loadComments(mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).showMessage(R.string.login_network_error)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun submitComment() {
+    fun shouldSubmitCommentWhenValidBody() {
         `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
                 .thenReturn(Maybe.just(mockedComment))
 
+        `when`(view.isValidCommentBodyState()).thenReturn(true)
+
         presenter.onClickSendComment(mockedCommentText, mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).isValidCommentBodyState()
-        verify(view, atLeastOnce()).commentCreated()
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).isValidCommentBodyState()
+        verify(view, times(1)).commentCreated()
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun submitCommentTimeout() {
+    fun shouldShowErrorMessageWhenSubmitCommentTimeout() {
         `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
                 .thenReturn(emitMaybeError(TimeoutException()))
 
+        `when`(view.isValidCommentBodyState()).thenReturn(true)
+
         presenter.onClickSendComment(mockedCommentText, mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).isValidCommentBodyState()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).isValidCommentBodyState()
+        verify(view, times(1)).showMessage(R.string.comment_create_error)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun submitCommentUnknownHost() {
+    fun shouldShowErrorMessageWhenSubmitCommentUnknownHost() {
         `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
                 .thenReturn(emitMaybeError(UnknownHostException()))
 
+        `when`(view.isValidCommentBodyState()).thenReturn(true)
+
         presenter.onClickSendComment(mockedCommentText, mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).isValidCommentBodyState()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).isValidCommentBodyState()
+        verify(view, times(1)).showMessage(R.string.login_network_error)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun submitCommentNetworkError() {
+    fun shouldShowErrorMessageWhenSubmitCommentNetworkError() {
         `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
                 .thenReturn(emitMaybeError(NetworkErrorException()))
 
+        `when`(view.isValidCommentBodyState()).thenReturn(true)
+
         presenter.onClickSendComment(mockedCommentText, mockedValidReportId)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).isValidCommentBodyState()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).isValidCommentBodyState()
+        verify(view, times(1)).showMessage(R.string.login_network_error)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun deleteComment() {
-        `when`(dataSource.deleteComment(mockedCommentId))
+    fun shouldDeleteCommentWhenSuccess() {
+        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
                 .thenReturn(Completable.complete())
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).navigateToRemoveComment(mockedCommentUiModel)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).navigateToRemoveComment(mockedCommentUiModel)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun deleteCommentTimeout() {
-        `when`(dataSource.deleteComment(mockedCommentId))
+    fun shouldShowErrorMessageWhenDeleteCommentTimeout() {
+        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
                 .thenReturn(emitCompletableError(TimeoutException()))
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).showMessage(R.string.comment_delete_error)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun deleteCommentUnknownHost() {
-        `when`(dataSource.deleteComment(mockedCommentId))
+    fun shouldShowErrorMessageWhenDeleteCommentUnknownHost() {
+        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
                 .thenReturn(emitCompletableError(UnknownHostException()))
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).showMessage(R.string.login_network_error)
+        verify(view, times(1)).dismissLoading()
     }
 
     @Test
-    fun deleteCommentNetworkError() {
-        `when`(dataSource.deleteComment(mockedCommentId))
+    fun shouldShowErrorMessageWhenDeleteCommentNetworkError() {
+        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
                 .thenReturn(emitCompletableError(NetworkErrorException()))
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
 
-        verify(view, atLeastOnce()).showLoading()
-        verify(view, atLeastOnce()).showMessage(R.string.login_network_error)
-        verify(view, atLeastOnce()).dismissLoading()
+        verify(view, times(1)).showLoading()
+        verify(view, times(1)).showMessage(R.string.login_network_error)
+        verify(view, times(1)).dismissLoading()
     }
-
 }
