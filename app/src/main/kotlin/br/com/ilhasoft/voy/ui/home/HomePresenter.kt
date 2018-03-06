@@ -1,8 +1,10 @@
 package br.com.ilhasoft.voy.ui.home
 
 import br.com.ilhasoft.support.core.mvp.Presenter
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
+import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import timber.log.Timber
 
@@ -71,7 +73,15 @@ class HomePresenter(
             .observeOn(scheduler.io())
             .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
             .observeOn(scheduler.ui())
-            .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
+            .subscribe(
+                    { fillThemesAdapter(it) },
+                    {
+                        Timber.e(it)
+                        ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                            view.showMessage(msg)
+                        }
+                    }
+            )
     }
 
     private fun loadThemesData(projectId: Int) {

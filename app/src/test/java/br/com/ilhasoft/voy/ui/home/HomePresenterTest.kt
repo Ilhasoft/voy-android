@@ -1,5 +1,8 @@
 package br.com.ilhasoft.voy.ui.home
 
+import android.accounts.NetworkErrorException
+import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.extensions.emitFlowableError
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import io.reactivex.Completable
@@ -11,6 +14,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import java.net.UnknownHostException
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by Allan Lima on 05/03/2018.
@@ -70,6 +75,39 @@ class HomePresenterTest {
 
         verify(view).showLoading()
         verify(view).fillProjectsAdapter(mockedProjectList)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenTimeoutOnLoadProjects() {
+        `when`(interactor.getProjects(mockedUserId)).thenReturn(emitFlowableError(TimeoutException()))
+
+        presenter.start()
+
+        verify(view).showLoading()
+        verify(view).showMessage(R.string.http_request_error)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenUnknownHostOnLoadProjects() {
+        `when`(interactor.getProjects(mockedUserId)).thenReturn(emitFlowableError(UnknownHostException()))
+
+        presenter.start()
+
+        verify(view).showLoading()
+        verify(view).showMessage(R.string.login_network_error)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenNetworkErrorOnLoadProjects() {
+        `when`(interactor.getProjects(mockedUserId)).thenReturn(emitFlowableError(NetworkErrorException()))
+
+        presenter.start()
+
+        verify(view).showLoading()
+        verify(view).showMessage(R.string.login_network_error)
         verify(view).dismissLoading()
     }
 
