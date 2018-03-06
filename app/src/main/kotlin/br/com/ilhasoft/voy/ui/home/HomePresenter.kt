@@ -65,23 +65,23 @@ class HomePresenter(
 
     private fun loadData() {
         homeInteractor.getProjects(userId)
-            .doOnSubscribe { view.showLoading() }
-            .doOnTerminate { view.dismissLoading() }
-            .doOnNext { fillProjectsAdapter(it) }
-            .filter { it.isNotEmpty() }
-            .doOnNext { selectedProject = it.first() }
-            .observeOn(scheduler.io())
-            .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
-            .observeOn(scheduler.ui())
-            .subscribe(
-                    { fillThemesAdapter(it) },
-                    {
-                        Timber.e(it)
-                        ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
-                            view.showMessage(msg)
+                .doOnSubscribe { view.showLoading() }
+                .doOnNext { fillProjectsAdapter(it) }
+                .filter { it.isNotEmpty() }
+                .doOnNext { selectedProject = it.first() }
+                .observeOn(scheduler.io())
+                .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
+                .observeOn(scheduler.ui())
+                .doOnTerminate { view.dismissLoading() }
+                .subscribe(
+                        { fillThemesAdapter(it) },
+                        {
+                            Timber.e(it)
+                            ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                                view.showMessage(msg)
+                            }
                         }
-                    }
-            )
+                )
     }
 
     private fun loadThemesData(projectId: Int) {
