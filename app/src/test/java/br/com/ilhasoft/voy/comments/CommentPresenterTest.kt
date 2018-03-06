@@ -60,10 +60,10 @@ class CommentPresenterTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
         presenter = CommentsPresenter(
-            CommentRepository(dataSource),
-            CommentsUIMapper(),
-            preferences,
-            ImmediateScheduler()
+                CommentRepository(dataSource),
+                CommentsUIMapper(),
+                preferences,
+                ImmediateScheduler()
         )
         presenter.attachView(view)
     }
@@ -83,8 +83,8 @@ class CommentPresenterTest {
 
 
     @Test
-    fun loadEmptyCommentsList() {
-        `when`(dataSource.getComments(mockedValidReportId))
+    fun shouldShowEmptyListMessageWhenLoadCommentsList() {
+        `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(Flowable.just(listOf()))
 
         presenter.loadComments(mockedValidReportId)
@@ -97,7 +97,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenLoadCommentsTimeout() {
-        `when`(dataSource.getComments(mockedValidReportId))
+        `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(TimeoutException()))
 
         presenter.loadComments(mockedValidReportId)
@@ -109,7 +109,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenLoadCommentsUnknownHost() {
-        `when`(dataSource.getComments(mockedValidReportId))
+        `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(UnknownHostException()))
 
         presenter.loadComments(mockedValidReportId)
@@ -122,7 +122,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenLoadCommentsNetworkError() {
-        `when`(dataSource.getComments(mockedValidReportId))
+        `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(NetworkErrorException()))
 
         presenter.loadComments(mockedValidReportId)
@@ -134,7 +134,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldSubmitCommentWhenValidBody() {
-        `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
+        `when`(getSaveCommentRef(mockedCommentText, mockedValidReportId))
                 .thenReturn(Maybe.just(mockedComment))
 
         `when`(view.isValidCommentBodyState()).thenReturn(true)
@@ -149,7 +149,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenSubmitCommentTimeout() {
-        `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
+        `when`(getSaveCommentRef(mockedCommentText, mockedValidReportId))
                 .thenReturn(emitMaybeError(TimeoutException()))
 
         `when`(view.isValidCommentBodyState()).thenReturn(true)
@@ -164,7 +164,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenSubmitCommentUnknownHost() {
-        `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
+        `when`(getSaveCommentRef(mockedCommentText, mockedValidReportId))
                 .thenReturn(emitMaybeError(UnknownHostException()))
 
         `when`(view.isValidCommentBodyState()).thenReturn(true)
@@ -179,7 +179,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenSubmitCommentNetworkError() {
-        `when`(dataSource.saveComment(mockedCommentText, mockedValidReportId))
+        `when`(getSaveCommentRef(mockedCommentText, mockedValidReportId))
                 .thenReturn(emitMaybeError(NetworkErrorException()))
 
         `when`(view.isValidCommentBodyState()).thenReturn(true)
@@ -194,7 +194,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldDeleteCommentWhenSuccess() {
-        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
+        `when`(getDeleteCommentRef(mockedCommentId, mockedValidReportId))
                 .thenReturn(Completable.complete())
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
@@ -206,7 +206,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenDeleteCommentTimeout() {
-        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
+        `when`(getDeleteCommentRef(mockedCommentId, mockedValidReportId))
                 .thenReturn(emitCompletableError(TimeoutException()))
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
@@ -218,7 +218,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenDeleteCommentUnknownHost() {
-        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
+        `when`(getDeleteCommentRef(mockedCommentId, mockedValidReportId))
                 .thenReturn(emitCompletableError(UnknownHostException()))
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
@@ -230,7 +230,7 @@ class CommentPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenDeleteCommentNetworkError() {
-        `when`(dataSource.deleteComment(mockedCommentId, mockedValidReportId))
+        `when`(getDeleteCommentRef(mockedCommentId, mockedValidReportId))
                 .thenReturn(emitCompletableError(NetworkErrorException()))
 
         presenter.onClickRemoveComment(mockedCommentUiModel)
@@ -239,4 +239,13 @@ class CommentPresenterTest {
         verify(view, times(1)).showMessage(R.string.login_network_error)
         verify(view, times(1)).dismissLoading()
     }
+
+    private fun getCommentsRef(reportId: Int) = dataSource.getComments(reportId)
+
+    private fun getSaveCommentRef(comment: String, reportId: Int) =
+            dataSource.saveComment(comment, reportId)
+
+    private fun getDeleteCommentRef(commentId: Int, reportId: Int?) =
+            dataSource.deleteComment(commentId, reportId)
+
 }

@@ -26,8 +26,8 @@ import java.util.concurrent.TimeoutException
 class CommentDataTest {
 
     @Mock
-    private lateinit var commentDataSource: CommentDataSource
-    private lateinit var commentRepository: CommentRepository
+    private lateinit var dataSource: CommentDataSource
+    private lateinit var repository: CommentRepository
 
     private val mockedValidReportId = 100
     private val mockedInvalidReportId = -1
@@ -43,11 +43,11 @@ class CommentDataTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        commentRepository = CommentRepository(commentDataSource)
+        repository = CommentRepository(dataSource)
     }
 
     @Test
-    fun loadCommentsList() {
+    fun shouldLoadCommentsList() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(Flowable.just(mockedComments))
 
@@ -60,7 +60,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadEmptyCommentsList() {
+    fun shouldLoadEmptyCommentsList() {
         `when`(getCommentsRef((mockedInvalidReportId)))
                 .thenReturn(Flowable.empty())
 
@@ -73,7 +73,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListWithTimeout() {
+    fun shouldThrowExceptionWhenLoadCommentsListWithTimeout() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(TimeoutException()))
 
@@ -84,7 +84,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListWithNetworkException() {
+    fun shouldThrowExceptionWhenLoadCommentsListWithNetworkException() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(NetworkErrorException()))
 
@@ -95,7 +95,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun loadCommentsListWithUnknownHostException() {
+    fun shouldThrowExceptionWhenLoadCommentsListWithUnknownHostException() {
         `when`(getCommentsRef(mockedValidReportId))
                 .thenReturn(emitFlowableError(UnknownHostException()))
 
@@ -106,7 +106,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitComment() {
+    fun shouldThrowExceptionWhenSubmitComment() {
         `when`(getSaveCommentRef())
                 .thenReturn(Maybe.just(mockedComment))
 
@@ -119,7 +119,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitCommentWithTimeout() {
+    fun shouldThrowExceptionWhenSubmitCommentWithTimeout() {
         `when`(getSaveCommentRef())
                 .thenReturn(emitMaybeError(TimeoutException()))
 
@@ -130,7 +130,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitCommentWithNetworkException() {
+    fun shouldThrowExceptionWhenSubmitCommentWithNetworkException() {
         `when`(getSaveCommentRef())
                 .thenReturn(emitMaybeError(NetworkErrorException()))
 
@@ -141,7 +141,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun submitCommentWithUnknownHostException() {
+    fun shouldThrowExceptionWhenSubmitCommentWithUnknownHostException() {
         `when`(getSaveCommentRef())
                 .thenReturn(emitMaybeError(UnknownHostException()))
 
@@ -152,7 +152,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteComment() {
+    fun shouldThrowExceptionWhenDeleteComment() {
         `when`(getDeleteCommentRef())
                 .thenReturn(Completable.complete())
 
@@ -163,7 +163,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteCommentWithTimeout() {
+    fun shouldThrowExceptionWhenDeleteCommentWithTimeout() {
         `when`(getDeleteCommentRef())
                 .thenReturn(emitCompletableError(TimeoutException()))
 
@@ -174,7 +174,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteCommentWithNetworkException() {
+    fun shouldThrowExceptionWhenDeleteCommentWithNetworkException() {
         `when`(getDeleteCommentRef())
                 .thenReturn(emitCompletableError(NetworkErrorException()))
 
@@ -185,7 +185,7 @@ class CommentDataTest {
     }
 
     @Test
-    fun deleteCommentWithUnknownHostException() {
+    fun shouldThrowExceptionWhenDeleteCommentWithUnknownHostException() {
         `when`(getDeleteCommentRef())
                 .thenReturn(emitCompletableError(UnknownHostException()))
 
@@ -195,16 +195,16 @@ class CommentDataTest {
                 .assertError { it is UnknownHostException }
     }
 
-    private fun getCommentsRef(reportId: Int) = commentDataSource.getComments(reportId)
+    private fun getCommentsRef(reportId: Int) = dataSource.getComments(reportId)
 
-    private fun getSaveCommentRef() = commentDataSource.saveComment(mockedCommentText, mockedValidReportId)
+    private fun getSaveCommentRef() = dataSource.saveComment(mockedCommentText, mockedValidReportId)
 
-    private fun getDeleteCommentRef() = commentDataSource.deleteComment(mockedCommentId)
+    private fun getDeleteCommentRef() = dataSource.deleteComment(mockedCommentId)
 
-    private fun setupCommentsImpl(reportId: Int) = commentRepository.getComments(reportId)
+    private fun setupCommentsImpl(reportId: Int) = repository.getComments(reportId)
 
-    private fun setupSaveCommentImpl() = commentRepository.saveComment(mockedCommentText, mockedValidReportId)
+    private fun setupSaveCommentImpl() = repository.saveComment(mockedCommentText, mockedValidReportId)
 
-    private fun setupDeleteCommentImpl() = commentRepository.deleteComment(mockedCommentId)
+    private fun setupDeleteCommentImpl() = repository.deleteComment(mockedCommentId)
 
 }
