@@ -32,6 +32,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.TagDataUI
+import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
@@ -63,7 +64,11 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
     }
     private val presenter: ReportDetailPresenter by lazy {
-        ReportDetailPresenter(report!!, SharedPreferences(this), ReportService())
+        ReportDetailPresenter(
+            report!!,
+            SharedPreferences(this),
+            ReportRepository(ReportService())
+        )
     }
     private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, mutableListOf()) }
     private val indicatorViewHolder: OnCreateViewHolder<Indicator, IndicatorViewHolder> by lazy {
