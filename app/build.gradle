@@ -63,8 +63,7 @@ dependencies {
     implementation "com.android.support:multidex:${versions.multidex}"
 
     testImplementation 'junit:junit:4.12'
-
-    testCompile "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
