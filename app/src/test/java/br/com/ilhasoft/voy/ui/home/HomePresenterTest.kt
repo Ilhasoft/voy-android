@@ -70,11 +70,13 @@ class HomePresenterTest {
     @Test
     fun shouldLoadProjectsOnStart() {
         `when`(interactor.getProjects(mockedUserId)).thenReturn(Flowable.just(mockedProjectList))
+        `when`(interactor.getThemes(mockedProject.id, mockedUserId)).thenReturn(Flowable.just(mockedThemeList))
 
         presenter.start()
 
         verify(view).showLoading()
         verify(view).fillProjectsAdapter(mockedProjectList)
+        verify(view).fillThemesAdapter(mockedThemeList)
         verify(view).dismissLoading()
     }
 
