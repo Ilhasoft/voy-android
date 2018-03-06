@@ -1,9 +1,13 @@
 package br.com.ilhasoft.voy.db.report
 
+import android.net.Uri
+import br.com.ilhasoft.voy.VoyApplication
 import br.com.ilhasoft.voy.db.theme.BoundDbModel
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
+import br.com.ilhasoft.voy.shared.extensions.toFilePath
+import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import io.realm.RealmList
 import io.realm.RealmObject
@@ -32,11 +36,16 @@ fun ReportDbModel.toReport(): Report {
     var lastImage: ReportFile? = null
     val files = mutableListOf<ReportFile>()
     mediasPath.forEach {
-        files.add(ReportFile(file = it, reportId = id))
+        var mimeType = FileHelper.getMimeTypeFromUri(VoyApplication.instance, Uri.parse(it))
+        mimeType = if (FileHelper.imageTypes.contains(mimeType)) {
+            "image"
+        } else {
+            "video"
+        }
+        files.add(ReportFile(file = it.toFilePath(), reportId = id, mediaType = mimeType))
     }
     if (mediasPath.size > 0) {
-        //FIXME: Verify if it is an image
-        lastImage = files.last()
+        lastImage = files.last { it.mediaType == ReportFile.TYPE_IMAGE }
     }
 
     return Report(

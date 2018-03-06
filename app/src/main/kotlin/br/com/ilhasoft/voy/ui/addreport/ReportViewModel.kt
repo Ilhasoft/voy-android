@@ -7,6 +7,7 @@ import android.net.Uri
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.shared.extensions.toFilePath
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 

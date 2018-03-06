@@ -17,14 +17,13 @@
     <string name="approved_greetings">Hello!</string>
     <string name="approved_greetings_tip">You have not\ncreated any reports yet</string>
     <string name="pending_greetings">Great!</string>
-    <string name="pending_greetings_tip">All you reports have\nbeen approved</string>
+    <string name="pending_greetings_tip">All your reports have\nbeen approved</string>
     <string name="rejected_greetings">Great Job!</string>
     <string name="rejected_greetings_tip">You have no unapproved\nreports</string>
     <string name="add_report_label">Add Report</string>
     <string name="resend_menu_label">resend</string>
     <string name="wait_evaluation_menu_label">wait_evaluation</string>
     <string name="notifications">Notifications</string>
-
 
     <string name="add_report_title_label">Add Report</string>
     <string name="title_activity_account">Account</string>

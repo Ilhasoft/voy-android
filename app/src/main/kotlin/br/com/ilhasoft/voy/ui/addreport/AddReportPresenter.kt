@@ -114,6 +114,7 @@ class AddReportPresenter(
             .toList()
             .flatMapObservable {
                 reportInteractor.saveReport(
+                    report.internalId,
                     ThemeData.themeId,
                     userLocation,
                     description,
@@ -147,6 +148,7 @@ class AddReportPresenter(
             .toList()
             .flatMapObservable {
                 reportInteractor.updateReport(
+                    report.internalId,
                     report.id,
                     ThemeData.themeId,
                     report.location!!,

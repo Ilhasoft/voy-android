@@ -11,12 +11,16 @@ import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.realm.Realm
 
 /**
  * Created by erickjones on 09/02/18.
  */
-class AccountInteractorImpl(val preferences: Preferences,
-                            val userRepository: UserRepository) : AccountInteractor {
+class AccountInteractorImpl(
+    private val preferences: Preferences,
+    val userRepository: UserRepository,
+    private val realm: Realm
+) : AccountInteractor {
 
     override fun getUser(): Flowable<User?> {
         return if (ConnectivityManager.isConnected()) {
@@ -36,8 +40,11 @@ class AccountInteractorImpl(val preferences: Preferences,
                 .doOnComplete { saveAvatar(user.avatar) }
     }
 
-    override fun removeUserPreferencesEntries() {
+    override fun clearAllLocalData() {
         preferences.clear()
+        realm.executeTransaction {
+            it.deleteAll()
+        }
     }
 
     private fun getUserFromPreferences(): Flowable<User?> {

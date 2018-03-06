@@ -81,7 +81,7 @@ class AccountPresenter(
     }
 
     fun onClickLogout() {
-        accountInteractor.removeUserPreferencesEntries();
+        accountInteractor.clearAllLocalData()
         view.navigateToMakeLogout()
     }
 
