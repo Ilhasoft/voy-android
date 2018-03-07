@@ -213,7 +213,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         return apiFile.saveFile(requestMap, requestFile)
     }
 
-    fun saveFile(file: File, reportId: Int): Single<ReportFile> {
+    override fun saveFile(file: File, reportId: Int): Single<ReportFile> {
         //TODO: try to send others files if one fail
         return saveFile(file.nameWithoutExtension, file.name, file, "", reportId)
             .fromIoToMainThread()

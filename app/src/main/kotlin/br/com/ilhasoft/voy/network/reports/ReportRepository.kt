@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.network.reports
 
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ReportFile
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.File
@@ -10,6 +11,7 @@ import java.io.File
  * Created by erickjones on 06/03/18.
  */
 class ReportRepository(val remoteReportDataSource: ReportDataSource) : ReportDataSource {
+
 
     override fun getReports(
         page: Int?,
@@ -65,4 +67,6 @@ class ReportRepository(val remoteReportDataSource: ReportDataSource) : ReportDat
         )
     }
 
+    override fun saveFile(file: File, reportId: Int): Single<ReportFile> =
+            remoteReportDataSource.saveFile(file, reportId)
 }

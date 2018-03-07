@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.network.reports
 
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ReportFile
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.File
@@ -44,4 +45,6 @@ interface ReportDataSource {
         newFiles: List<File>?,
         filesToDelete: List<Int>?
     ): Observable<Report>
+
+    fun saveFile(file: File, reportId: Int): Single<ReportFile>
 }
