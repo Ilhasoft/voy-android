@@ -8,7 +8,7 @@ tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
 
     reports {
         xml.enabled = true
@@ -27,6 +27,21 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**/*ViewHolder**',
             '**/*Fragment**',
             '**/*Companion**',
+            '**/*$ViewInjector*.*',
+            '**/*$ViewBinder*.*',
+            '**/*_ViewBinding*.*',
+            '**/*$Lambda$*.*',
+            '**/*$inlined$*.*',
+            '**/*MembersInjector*.*',
+            '**/*_MembersInjector.class',
+            '**/*Builder_*.class',
+            '**/*ActivitiesBuilder.class',
+            '**/*Fake*.*',
+            '**/*_LifecycleAdapter.class',
+            'JAVAC.SYNTHCLASS',
+            'JAVAC.SYNTHMETH',
+            'JAVAC.NOT',
+            'JAVAC.ENUM',
             "**/br/com/ilhasoft/voy/models/*",
             "**/br/com/ilhasoft/voy/shared/*",
             "**/br/com/ilhasoft/voy/ui/shared/*",
@@ -40,7 +55,5 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 
     sourceDirectories = files([mainSrc])
     classDirectories = files([debugTree])
-    executionData = fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
+    executionData = files("${project.buildDir}/jacoco/testDebugUnitTest.exec")
 }
