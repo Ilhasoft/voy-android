@@ -4,6 +4,9 @@ defaults: &defaults
   docker:
     - image: circleci/android:api-26-alpha
   working_directory: ~/code
+  branches:
+    only:
+      - develop
   environment:
     _JAVA_OPTIONS: "-Xmx1400m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2"
     TERM: dumb
@@ -51,8 +54,3 @@ workflows:
   build_and_test:
     jobs:
       - build
-
-general:
-  branches:
-    only:
-      - develop
