@@ -5,7 +5,7 @@ defaults: &defaults
     - image: circleci/android:api-26-alpha
   working_directory: ~/code
   environment:
-    _JAVA_OPTIONS: "-Xmx1400m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2"
+    JVM_OPTS: -Xmx3200m
     TERM: dumb
 
 jobs:
@@ -21,9 +21,6 @@ jobs:
       - run:
           name: Run tests for debug build and generate reports
           command: ./gradlew build jacocoTestReport assembleAndroidTest --no-daemon
-      - run:
-          name: Connect check
-          command: ./gradlew connectedCheck --no-deamon
       - run:
           name: Upload reports to Codecov
           command: bash <(curl -s https://codecov.io/bash)
