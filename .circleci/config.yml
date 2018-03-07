@@ -23,7 +23,7 @@ jobs:
           command: ./gradlew build jacocoTestReport --no-daemon
       - run:
           name: Upload reports to Codecov
-          command: bash <(curl -s https://codecov.io/bash)
+          command: bash <(curl -s https://codecov.io/bash) -t 7ba5b04e-7dd8-4644-8705-c5cb5dd6f3b4
       - save_cache:
           paths:
             - ~/.gradle
