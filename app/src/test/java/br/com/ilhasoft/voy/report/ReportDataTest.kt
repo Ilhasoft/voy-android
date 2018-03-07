@@ -75,48 +75,51 @@ class ReportDataTest {
 
     }
 
-//    @Test
-//    fun shouldGetSingleReport() {
-//        `when`(reportService.getReport(mockReportId, mockTheme, mockMapper, mockStatus))
-//            .thenReturn(Single.just(mockReport))
-//
-//        reportRepository.getReport(mockReportId, mockTheme, mockProject, mockMapper, mockStatus)
-//            .test()
-//            .assertSubscribed()
-//            .assertComplete()
-//            .assertNoErrors()
-//    }
+    //FIXME throwing NPE when trying to call test()
+    @Test
+    fun shouldGetSingleReport() {
+        `when`(reportService.getReport(mockReportId, mockTheme, mockMapper, mockStatus))
+            .thenReturn(Single.just(mockReport))
 
-//    @Test
-//    fun shouldSaveReportWhenNetworkIsAvailable() {
-//        val mockReport = createMockReport()
-//        `when`(
-//            reportService.saveReport(
-//                mockTheme,
-//                mockLocation,
-//                mockDescription,
-//                mockName,
-//                createMockTagList(),
-//                createMockUrlList(),
-//                createMockFileList()
-//            )
-//        ).thenReturn(Observable.just(mockReport))
-//
-//        reportRepository.saveReport(
-//            mockTheme,
-//            mockLocation,
-//            "",
-//            "",
-//            listOf(),
-//            listOf(),
-//            listOf()
-//        ).test()
-//            .assertSubscribed()
-//            .assertNoErrors()
-//            .assertComplete()
-//            .assertValue { it == mockReport }
-//
-//    }
+        reportRepository.getReport(mockReportId, mockTheme, mockProject, mockMapper, mockStatus)
+            .test()
+            .assertSubscribed()
+            .assertComplete()
+            .assertNoErrors()
+    }
+
+    //FIXME throwing NPE when trying to call test()
+    @Test
+    fun shouldSaveReportWhenNetworkIsAvailable() {
+        val mockReport = createMockReport()
+
+        `when`(
+            reportService.saveReport(
+                mockTheme,
+                mockLocation,
+                mockDescription,
+                mockName,
+                createMockTagList(),
+                createMockUrlList(),
+                createMockFileList()
+            )
+        ).thenReturn(Observable.just(mockReport))
+
+        reportRepository.saveReport(
+            mockTheme,
+            mockLocation,
+            "",
+            "",
+            listOf(),
+            listOf(),
+            listOf()
+        ).test()
+            .assertSubscribed()
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue { it == mockReport }
+
+    }
 
     private fun createMockResponse(): Response<Report> {
         return Response<Report>(

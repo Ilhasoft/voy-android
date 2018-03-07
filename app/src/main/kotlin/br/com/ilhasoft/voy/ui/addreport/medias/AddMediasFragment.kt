@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import br.com.ilhasoft.support.media.MediaSelectorDelegate
 import br.com.ilhasoft.voy.databinding.FragmentAddMediasBinding
+import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.widget.AddImageView
 import br.com.ilhasoft.voy.ui.addreport.AddReportInteractorImpl
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
@@ -27,7 +29,9 @@ class AddMediasFragment :
     }
 
     private val reportViewModel by lazy {
-        val factory = ReportViewModelFactory(AddReportInteractorImpl())
+        val factory = ReportViewModelFactory(
+            AddReportInteractorImpl(ReportRepository(ReportService()))
+        )
         ViewModelProviders.of(activity, factory).get(ReportViewModel::class.java)
     }
 

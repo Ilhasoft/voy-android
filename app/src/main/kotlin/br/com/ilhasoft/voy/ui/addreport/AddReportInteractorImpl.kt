@@ -8,6 +8,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.files.FilesService
+import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import io.reactivex.Flowable
@@ -19,9 +20,8 @@ import java.io.File
 /**
  * Created by lucasbarros on 09/02/18.
  */
-class AddReportInteractorImpl : AddReportInteractor {
+class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddReportInteractor {
 
-    private val reportService by lazy { ReportService() }
     private val reportDbHelper by lazy { ReportDbHelper() }
 
     private val themeDbHelper by lazy { ThemeDbHelper() }
@@ -50,7 +50,7 @@ class AddReportInteractorImpl : AddReportInteractor {
             .observeOn(Schedulers.io())
             .flatMapObservable {
                 if (ConnectivityManager.isConnected()) {
-                    reportService.saveReport(theme, location, description, name, tags, urls, medias)
+                    reportRepository.saveReport(theme, location, description, name, tags, urls, medias)
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete { reportDbHelper.removeReport(it.internalId!!) }
                 } else {
@@ -122,7 +122,7 @@ class AddReportInteractorImpl : AddReportInteractor {
         filesToDelete: List<Int>?,
         reportInternalId: Int
     ): Observable<Report>? {
-        return reportService.updateReport(
+        return reportRepository.updateReport(
             reportId,
             ThemeData.themeId,
             location,
