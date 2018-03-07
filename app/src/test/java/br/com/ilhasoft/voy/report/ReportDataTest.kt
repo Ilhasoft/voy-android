@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.report
 
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.Response
@@ -13,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import java.io.File
+import java.util.*
 
 /**
  * Created by erickjones on 06/03/18.
@@ -34,6 +36,7 @@ class ReportDataTest {
     private val mockName = "FakeName"
     private val mockDescription = "FakeDescription"
     private val mockLocation = Location("GPS", arrayListOf(1.2, 2.2))
+    private val mockedUser = User(1, "firstName", "lastName", "language", "avatar", "username", "email", true, true, "passworg")
 
     lateinit var mockReponse: Response<Report>
     lateinit var mockReport: Report
@@ -78,7 +81,7 @@ class ReportDataTest {
     //FIXME throwing NPE when trying to call test()
     @Test
     fun shouldGetSingleReport() {
-        `when`(reportService.getReport(mockReportId, mockTheme, mockMapper, mockStatus))
+        `when`(reportService.getReport(mockReportId, mockTheme, mockProject, mockMapper, mockStatus))
             .thenReturn(Single.just(mockReport))
 
         reportRepository.getReport(mockReportId, mockTheme, mockProject, mockMapper, mockStatus)
@@ -108,11 +111,11 @@ class ReportDataTest {
         reportRepository.saveReport(
             mockTheme,
             mockLocation,
-            "",
-            "",
-            listOf(),
-            listOf(),
-            listOf()
+            mockDescription,
+            mockName,
+            createMockTagList(),
+            createMockUrlList(),
+            createMockFileList()
         ).test()
             .assertSubscribed()
             .assertNoErrors()
@@ -130,7 +133,25 @@ class ReportDataTest {
         )
     }
 
-    private fun createMockReport(): Report = Report()
+    private fun createMockReport(): Report = Report(
+        1,
+        1,
+        mockLocation,
+        true,
+        true,
+        true,
+        Date(),
+        "description",
+        "name",
+        mutableListOf(),
+        "themeColor",
+        mockedUser,
+        null,
+        1,
+        mutableListOf(),
+        mutableListOf(),
+        "lastNotification"
+    )
 
 
     private fun createMockTagList(): MutableList<String> =
@@ -153,5 +174,4 @@ class ReportDataTest {
             File("FakeFile2"),
             File("FakeFile3")
         )
-
 }
