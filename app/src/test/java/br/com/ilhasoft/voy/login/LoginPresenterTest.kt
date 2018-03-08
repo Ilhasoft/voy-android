@@ -1,10 +1,12 @@
 package br.com.ilhasoft.voy.login
 
+import android.accounts.NetworkErrorException
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.extensions.emitFlowableError
 import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.authorization.AuthorizationApi
 import br.com.ilhasoft.voy.network.authorization.AuthorizationDataSource
 import br.com.ilhasoft.voy.network.authorization.AuthorizationRepository
 import br.com.ilhasoft.voy.network.authorization.AuthorizationResponse
@@ -14,6 +16,8 @@ import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import br.com.ilhasoft.voy.ui.login.LoginContract
 import br.com.ilhasoft.voy.ui.login.LoginPresenter
 import io.reactivex.Flowable
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -22,6 +26,9 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import retrofit2.HttpException
+import retrofit2.Response
+import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 
 /**
@@ -47,6 +54,10 @@ class LoginPresenterTest {
     private val emptyCredentials = Credentials("", "")
     private val token = "9d740e47daae2858da21563e4a89b8f5b7b9c502"
 
+    private val mockedUser = User(1, "mocked", "user",
+            "english", "2", "mockeduser", "mockuser@test.test",
+            true, false, null)
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -62,7 +73,13 @@ class LoginPresenterTest {
 
     @Test
     fun shouldEnableLoginButtonWhenValidFields() {
-        Mockito.`when`(view.validate()).thenReturn(true)
+        `when`(view.validate()).thenReturn(true)
+
+        `when`(getLoginRef(validCredentials))
+                .thenReturn(Flowable.just(AuthorizationResponse(token)))
+
+        `when`(userDataSource.getUser())
+                .thenReturn(Flowable.just(mockedUser))
 
         presenter.onClickLogin(validCredentials)
 
@@ -80,11 +97,17 @@ class LoginPresenterTest {
 
     @Test
     fun shouldMakeLoginWhenValidCredentials() {
+        `when`(view.validate()).thenReturn(true)
+
         `when`(getLoginRef(validCredentials))
                 .thenReturn(Flowable.just(AuthorizationResponse(token)))
 
+        `when`(userDataSource.getUser())
+                .thenReturn(Flowable.just(mockedUser))
+
         presenter.onClickLogin(validCredentials)
 
+        verify(view).validate()
         verify(preferences).put(User.TOKEN, token)
         verify(userDataSource).getUser()
         verify(view).showMessage(R.string.login_success)
@@ -93,22 +116,57 @@ class LoginPresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenMakeLoginWithInvalidCredentials() {
+        `when`(view.validate()).thenReturn(true)
+
         `when`(getLoginRef(invalidCredentials))
-                .thenReturn(Flowable.just(AuthorizationResponse("")))
+                .thenReturn(Flowable.error(HttpException(
+                        Response.error<AuthorizationApi>(400,
+                                ResponseBody.create(MediaType.parse(""), ""))
+                )))
 
         presenter.onClickLogin(invalidCredentials)
 
-        verify(view).showMessage(R.string.invalid_user)
+        verify(view).validate()
+        verify(view).showMessage(R.string.invalid_login)
     }
 
     @Test
     fun shouldShowErrorMessageWhenMakeLoginWithTimeout() {
+        `when`(view.validate()).thenReturn(true)
+
         `when`(getLoginRef(validCredentials))
                 .thenReturn(emitFlowableError(TimeoutException()))
 
         presenter.onClickLogin(validCredentials)
 
-        verify(view).showMessage(R.string.invalid_user)
+        verify(view).validate()
+        verify(view).showMessage(R.string.http_request_error)
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenMakeLoginWithUnknownHost() {
+        `when`(view.validate()).thenReturn(true)
+
+        `when`(getLoginRef(validCredentials))
+                .thenReturn(emitFlowableError(UnknownHostException()))
+
+        presenter.onClickLogin(validCredentials)
+
+        verify(view).validate()
+        verify(view).showMessage(R.string.login_network_error)
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenMakeLoginWithNetworkError() {
+        `when`(view.validate()).thenReturn(true)
+
+        `when`(getLoginRef(validCredentials))
+                .thenReturn(emitFlowableError(NetworkErrorException()))
+
+        presenter.onClickLogin(validCredentials)
+
+        verify(view).validate()
+        verify(view).showMessage(R.string.login_network_error)
     }
 
     private fun getLoginRef(credentials: Credentials): Flowable<AuthorizationResponse> =
