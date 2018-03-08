@@ -89,7 +89,7 @@ class AccountPresenterTest {
     @Test
     fun shouldLogoutUser() {
         accountPresenter.onClickLogout()
-        verify(accountInteractor).removeUserPreferencesEntries()
+        verify(accountInteractor).clearAllLocalData()
         verify(accountView).navigateToMakeLogout()
     }
 
