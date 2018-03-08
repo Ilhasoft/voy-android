@@ -23,6 +23,10 @@ class LoginPresenter(
 
     override fun attachView(view: LoginContract) {
         super.attachView(view)
+        checkPreferences()
+    }
+
+    fun checkPreferences() {
         if (preferences.contains(User.TOKEN)) {
             BaseFactory.accessToken = preferences.getString(User.TOKEN)
             view.navigateToHome()

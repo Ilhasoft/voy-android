@@ -72,6 +72,17 @@ class LoginPresenterTest {
     }
 
     @Test
+    fun shouldCheckPreferencesAndNavigateToHome() {
+        `when`(preferences.contains(User.TOKEN)).thenReturn(true)
+
+        `when`(preferences.getString(User.TOKEN)).thenReturn(token)
+
+        presenter.checkPreferences()
+
+        verify(view).navigateToHome()
+    }
+
+    @Test
     fun shouldEnableLoginButtonWhenValidFields() {
         `when`(view.validate()).thenReturn(true)
 
