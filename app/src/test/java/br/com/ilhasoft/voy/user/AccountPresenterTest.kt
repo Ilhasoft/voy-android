@@ -52,7 +52,7 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldNotLoadUser() {
+    fun `should not load user when trying to request offline`() {
         `when`(accountInteractor.getUser()).thenReturn(Flowable.error(UnknownHostException()))
 
         accountPresenter.start()
@@ -61,7 +61,7 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldNotLoadUserBadRequest() {
+    fun `should not load user when a bad request happens`() {
         `when`(accountInteractor.getUser())
             .thenReturn(
                 Flowable.error(
@@ -83,7 +83,7 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldNotLoadUserServerError() {
+    fun `should not save user when a server error occur`() {
         `when`(accountInteractor.getUser())
             .thenReturn(
                 Flowable.error(
@@ -104,7 +104,7 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldSaveUserAndDisplayFeedback() {
+    fun `should save user and display a success feedback`() {
         `when`(accountInteractor.editUser(mockedUser)).thenReturn(Completable.complete())
 
         accountPresenter.saveUser(mockedUser)
@@ -113,7 +113,7 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldNotSaveAndDisplayUser() {
+    fun `should not save user when there is no internet connection`() {
         `when`(accountInteractor.editUser(mockedUser))
             .thenReturn(Completable.error(UnknownHostException()))
 
@@ -124,7 +124,7 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldNotSaveInvalidUser() {
+    fun `should not save an invalid user`() {
         `when`(accountView.isValidUser()).thenReturn(false)
 
         accountPresenter.onClickSaveMyAccount()
