@@ -6,21 +6,27 @@ import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.BaseFactory
-import br.com.ilhasoft.voy.network.authorization.AuthorizationService
+import br.com.ilhasoft.voy.network.authorization.AuthorizationRepository
 import br.com.ilhasoft.voy.network.users.UserRepository
+import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
-import io.reactivex.android.schedulers.AndroidSchedulers
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
+import retrofit2.HttpException
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class LoginPresenter(
+        private val authorizationRepository: AuthorizationRepository,
+        private val userRepository: UserRepository,
         private val preferences: Preferences,
-        private val userRepository: UserRepository) : Presenter<LoginContract>(LoginContract::class.java) {
-
-    private var authorizationService: AuthorizationService = AuthorizationService()
+        private val scheduler: BaseScheduler) : Presenter<LoginContract>(LoginContract::class.java) {
 
     override fun attachView(view: LoginContract) {
         super.attachView(view)
+        checkPreferences()
+    }
+
+    fun checkPreferences() {
         if (preferences.contains(User.TOKEN)) {
             BaseFactory.accessToken = preferences.getString(User.TOKEN)
             view.navigateToHome()
@@ -29,19 +35,19 @@ class LoginPresenter(
 
     fun onClickLogin(credentials: Credentials) {
         if (view.validate()) {
-            authorizationService.loginWithCredentials(credentials)
+            authorizationRepository.loginWithCredentials(credentials)
                     .doOnNext({
                         preferences.put(User.TOKEN, it.token)
                         BaseFactory.accessToken = it.token
                     })
                     .concatMap { userRepository.getUser() }
-                    .compose(RxHelper.defaultFlowableSchedulers())
+                    .compose(RxHelper.defaultFlowableSchedulers(scheduler))
                     .doOnNext {
                         if (it != null && it.isMapper)
                             view.showMessage(R.string.login_success)
                     }
                     .delay(1, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(scheduler.ui())
                     .subscribe({
                         if (it != null && it.isMapper) {
                             it.apply {
@@ -59,7 +65,13 @@ class LoginPresenter(
                         }
                     }, {
                         Timber.e(it)
-                        view.showMessage(R.string.invalid_login)
+                        if (it is HttpException && it.code() == 400) {
+                            view.showMessage(R.string.invalid_login)
+                        } else {
+                            ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                                view.showMessage(msg)
+                            }
+                        }
                     })
         }
     }

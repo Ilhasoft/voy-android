@@ -11,8 +11,11 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.network.authorization.AuthorizationRepository
+import br.com.ilhasoft.voy.network.authorization.AuthorizationService
 import br.com.ilhasoft.voy.network.users.UserRepository
 import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.HomeActivity
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -37,7 +40,8 @@ class LoginActivity : BaseActivity(), LoginContract {
     }
 
     private val presenter: LoginPresenter by lazy {
-        LoginPresenter(SharedPreferences(this@LoginActivity), UserRepository(UserService()))
+        LoginPresenter(AuthorizationRepository(AuthorizationService()), UserRepository(UserService()),
+                SharedPreferences(this@LoginActivity), StandardScheduler())
     }
 
     private val validator: Validator by lazy { Validator(binding) }
@@ -77,11 +81,7 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     private fun setupView() {
         binding.run {
-            credentials =
-//                    if (BuildConfig.DEBUG)
-//                Credentials("pirralho", "123456")
-//            else
-                    this@LoginActivity.credentials
+            credentials = this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }
     }
