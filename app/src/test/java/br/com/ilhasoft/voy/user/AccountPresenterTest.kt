@@ -2,16 +2,21 @@ package br.com.ilhasoft.voy.user
 
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.users.UserApi
 import br.com.ilhasoft.voy.ui.account.AccountContract
 import br.com.ilhasoft.voy.ui.account.AccountInteractor
 import br.com.ilhasoft.voy.ui.account.AccountPresenter
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import retrofit2.HttpException
+import retrofit2.Response
 import java.net.UnknownHostException
 
 /**
@@ -47,7 +52,59 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldSaveUserAndDisplayFeedback() {
+    fun `should not load user when trying to request offline`() {
+        `when`(accountInteractor.getUser()).thenReturn(Flowable.error(UnknownHostException()))
+
+        accountPresenter.start()
+
+        verify(accountView).showMessage(R.string.login_network_error)
+    }
+
+    @Test
+    fun `should not load user when a bad request happens`() {
+        `when`(accountInteractor.getUser())
+            .thenReturn(
+                Flowable.error(
+                    HttpException(
+                        Response.error<UserApi>(
+                            403,
+                            ResponseBody.create(
+                                MediaType.parse("application/json"),
+                                "{}"
+                            )
+                        )
+                    )
+                )
+            )
+
+        accountPresenter.start()
+
+        verify(accountView).showMessage(R.string.http_request_error)
+    }
+
+    @Test
+    fun `should not save user when a server error occur`() {
+        `when`(accountInteractor.getUser())
+            .thenReturn(
+                Flowable.error(
+                    HttpException(
+                        Response.error<UserApi>(
+                            500,
+                            ResponseBody.create(
+                                MediaType.parse("application/json"),
+                                "{}")
+                        )
+                    )
+                )
+            )
+
+        accountPresenter.start()
+
+        verify(accountView).showMessage(R.string.http_request_error)
+    }
+
+    @Test
+    fun `should save user and display a success feedback`() {
         `when`(accountInteractor.editUser(mockedUser)).thenReturn(Completable.complete())
 
         accountPresenter.saveUser(mockedUser)
@@ -56,17 +113,18 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldNotSaveAndDisplayUser() {
+    fun `should not save user when there is no internet connection`() {
         `when`(accountInteractor.editUser(mockedUser))
-                .thenReturn(Completable.error(UnknownHostException()))
+            .thenReturn(Completable.error(UnknownHostException()))
 
         accountPresenter.saveUser(mockedUser)
 
+        verify(accountView, never()).saveUser()
         verify(accountView).showMessage(R.string.login_network_error)
     }
 
     @Test
-    fun shouldNotSaveInvalidUser() {
+    fun `should not save an invalid user`() {
         `when`(accountView.isValidUser()).thenReturn(false)
 
         accountPresenter.onClickSaveMyAccount()
@@ -120,7 +178,7 @@ class AccountPresenterTest {
     }
 
     private fun createMockUser(): User =
-            User(1, "2", "testUser", "test@test.test")
+        User(1, "2", "testUser", "test@test.test")
 
 
 }
