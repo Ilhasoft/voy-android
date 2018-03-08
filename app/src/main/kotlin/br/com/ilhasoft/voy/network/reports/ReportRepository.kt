@@ -10,7 +10,7 @@ import java.io.File
 /**
  * Created by erickjones on 06/03/18.
  */
-class ReportRepository(val remoteReportDataSource: ReportDataSource) : ReportDataSource {
+class ReportRepository(private val remoteReportDataSource: ReportDataSource) : ReportDataSource {
 
 
     override fun getReports(

@@ -7,7 +7,7 @@ import io.reactivex.Flowable
 /**
  * Created by erickjones on 01/03/18.
  */
-class UserRepository(val remoteUserDataSource: UserDataSource) : UserDataSource {
+class UserRepository(private val remoteUserDataSource: UserDataSource) : UserDataSource {
 
     override fun getUser(): Flowable<User?> =
         remoteUserDataSource.getUser()
