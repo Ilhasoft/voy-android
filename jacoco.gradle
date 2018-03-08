@@ -24,6 +24,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
             'android/**/*.*',
             '**/*$[0-9].*',
             '**/*Service**',
+            '**/*UIModel**',
+            '**/*DbModel**',
             '**/*ViewHolder**',
             '**/*Activity**',
             '**/*Fragment**',
