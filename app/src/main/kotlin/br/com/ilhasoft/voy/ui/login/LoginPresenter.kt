@@ -8,8 +8,10 @@ import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationRepository
 import br.com.ilhasoft.voy.network.users.UserRepository
+import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
+import retrofit2.HttpException
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -59,7 +61,13 @@ class LoginPresenter(
                         }
                     }, {
                         Timber.e(it)
-                        view.showMessage(R.string.invalid_login)
+                        if (it is HttpException && it.code() == 400) {
+                            view.showMessage(R.string.invalid_login)
+                        } else {
+                            ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                                view.showMessage(msg)
+                            }
+                        }
                     })
         }
     }
