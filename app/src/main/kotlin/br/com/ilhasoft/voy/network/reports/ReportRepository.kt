@@ -29,6 +29,7 @@ class ReportRepository(
     private fun saveOnCache(reports: List<Report>): Single<List<Report>> {
         return Flowable.just(reports)
             .flatMap { Flowable.fromIterable(it) }
+            .map { it.copy(shouldSend = false) }
             .flatMapSingle { localDataSource.saveReport(it) }
             .toList()
     }

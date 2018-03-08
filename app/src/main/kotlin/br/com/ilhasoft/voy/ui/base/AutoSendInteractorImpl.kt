@@ -36,6 +36,7 @@ class AutoSendInteractorImpl : AutoSendInteractor {
                 .flatMap {
                     Flowable.fromIterable(it)
                 }
+                .filter { it.shouldSend }
                 .flatMap {
                     resendReport(it).fromIoToMainThread()
                         //TODO: See other possibilities for backpressure strategy

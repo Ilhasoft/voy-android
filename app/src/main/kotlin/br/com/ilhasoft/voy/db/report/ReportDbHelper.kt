@@ -28,7 +28,8 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
     override fun saveReport(report: Report): Single<Report> {
         return saveReport(report.internalId, theme = report.theme, location = report.location!!,
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
-            medias = report.files.map { it.file }, reportId = report.id, status = report.status
+            medias = report.files.map { it.file }, reportId = report.id, status = report.status,
+            shouldSend = report.shouldSend
         ).onMainThread()
     }
 
@@ -52,7 +53,8 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         reportId: Int? = null,
         newFiles: List<String>? = null,
         filesToDelete: List<ReportFile>? = null,
-        status: Int = ReportStatus.PENDING.value
+        status: Int = ReportStatus.PENDING.value,
+        shouldSend: Boolean = true
     ): Single<Report> {
 
         return Single.fromCallable {
@@ -69,7 +71,8 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
                     reportId,
                     newFiles,
                     filesToDelete,
-                    status
+                    status,
+                    shouldSend
                 )
             }
 
@@ -103,7 +106,8 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         reportId: Int?,
         newFiles: List<String>?,
         filesToDelete: List<ReportFile>?,
-        status: Int = ReportStatus.PENDING.value
+        status: Int = ReportStatus.PENDING.value,
+        shouldSend: Boolean = true
     ): ReportDbModel {
         return ReportDbModel().apply {
             themeId = theme
@@ -116,6 +120,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
             this.description = description
             this.tags.addAll(tags)
             this.mediasPath.addAll(medias)
+            this.shouldSend = shouldSend
             urls?.let {
                 this.urls.addAll(it)
             }

@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report
 
-import android.util.Log
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Report
@@ -22,11 +21,8 @@ class ReportsPresenter(private val reportRepository: ReportRepository) :
             .fromIoToMainThread()
             .loadControl(view)
             .subscribe(
+                { notifyReportsOnViewModel(it) },
                 {
-                    Log.d("XXXXXXXXXX", "XXXXX $it")
-                    notifyReportsOnViewModel(it) },
-                {
-                    Log.d("XXXXXXXXXX2", "XXXXX $it")
                     it.printStackTrace()
                     ErrorHandlerHelper.showError(it, R.string.report_list_error) { msg ->
                         view.showMessage(msg)

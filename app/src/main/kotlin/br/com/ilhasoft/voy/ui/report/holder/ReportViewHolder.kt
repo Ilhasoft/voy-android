@@ -31,7 +31,7 @@ class ReportViewHolder(
             it.report = report
 
             it.expandedMenu.run {
-                if (report.internalId != null) {
+                if (report.shouldSend) {
                     setImageDrawable(
                         ContextCompat.getDrawable(
                             context,
