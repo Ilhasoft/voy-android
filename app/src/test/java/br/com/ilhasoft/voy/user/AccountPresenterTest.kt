@@ -2,16 +2,21 @@ package br.com.ilhasoft.voy.user
 
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.users.UserApi
 import br.com.ilhasoft.voy.ui.account.AccountContract
 import br.com.ilhasoft.voy.ui.account.AccountInteractor
 import br.com.ilhasoft.voy.ui.account.AccountPresenter
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import retrofit2.HttpException
+import retrofit2.Response
 import java.net.UnknownHostException
 
 /**
@@ -47,6 +52,58 @@ class AccountPresenterTest {
     }
 
     @Test
+    fun shouldNotLoadUser() {
+        `when`(accountInteractor.getUser()).thenReturn(Flowable.error(UnknownHostException()))
+
+        accountPresenter.start()
+
+        verify(accountView).showMessage(R.string.login_network_error)
+    }
+
+    @Test
+    fun shouldNotLoadUserBadRequest() {
+        `when`(accountInteractor.getUser())
+            .thenReturn(
+                Flowable.error(
+                    HttpException(
+                        Response.error<UserApi>(
+                            403,
+                            ResponseBody.create(
+                                MediaType.parse("application/json"),
+                                "{}"
+                            )
+                        )
+                    )
+                )
+            )
+
+        accountPresenter.start()
+
+        verify(accountView).showMessage(R.string.http_request_error)
+    }
+
+    @Test
+    fun shouldNotLoadUserServerError() {
+        `when`(accountInteractor.getUser())
+            .thenReturn(
+                Flowable.error(
+                    HttpException(
+                        Response.error<UserApi>(
+                            500,
+                            ResponseBody.create(
+                                MediaType.parse("application/json"),
+                                "{}")
+                        )
+                    )
+                )
+            )
+
+        accountPresenter.start()
+
+        verify(accountView).showMessage(R.string.http_request_error)
+    }
+
+    @Test
     fun shouldSaveUserAndDisplayFeedback() {
         `when`(accountInteractor.editUser(mockedUser)).thenReturn(Completable.complete())
 
@@ -58,10 +115,11 @@ class AccountPresenterTest {
     @Test
     fun shouldNotSaveAndDisplayUser() {
         `when`(accountInteractor.editUser(mockedUser))
-                .thenReturn(Completable.error(UnknownHostException()))
+            .thenReturn(Completable.error(UnknownHostException()))
 
         accountPresenter.saveUser(mockedUser)
 
+        verify(accountView, never()).saveUser()
         verify(accountView).showMessage(R.string.login_network_error)
     }
 
@@ -120,7 +178,7 @@ class AccountPresenterTest {
     }
 
     private fun createMockUser(): User =
-            User(1, "2", "testUser", "test@test.test")
+        User(1, "2", "testUser", "test@test.test")
 
 
 }
