@@ -19,6 +19,8 @@ import br.com.ilhasoft.voy.databinding.ActivityAddReportBinding
 import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.addreport.description.AddTitleFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
@@ -55,15 +57,21 @@ class AddReportActivity : BaseActivity(), AddReportContract {
 
     private val locationClient by lazy { LocationServices.getFusedLocationProviderClient(this) }
 
+    private val addReportInteractor: AddReportInteractor by lazy {
+        AddReportInteractorImpl(ReportRepository(ReportService()))
+    }
+
     private val reportViewModel by lazy {
-        val factory = ReportViewModelFactory(AddReportInteractorImpl())
+        val factory = ReportViewModelFactory(addReportInteractor)
         ViewModelProviders.of(this, factory).get(ReportViewModel::class.java)
     }
 
     private val presenter by lazy {
         AddReportPresenter(reportViewModel,
                 ThemeData.themeBounds,
-                intent.extras.getParcelable(EXTRA_REPORT), AddReportInteractorImpl())
+                intent.extras.getParcelable(EXTRA_REPORT),
+                addReportInteractor
+        )
     }
 
     private val locationRequest by lazy {

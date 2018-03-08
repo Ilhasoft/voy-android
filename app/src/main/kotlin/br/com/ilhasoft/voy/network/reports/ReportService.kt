@@ -16,15 +16,15 @@ import java.io.File
 /**
  * Created by lucasbarros on 08/01/18.
  */
-class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
+class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), ReportDataSource {
 
-    fun getReports(
-        page: Int? = null,
-        page_size: Int? = null,
-        theme: Int? = null,
-        project: Int? = null,
-        mapper: Int? = null,
-        status: Int? = null
+    override fun getReports(
+        page: Int?,
+        page_size: Int?,
+        theme: Int?,
+        project: Int?,
+        mapper: Int?,
+        status: Int?
     ): Single<Response<Report>> {
 
         val reportsRequest = mutableMapOf<String, Int?>()
@@ -39,12 +39,12 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         return api.getReports(reportsRequest)
     }
 
-    fun getReport(
+    override fun getReport(
         id: Int,
-        theme: Int? = null,
-        project: Int? = null,
-        mapper: Int? = null,
-        status: Int? = null
+        theme: Int?,
+        project: Int?,
+        mapper: Int?,
+        status: Int?
     ): Single<Report> {
 
         val reportsRequest = mutableMapOf<String, Int?>()
@@ -57,7 +57,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         return api.getReport(id, reportsRequest)
     }
 
-    fun saveReport(
+    override fun saveReport(
         theme: Int, location: Location, description: String?, name: String,
         tags: List<String>, urls: List<String>?, medias: List<File>
     ): Observable<Report> {
@@ -77,7 +77,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
             .flatMapObservable { Observable.just(auxReport) }
     }
 
-    fun updateReport(
+    override fun updateReport(
         reportId: Int,
         theme: Int,
         location: Location,
@@ -213,7 +213,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java) {
         return apiFile.saveFile(requestMap, requestFile)
     }
 
-    fun saveFile(file: File, reportId: Int): Single<ReportFile> {
+    override fun saveFile(file: File, reportId: Int): Single<ReportFile> {
         //TODO: try to send others files if one fail
         return saveFile(file.nameWithoutExtension, file.name, file, "", reportId)
             .fromIoToMainThread()

@@ -8,6 +8,7 @@ import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
@@ -20,7 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 class ReportDetailPresenter(
     private val report: Report,
     private val preferences: Preferences,
-    private val reportService: ReportService
+    private val reportRepository: ReportRepository
 ) : Presenter<ReportDetailContract>(ReportDetailContract::class.java) {
 
     var indicator = Indicator(Uri.EMPTY, true)
@@ -59,7 +60,7 @@ class ReportDetailPresenter(
     private fun loadReportData() {
 
         val getReportFlow: Single<Report> = if (ConnectivityManager.isConnected()) {
-            reportService.getReport(
+            reportRepository.getReport(
                 id = report.id, theme = report.theme,
                 mapper = preferences.getInt(User.ID), status = report.status
             ).fromIoToMainThread()
