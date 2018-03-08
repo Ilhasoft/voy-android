@@ -8,8 +8,12 @@ import android.databinding.ObservableBoolean
 import android.graphics.Color
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
+import br.com.ilhasoft.voy.db.report.ReportDbHelper
+import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
@@ -17,6 +21,7 @@ import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
+import io.realm.Realm
 
 /**
  * Created by developer on 11/01/18.
@@ -26,6 +31,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     companion object {
         @JvmStatic
         private val EXTRA_THEME_NAME = "themeName"
+        private val EXTRA_THEME_ID = "themeId"
 
         @JvmStatic
         fun createIntent(context: Context, themeId: Int,
@@ -36,6 +42,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
+            intent.putExtra(EXTRA_THEME_ID, themeId)
             return intent
         }
     }
@@ -45,9 +52,10 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
     private lateinit var viewModel: ReportViewModel
     private val presenter: ReportsPresenter by lazy {
-        ReportsPresenter(ReportRepository(ReportService()))
+        ReportsPresenter(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this))
     }
     private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
+    private val themeId: Int by lazy { intent.extras.getInt(EXTRA_THEME_ID, 0) }
     private val loadingObserver by lazy { ObservableBoolean(true) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +66,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         setupView()
         presenter.attachView(this)
         presenter.viewModel = viewModel
-        presenter.loadReports()
+        presenter.loadReports(theme = themeId, mapper = SharedPreferences(this).getInt(User.ID))
     }
 
     override fun onStart() {
@@ -83,6 +91,8 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     override fun navigateToAddReport() {
         startActivity(AddReportActivity.createIntent(this))
     }
+
+    override fun hasConnection() = ConnectivityManager.isConnected()
 
     override fun showLoading() {
         loadingObserver.set(true)

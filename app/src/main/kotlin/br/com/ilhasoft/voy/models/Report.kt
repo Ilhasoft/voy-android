@@ -26,7 +26,7 @@ data class Report(var id: Int = 0,
                   var urls: MutableList<String> = mutableListOf(),
                   var files: MutableList<ReportFile> = mutableListOf(),
                   @SerializedName("last_notification") var lastNotification: String? = "",
-                  @Ignore var internalId: Int? = null
+                  @Ignore var internalId: String? = null
 ) : Parcelable {
     constructor(source: Parcel) : this(
             source.readInt(),
@@ -46,7 +46,7 @@ data class Report(var id: Int = 0,
             source.createStringArrayList(),
             source.createTypedArrayList(ReportFile.CREATOR),
             source.readString(),
-            source.readValue(Int::class.java.classLoader) as Int?
+            source.readString()
     )
 
     override fun describeContents() = 0
@@ -69,7 +69,7 @@ data class Report(var id: Int = 0,
         writeStringList(urls)
         writeTypedList(files)
         writeString(lastNotification)
-        writeValue(internalId)
+        writeString(internalId)
     }
 
     companion object {

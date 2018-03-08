@@ -8,5 +8,7 @@ import io.reactivex.Single
  */
 interface ReportDataSource {
 
-    fun getReports(): Single<List<Report>>
+    fun getReports(theme: Int? = null, project: Int? = null,
+                   mapper: Int? = null, status: Int? = null): Single<List<Report>>
+    fun saveReport(report: Report): Single<Report>
 }

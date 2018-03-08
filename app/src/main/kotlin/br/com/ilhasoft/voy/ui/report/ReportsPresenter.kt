@@ -2,10 +2,12 @@ package br.com.ilhasoft.voy.ui.report
 
 import android.util.Log
 import br.com.ilhasoft.support.core.mvp.Presenter
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
+import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 
 /**
  * Created by developer on 11/01/18.
@@ -15,14 +17,20 @@ class ReportsPresenter(private val reportRepository: ReportRepository) :
 
     var viewModel: ReportViewModel? = null
 
-    fun loadReports() {
-        reportRepository.getReports()
+    fun loadReports(theme: Int, mapper: Int) {
+        reportRepository.getReports(theme = theme, mapper = mapper)
             .fromIoToMainThread()
             .loadControl(view)
             .subscribe(
-                { notifyReportsOnViewModel(it) },
                 {
-                    Log.i("XXXXXXXXXX2", "ZXXXXXXXXXXXX $it")
+                    Log.d("XXXXXXXXXX", "XXXXX $it")
+                    notifyReportsOnViewModel(it) },
+                {
+                    Log.d("XXXXXXXXXX2", "XXXXX $it")
+                    it.printStackTrace()
+                    ErrorHandlerHelper.showError(it, R.string.report_list_error) { msg ->
+                        view.showMessage(msg)
+                    }
                 }
             )
     }

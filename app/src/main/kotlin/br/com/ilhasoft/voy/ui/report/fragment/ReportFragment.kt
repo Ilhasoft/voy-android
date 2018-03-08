@@ -66,7 +66,7 @@ class ReportFragment : BaseFragment(), ReportContract {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentReportsBinding.inflate(inflater!!, container, false)
-        presenter = ReportPresenter(SharedPreferences(context), ReportInteractorImpl(status))
+        presenter = ReportPresenter(SharedPreferences(context))
         viewModel = ViewModelProviders.of(activity).get(ReportViewModel::class.java)
         return binding.root
     }

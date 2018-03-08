@@ -11,6 +11,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.realm.Realm
 import timber.log.Timber
 import java.io.File
 
@@ -24,7 +25,7 @@ class AutoSendInteractorImpl : AutoSendInteractor {
     }
 
     private val reportService by lazy { ReportService() }
-    private val reportDbHelper by lazy { ReportDbHelper() }
+    private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance()) }
 
     private fun getFromDb() = reportDbHelper.getReportDbModels().onMainThread()
 
@@ -44,6 +45,7 @@ class AutoSendInteractorImpl : AutoSendInteractor {
                 }
                 .doAfterTerminate { sendingPendingReports = false }
                 .subscribe({}, {
+                    it.printStackTrace()
                     Timber.e(it)
                 })
         }
