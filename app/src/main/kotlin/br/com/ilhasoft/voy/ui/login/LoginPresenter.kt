@@ -37,7 +37,7 @@ class LoginPresenter(
                         BaseFactory.accessToken = it.token
                     })
                     .concatMap { userRepository.getUser() }
-                    .compose(RxHelper.defaultFlowableSchedulers())
+                    .compose(RxHelper.defaultFlowableSchedulers(scheduler))
                     .doOnNext {
                         if (it != null && it.isMapper)
                             view.showMessage(R.string.login_success)
