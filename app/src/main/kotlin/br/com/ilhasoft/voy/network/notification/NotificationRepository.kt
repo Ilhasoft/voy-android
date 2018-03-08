@@ -8,7 +8,7 @@ import io.reactivex.Flowable
  * Created by erickjones on 02/03/18.
  */
 class NotificationRepository(
-        val remoteNotificationDataSource: NotificationDataSource): NotificationDataSource {
+        private val remoteNotificationDataSource: NotificationDataSource): NotificationDataSource {
 
     override fun getNotifications(): Flowable<List<Notification>> =
             remoteNotificationDataSource.getNotifications()

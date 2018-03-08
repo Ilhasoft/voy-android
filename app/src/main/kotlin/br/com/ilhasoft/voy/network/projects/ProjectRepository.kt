@@ -7,7 +7,7 @@ import io.reactivex.Single
 /**
  * Created by erickjones on 02/03/18.
  */
-class ProjectRepository(val remoteProjectDataSource: ProjectDataSource): ProjectDataSource {
+class ProjectRepository(private val remoteProjectDataSource: ProjectDataSource): ProjectDataSource {
 
     override fun getProjects(): Flowable<MutableList<Project>> =
             remoteProjectDataSource.getProjects()

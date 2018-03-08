@@ -8,7 +8,7 @@ import io.reactivex.Single
  * Created by erickjones on 01/03/18.
  */
 
-class ThemeRepository(val remoteThemeDataSource: ThemeDataSource): ThemeDataSource {
+class ThemeRepository(private val remoteThemeDataSource: ThemeDataSource): ThemeDataSource {
 
     override fun getThemes(project: Int?, user: Int?): Flowable<MutableList<Theme>> =
             remoteThemeDataSource.getThemes(project, user)
