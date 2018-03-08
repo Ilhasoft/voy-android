@@ -109,8 +109,8 @@ class LoginPresenterTest {
 
         verify(view).validate()
         verify(preferences).put(User.TOKEN, token)
-        verify(userDataSource).getUser()
         verify(view).showMessage(R.string.login_success)
+        Thread.sleep(1000)
         verify(view).navigateToHome()
     }
 
@@ -127,6 +127,7 @@ class LoginPresenterTest {
         presenter.onClickLogin(invalidCredentials)
 
         verify(view).validate()
+        Thread.sleep(1000)
         verify(view).showMessage(R.string.invalid_login)
     }
 
@@ -140,6 +141,7 @@ class LoginPresenterTest {
         presenter.onClickLogin(validCredentials)
 
         verify(view).validate()
+        Thread.sleep(1000)
         verify(view).showMessage(R.string.http_request_error)
     }
 
@@ -153,6 +155,7 @@ class LoginPresenterTest {
         presenter.onClickLogin(validCredentials)
 
         verify(view).validate()
+        Thread.sleep(1000)
         verify(view).showMessage(R.string.login_network_error)
     }
 
@@ -166,6 +169,7 @@ class LoginPresenterTest {
         presenter.onClickLogin(validCredentials)
 
         verify(view).validate()
+        Thread.sleep(1000)
         verify(view).showMessage(R.string.login_network_error)
     }
 
