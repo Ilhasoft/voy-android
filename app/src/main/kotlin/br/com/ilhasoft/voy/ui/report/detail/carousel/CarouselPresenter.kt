@@ -14,5 +14,4 @@ class CarouselPresenter : Presenter<CarouselContract>(CarouselContract::class.ja
             }
         }
     }
-
 }
