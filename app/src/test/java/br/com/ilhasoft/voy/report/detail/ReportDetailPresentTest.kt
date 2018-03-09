@@ -1,20 +1,30 @@
 package br.com.ilhasoft.voy.report.detail
 
+import android.accounts.NetworkErrorException
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.extensions.emitSingleError
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.network.reports.ReportsApi
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailContract
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter
 import io.reactivex.Single
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import retrofit2.HttpException
+import retrofit2.Response
+import java.net.UnknownHostException
 import java.util.*
+import java.util.concurrent.TimeoutException
 
 /** Create tests for getCarouselItems and getIndicators methods, but pay attention
  * because this methods depends on Android Framework.
@@ -114,6 +124,85 @@ class ReportDetailPresentTest {
         verify(view).populateCarousel(presenter.getCarouselItems(mockedReport))
         verify(view).populateIndicator(presenter.getIndicators(mockedReport))
         verify(view).showReportData(mockedReport)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenLoadReportWithTimeout() {
+        `when`(connectionProvider.hasConnection())
+                .thenReturn(true)
+
+        `when`(preferences.getInt(User.ID))
+                .thenReturn(1)
+
+        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+                mapper = preferences.getInt(User.ID), status = mockedReport.status))
+                .thenReturn(emitSingleError(TimeoutException()))
+
+        presenter.loadReportData()
+
+        verify(view).showLoading()
+        verify(view).showMessage(R.string.http_request_error)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenLoadReportWithUnknownHost() {
+        `when`(connectionProvider.hasConnection())
+                .thenReturn(true)
+
+        `when`(preferences.getInt(User.ID))
+                .thenReturn(1)
+
+        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+                mapper = preferences.getInt(User.ID), status = mockedReport.status))
+                .thenReturn(emitSingleError(UnknownHostException()))
+
+        presenter.loadReportData()
+
+        verify(view).showLoading()
+        verify(view).showMessage(R.string.login_network_error)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenLoadReportWithNetworkError() {
+        `when`(connectionProvider.hasConnection())
+                .thenReturn(true)
+
+        `when`(preferences.getInt(User.ID))
+                .thenReturn(1)
+
+        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+                mapper = preferences.getInt(User.ID), status = mockedReport.status))
+                .thenReturn(emitSingleError(NetworkErrorException()))
+
+        presenter.loadReportData()
+
+        verify(view).showLoading()
+        verify(view).showMessage(R.string.login_network_error)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenLoadReportWithHttpException() {
+        `when`(connectionProvider.hasConnection())
+                .thenReturn(true)
+
+        `when`(preferences.getInt(User.ID))
+                .thenReturn(1)
+
+        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+                mapper = preferences.getInt(User.ID), status = mockedReport.status))
+                .thenReturn(emitSingleError(HttpException(
+                        Response.error<ReportsApi>(500,
+                                ResponseBody.create(MediaType.parse(""), ""))
+                )))
+
+        presenter.loadReportData()
+
+        verify(view).showLoading()
+        verify(view).showMessage(R.string.http_request_error)
         verify(view).dismissLoading()
     }
 
