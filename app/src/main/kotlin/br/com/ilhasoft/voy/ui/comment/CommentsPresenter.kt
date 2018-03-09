@@ -87,5 +87,4 @@ class CommentsPresenter(
             id == preferences.getInt(User.ID)
         }
     }
-
 }
