@@ -5,6 +5,9 @@ import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.network.reports.ReportDataSource
+import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.realm.Realm
@@ -12,16 +15,22 @@ import io.realm.Realm
 /**
  * Created by lucasbarros on 09/02/18.
  */
-class ReportDbHelper {
+class ReportDbHelper(private val realm: Realm) : ReportDataSource {
 
-    private val realm by lazy { Realm.getDefaultInstance() }
-
-    fun getReports(): Flowable<List<Report>> {
-        return Flowable.fromCallable {
+    override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
+        return Single.fromCallable {
             val reportsDb = realm.where(ReportDbModel::class.java)
-                .equalTo(ReportDbModel::themeId.name, ThemeData.themeId).findAll()
-            reportsDb.map { it.toReport() }.toMutableList()
-        }
+                .equalTo(ReportDbModel::themeId.name, theme).findAll()
+            reportsDb.map { it.toReport() }.toList()
+        }.onMainThread()
+    }
+
+    override fun saveReport(report: Report): Single<Report> {
+        return saveReport(report.internalId, theme = report.theme, location = report.location!!,
+            description = report.description, name = report.name, tags = report.tags, urls = report.urls,
+            medias = report.files.map { it.file }, reportId = report.id, status = report.status,
+            shouldSend = report.shouldSend
+        ).onMainThread()
     }
 
     fun getReportDbModels(): Flowable<List<ReportDbModel>> {
@@ -33,7 +42,7 @@ class ReportDbHelper {
     }
 
     fun saveReport(
-        reportInternalId: Int?,
+        reportInternalId: String? = null,
         theme: Int,
         location: Location,
         description: String?,
@@ -43,51 +52,47 @@ class ReportDbHelper {
         medias: List<String>,
         reportId: Int? = null,
         newFiles: List<String>? = null,
-        filesToDelete: List<ReportFile>? = null
+        filesToDelete: List<ReportFile>? = null,
+        status: Int = ReportStatus.PENDING.value,
+        shouldSend: Boolean = true
     ): Single<Report> {
 
         return Single.fromCallable {
-            var reportDb = createDbModel(
-                theme,
-                location,
-                name,
-                description,
-                tags,
-                medias,
-                urls,
-                reportId,
-                newFiles,
-                filesToDelete
-            )
-            realm.executeTransaction {
-                reportInternalId?.let {
-                    realm.where(ReportDbModel::class.java)
-                        .equalTo(ReportDbModel::internalId.name, it)
-                        .findFirst()?.let { reportDb.internalId = it.internalId }
-                }
-                if (reportDb.internalId == 0) {
-                    reportDb.internalId = autoIncrementInternalId()
-                }
-                reportDb = realm.copyToRealmOrUpdate(reportDb)
+            var reportDb = getReport(reportId ?: 0)
+            if (reportDb == null) {
+                reportDb = createDbModel(
+                    theme,
+                    location,
+                    name,
+                    description,
+                    tags,
+                    medias,
+                    urls,
+                    reportId,
+                    newFiles,
+                    filesToDelete,
+                    status,
+                    shouldSend
+                )
+            }
+
+            realm.executeTransaction { transaction ->
+                reportDb?.let { transaction.copyToRealmOrUpdate(it) }
             }
             reportDb.toReport()
         }
     }
 
-    fun saveReport(report: Report): Single<Report> {
-        return saveReport(0,
-            theme = report.theme, location = report.location!!,
-            description = report.description, name = report.name, tags = report.tags,
-            urls = report.urls, medias = report.files.map { it.file }, reportId = report.id
-        )
-    }
-
-    fun removeReport(reportInternalId: Int) {
+    fun removeReport(reportInternalId: String) {
         realm.executeTransaction {
             val reportDb = realm.where(ReportDbModel::class.java)
                 .equalTo(ReportDbModel::internalId.name, reportInternalId).findAll()
             reportDb.deleteAllFromRealm()
         }
+    }
+
+    private fun getReport(id: Int): ReportDbModel? {
+        return realm.where(ReportDbModel::class.java).equalTo("id", id).findFirst()
     }
 
     private fun createDbModel(
@@ -100,7 +105,9 @@ class ReportDbHelper {
         urls: List<String>?,
         reportId: Int?,
         newFiles: List<String>?,
-        filesToDelete: List<ReportFile>?
+        filesToDelete: List<ReportFile>?,
+        status: Int = ReportStatus.PENDING.value,
+        shouldSend: Boolean = true
     ): ReportDbModel {
         return ReportDbModel().apply {
             themeId = theme
@@ -109,13 +116,15 @@ class ReportDbHelper {
                 lng = location.coordinates[0]
             }
             this.name = name
+            this.status = status
             this.description = description
             this.tags.addAll(tags)
             this.mediasPath.addAll(medias)
+            this.shouldSend = shouldSend
             urls?.let {
                 this.urls.addAll(it)
             }
-            reportId?.let {  id = it }
+            reportId?.let { id = it }
             newFiles?.let {
                 this.newFiles.addAll(it)
             }
@@ -128,17 +137,6 @@ class ReportDbHelper {
                     }
                 })
             }
-        }
-    }
-
-    private fun autoIncrementInternalId(): Int {
-        val nextId =
-            realm.where(ReportDbModel::class.java).max(ReportDbModel::internalId.name)
-                ?.toInt()
-        return if (nextId != null) {
-            nextId + 1
-        } else {
-            1
         }
     }
 }

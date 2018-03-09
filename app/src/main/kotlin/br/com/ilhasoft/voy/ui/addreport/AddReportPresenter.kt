@@ -8,6 +8,7 @@ import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
 import io.reactivex.Flowable
@@ -112,6 +113,7 @@ class AddReportPresenter(
                     FileCompressor.compressVideo(file)
             }
             .toList()
+            .onMainThread()
             .flatMapObservable {
                 reportInteractor.saveReport(
                     report.internalId,
@@ -130,6 +132,7 @@ class AddReportPresenter(
             .subscribe({
                 reportViewModel.report = it
             }, {
+                it.printStackTrace()
                 Timber.e(it)
             })
     }

@@ -3,4 +3,6 @@
 
     <dimen name="avatar_with_border">3dp</dimen>
     <dimen name="avatar_no_border">0dp</dimen>
+
+    <dimen name="progress_medium">74dp</dimen>
 </resources>

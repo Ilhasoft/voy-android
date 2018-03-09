@@ -1,18 +1,27 @@
 package br.com.ilhasoft.voy.ui.report
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.databinding.ObservableBoolean
 import android.graphics.Color
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
+import br.com.ilhasoft.voy.db.report.ReportDbHelper
+import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
+import io.realm.Realm
 
 /**
  * Created by developer on 11/01/18.
@@ -22,6 +31,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     companion object {
         @JvmStatic
         private val EXTRA_THEME_NAME = "themeName"
+        private val EXTRA_THEME_ID = "themeId"
 
         @JvmStatic
         fun createIntent(context: Context, themeId: Int,
@@ -32,6 +42,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
+            intent.putExtra(EXTRA_THEME_ID, themeId)
             return intent
         }
     }
@@ -39,13 +50,23 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     private val binding: ActivityReportsBinding by lazy {
         DataBindingUtil.setContentView<ActivityReportsBinding>(this, R.layout.activity_reports)
     }
-    private val presenter: ReportsPresenter by lazy { ReportsPresenter() }
+    private lateinit var viewModel: ReportViewModel
+    private val presenter: ReportsPresenter by lazy {
+        ReportsPresenter(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this))
+    }
     private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
+    private val themeId: Int by lazy { intent.extras.getInt(EXTRA_THEME_ID, 0) }
+    private val loadingObserver by lazy { ObservableBoolean(true) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders
+            .of(this)
+            .get(ReportViewModel::class.java)
         setupView()
         presenter.attachView(this)
+        presenter.viewModel = viewModel
+        presenter.loadReports(theme = themeId, mapper = SharedPreferences(this).getInt(User.ID))
     }
 
     override fun onStart() {
@@ -71,8 +92,19 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         startActivity(AddReportActivity.createIntent(this))
     }
 
+    override fun hasConnection() = ConnectivityManager.isConnected()
+
+    override fun showLoading() {
+        loadingObserver.set(true)
+    }
+
+    override fun dismissLoading() {
+        loadingObserver.set(false)
+    }
+
     private fun setupView() {
         binding.apply {
+            isLoading = loadingObserver
             setUpToolBar()
             presenter = this@ReportsActivity.presenter
             setupTabs()
@@ -96,11 +128,11 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS),
+        val approved = NavigationItem(ReportFragment.newInstance(ReportStatus.APPROVED.value),
                 getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS),
+        val pending = NavigationItem(ReportFragment.newInstance(ReportStatus.PENDING.value),
                 getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS),
+        val rejected = NavigationItem(ReportFragment.newInstance(ReportStatus.UNAPPROVED.value),
                 getString(R.string.not_approved_fragment_title))
         return mutableListOf(approved, pending, rejected)
     }

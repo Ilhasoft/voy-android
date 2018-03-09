@@ -7,13 +7,13 @@ import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.network.files.FilesService
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.realm.Realm
 import java.io.File
 
 /**
@@ -22,12 +22,12 @@ import java.io.File
 class AddReportInteractorImpl : AddReportInteractor {
 
     private val reportService by lazy { ReportService() }
-    private val reportDbHelper by lazy { ReportDbHelper() }
+    private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance()) }
 
     private val themeDbHelper by lazy { ThemeDbHelper() }
 
     override fun saveReport(
-        reportInternalId: Int?,
+        reportInternalId: String?,
         theme: Int,
         location: Location,
         description: String?,
@@ -46,7 +46,6 @@ class AddReportInteractorImpl : AddReportInteractor {
             urls,
             medias.map { it.absolutePath }
         )
-            .onMainThread()
             .observeOn(Schedulers.io())
             .flatMapObservable {
                 if (ConnectivityManager.isConnected()) {
@@ -61,7 +60,7 @@ class AddReportInteractorImpl : AddReportInteractor {
     }
 
     override fun updateReport(
-        reportInternalId: Int?,
+        reportInternalId: String?,
         reportId: Int,
         theme: Int,
         location: Location,
@@ -120,7 +119,7 @@ class AddReportInteractorImpl : AddReportInteractor {
         urls: List<String>?,
         newFiles: List<File>?,
         filesToDelete: List<Int>?,
-        reportInternalId: Int
+        reportInternalId: String
     ): Observable<Report>? {
         return reportService.updateReport(
             reportId,
