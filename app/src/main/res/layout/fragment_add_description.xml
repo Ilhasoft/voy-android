@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="reportViewModel"
             type="br.com.ilhasoft.voy.ui.addreport.ReportViewModel" />
@@ -15,6 +17,10 @@
 
         <variable
             name="hasLinks"
+            type="Boolean" />
+
+        <variable
+            name="allowLinks"
             type="Boolean" />
 
     </data>
@@ -93,13 +99,15 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="normal"
+                android:visibility="@{ allowLinks ? View.VISIBLE : View.GONE }"
                 tools:text="Add Link" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="@{ allowLinks ? View.VISIBLE : View.GONE }">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/link"
@@ -124,8 +132,8 @@
                     android:layout_marginStart="5dp"
                     android:background="@drawable/selector_btn_add_link"
                     android:enabled="false"
-                    android:padding="7dp"
                     android:onClick="@{() -> reportViewModel.addLink(link.getText().toString())}"
+                    android:padding="7dp"
                     android:src="@drawable/ic_add_link" />
 
             </LinearLayout>
@@ -136,6 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
+                android:visibility="@{ allowLinks ? View.VISIBLE: View.GONE }"
                 tools:listitem="@layout/item_link"
                 tools:visibility="visible" />
 

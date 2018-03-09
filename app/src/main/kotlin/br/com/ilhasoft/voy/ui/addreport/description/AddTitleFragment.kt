@@ -110,6 +110,7 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
         binding.run {
             reportViewModel = this@AddTitleFragment.reportViewModel
             hasLinks = true
+            allowLinks = this@AddTitleFragment.reportViewModel.allowLinks
         }
         setupLinkList()
     }

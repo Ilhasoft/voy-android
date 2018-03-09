@@ -34,11 +34,16 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         private val EXTRA_THEME_ID = "themeId"
 
         @JvmStatic
-        fun createIntent(context: Context, themeId: Int,
-                         themeName: String, themeColor: String, themeBounds: List<List<Double>>): Intent {
+        fun createIntent(
+            context: Context, themeId: Int,
+            themeName: String, themeColor: String,
+            themeBounds: List<List<Double>>,
+            allowLinks: Boolean
+        ): Intent {
             ThemeData.themeId = themeId
             ThemeData.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds
+            ThemeData.allowLinks = allowLinks
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
