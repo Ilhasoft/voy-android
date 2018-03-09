@@ -7,9 +7,7 @@ import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.network.files.FilesService
 import br.com.ilhasoft.voy.network.reports.ReportRepository
-import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import io.reactivex.Flowable
 import io.reactivex.Observable
