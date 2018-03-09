@@ -32,6 +32,11 @@ class VoyApplication : MultiDexApplication() {
         Realm.init(this)
         val config = RealmConfiguration.Builder().name("voy.realm").build()
         Realm.setDefaultConfiguration(config)
+
+        if (BuildConfig.DEBUG) configStetho()
+    }
+
+    private fun configStetho() {
         Stetho.initialize(
             Stetho.newInitializerBuilder(this)
                 .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
