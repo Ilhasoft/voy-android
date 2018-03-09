@@ -57,7 +57,7 @@ class ReportDetailPresenter(
                     mapper = preferences.getInt(User.ID), status = report.status
             ).fromIoToMainThread(scheduler)
         } else {
-            Single.just(report).onMainThread()
+            Single.just(report).onMainThread(scheduler)
         }
 
         compositeDisposable.add(
@@ -79,7 +79,7 @@ class ReportDetailPresenter(
         )
     }
 
-    private fun getCarouselItems(report: Report): List<CarouselItem> {
+    fun getCarouselItems(report: Report): List<CarouselItem> {
         val carouselItems = mutableListOf<CarouselItem>()
         report.files.forEach {
             carouselItems.add(CarouselItem(CarouselFragment.newInstance(it)))
@@ -87,7 +87,7 @@ class ReportDetailPresenter(
         return carouselItems
     }
 
-    private fun getIndicators(report: Report): List<Indicator> {
+    fun getIndicators(report: Report): List<Indicator> {
         val indicators = mutableListOf<Indicator>()
         report.files.filterIndexed { index, reportFile ->
             indicators.add(Indicator(Uri.parse(reportFile.file), false, index))
