@@ -31,6 +31,7 @@ import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
@@ -46,7 +47,8 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import io.realm.Realm
 
 class ReportDetailActivity : BaseActivity(), ReportDetailContract,
-        PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener, CheckConnectionProvider {
+        PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
+        CheckConnectionProvider {
 
     companion object {
         private const val EXTRA_REPORT = "extraReport"
@@ -64,8 +66,10 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private val presenter: ReportDetailPresenter by lazy {
         ReportDetailPresenter(
             report!!,
+            ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this),
             SharedPreferences(this),
-            ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this)
+            StandardScheduler(),
+            this
         )
     }
     private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, mutableListOf()) }
@@ -98,6 +102,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
+        presenter.loadReportData()
         if (report?.status == ReportStatus.UNAPPROVED.value) showReportAlert()
     }
 

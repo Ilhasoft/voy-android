@@ -84,7 +84,7 @@ class AddMediasFragment :
     }
 
     override fun onClickRemove(uri: Uri) {
-        reportViewModel.removeUri(uri)
+        reportViewModel.removeUri(uri.toString())
     }
 
     override fun hasConnection(): Boolean = ConnectivityManager.isConnected()
@@ -117,7 +117,7 @@ class AddMediasFragment :
 
     private fun onNewPhoto(uri: Uri) {
         imageViewSelected?.setMediaFromUri(uri)
-        reportViewModel.addUri(uri)
+        reportViewModel.addUri(uri.toString())
     }
 
 }
