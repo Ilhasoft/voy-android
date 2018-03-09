@@ -38,10 +38,13 @@ import java.util.concurrent.TimeoutException
 class ReportDetailPresentTest {
 
     @Mock
-    private lateinit var connectionProvider: CheckConnectionProvider
+    private lateinit var remoteDataSource: ReportDataSource
 
     @Mock
-    private lateinit var dataSource: ReportDataSource
+    private lateinit var localDataSource: ReportDataSource
+
+    @Mock
+    private lateinit var connectionProvider: CheckConnectionProvider
 
     @Mock
     private lateinit var preferences: Preferences
@@ -58,7 +61,7 @@ class ReportDetailPresentTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        presenter = ReportDetailPresenter(mockedReport, ReportRepository(dataSource),
+        presenter = ReportDetailPresenter(mockedReport, ReportRepository(remoteDataSource, localDataSource, connectionProvider),
                 preferences, ImmediateScheduler(), connectionProvider)
         presenter.attachView(view)
     }
@@ -104,7 +107,7 @@ class ReportDetailPresentTest {
         `when`(preferences.getInt(User.ID))
                 .thenReturn(1)
 
-        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+        `when`(remoteDataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
                 mapper = preferences.getInt(User.ID), status = mockedReport.status))
                 .thenReturn(Single.just(mockedReport))
 
@@ -125,7 +128,7 @@ class ReportDetailPresentTest {
         `when`(preferences.getInt(User.ID))
                 .thenReturn(1)
 
-        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+        `when`(remoteDataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
                 mapper = preferences.getInt(User.ID), status = mockedReport.status))
                 .thenReturn(Single.just(mockedReport))
 
@@ -146,7 +149,7 @@ class ReportDetailPresentTest {
         `when`(preferences.getInt(User.ID))
                 .thenReturn(1)
 
-        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+        `when`(remoteDataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
                 mapper = preferences.getInt(User.ID), status = mockedReport.status))
                 .thenReturn(emitSingleError(TimeoutException()))
 
@@ -165,7 +168,7 @@ class ReportDetailPresentTest {
         `when`(preferences.getInt(User.ID))
                 .thenReturn(1)
 
-        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+        `when`(remoteDataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
                 mapper = preferences.getInt(User.ID), status = mockedReport.status))
                 .thenReturn(emitSingleError(UnknownHostException()))
 
@@ -184,7 +187,7 @@ class ReportDetailPresentTest {
         `when`(preferences.getInt(User.ID))
                 .thenReturn(1)
 
-        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+        `when`(remoteDataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
                 mapper = preferences.getInt(User.ID), status = mockedReport.status))
                 .thenReturn(emitSingleError(NetworkErrorException()))
 
@@ -203,7 +206,7 @@ class ReportDetailPresentTest {
         `when`(preferences.getInt(User.ID))
                 .thenReturn(1)
 
-        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+        `when`(remoteDataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
                 mapper = preferences.getInt(User.ID), status = mockedReport.status))
                 .thenReturn(emitSingleError(HttpException(
                         Response.error<ReportsApi>(500,
