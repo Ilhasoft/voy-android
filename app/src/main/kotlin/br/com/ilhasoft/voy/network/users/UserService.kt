@@ -8,16 +8,16 @@ import io.reactivex.Flowable
 /**
  * Created by developer on 09/01/18.
  */
-class UserService : ServiceFactory<UserApi>(UserApi::class.java) {
+class UserService : ServiceFactory<UserApi>(UserApi::class.java), UserDataSource {
 
-    fun getUser(): Flowable<User?> = api.getUser(accessToken).map {
+    override fun getUser(): Flowable<User?> = api.getUser(accessToken).map {
         if(it.isNotEmpty())
             it[0]
         else
             null
     }
 
-    fun editUser(userRequest: UserChangeRequest):  Completable =
+    override fun editUser(userRequest: UserChangeRequest): Completable =
         api.editUser(userRequest.id, userRequest)
 
 }

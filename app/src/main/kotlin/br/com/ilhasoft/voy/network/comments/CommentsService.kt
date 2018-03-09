@@ -5,33 +5,20 @@ import br.com.ilhasoft.voy.network.ServiceFactory
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Single
 
 /**
  * Created by lucasbarros on 10/01/18.
  */
-class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java) {
+class CommentsService : ServiceFactory<CommentsApi>(CommentsApi::class.java), CommentDataSource {
 
-    fun getComments(reportId: Int): Flowable<List<ReportComment>> = api.getComments(reportId)
+    override fun getComments(reportId: Int): Flowable<List<ReportComment>> = api.getComments(reportId)
 
-    fun getComment(commentId: Int, reportId: Int? = null): Single<ReportComment> = api.getComment(commentId, reportId)
-
-    fun saveComment(text: String, reportId: Int): Maybe<ReportComment> {
+    override fun saveComment(text: String, reportId: Int): Maybe<ReportComment> {
         val requestBody = CreateCommentsRequest(text, reportId)
         return api.saveComment(requestBody)
     }
 
-    // Use to complete update
-    fun updateComment(commentId: Int, reportId: Int, text: String): Single<ReportComment> {
-        return api.updateComment(commentId, reportId, CreateCommentsRequest(text, reportId))
-    }
+    override fun deleteComment(commentId: Int, reportId: Int?): Completable =
+            api.deleteComment(commentId, reportId)
 
-    // Use to partial update
-    fun updateComment(commentId: Int, reportId: Int? = null, text: String? = null): Single<ReportComment> {
-        return api.partialUpdateComment(commentId, reportId, CreateCommentsRequest(text, reportId))
-    }
-
-    fun deleteComment(commentId: Int, reportId: Int? = null): Completable {
-        return api.deleteComment(commentId, reportId)
-    }
 }

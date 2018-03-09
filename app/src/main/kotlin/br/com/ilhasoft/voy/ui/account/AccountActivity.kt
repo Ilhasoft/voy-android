@@ -18,9 +18,11 @@ import br.com.ilhasoft.voy.databinding.ActivityAccountBinding
 import br.com.ilhasoft.voy.databinding.ItemAvatarBinding
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.users.UserRepository
 import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.login.LoginActivity
+import io.realm.Realm
 
 class AccountActivity : BaseActivity(), AccountContract {
 
@@ -35,10 +37,13 @@ class AccountActivity : BaseActivity(), AccountContract {
         DataBindingUtil.setContentView<ActivityAccountBinding>(this, R.layout.activity_account)
     }
     private val presenter: AccountPresenter by lazy {
-        AccountPresenter(AccountInteractorImpl(
-            SharedPreferences(this@AccountActivity),
-            UserService()
-        ))
+        AccountPresenter(
+            AccountInteractorImpl(
+                SharedPreferences(this@AccountActivity),
+                UserRepository(UserService()),
+                Realm.getDefaultInstance()
+            )
+        )
     }
     private val avatarViewHolder: OnCreateViewHolder<Int, AvatarViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->

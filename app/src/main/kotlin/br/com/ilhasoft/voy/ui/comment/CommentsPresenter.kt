@@ -4,19 +4,19 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
-import br.com.ilhasoft.voy.network.comments.CommentsService
+import br.com.ilhasoft.voy.network.comments.CommentRepository
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
 class CommentsPresenter(
-        private val commentsService: CommentsService,
+        private val commentRepository: CommentRepository,
         private val commentsUIMapper: CommentsUIMapper,
-        private val preferences: Preferences
+        private val preferences: Preferences,
+        private val scheduler: BaseScheduler
 ) : Presenter<CommentsContract>(CommentsContract::class.java) {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -28,8 +28,8 @@ class CommentsPresenter(
 
     fun loadComments(reportId: Int) {
         compositeDisposable.add(
-                commentsService.getComments(reportId)
-                        .fromIoToMainThread()
+                commentRepository.getComments(reportId)
+                        .fromIoToMainThread(scheduler)
                         .loadControl(view)
                         .map(commentsUIMapper)
                         .doOnNext { if (it.isEmpty()) view.showEmptyView() }
@@ -46,8 +46,8 @@ class CommentsPresenter(
 
     fun onClickRemoveComment(comment: CommentUIModel) {
         compositeDisposable.add(
-                commentsService.deleteComment(comment.commentId, comment.reportId)
-                        .fromIoToMainThread()
+                commentRepository.deleteComment(comment.commentId, comment.reportId)
+                        .fromIoToMainThread(scheduler)
                         .loadControl(view)
                         .subscribe(
                                 { view.navigateToRemoveComment(comment) },
@@ -63,11 +63,11 @@ class CommentsPresenter(
     fun onClickSendComment(body: String, reportId: Int) {
         compositeDisposable.add(
                 Single.just(body to reportId)
-                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(scheduler.ui())
                         .filter { view.isValidCommentBodyState() }
-                        .observeOn(Schedulers.io())
-                        .flatMap { (text, id) -> commentsService.saveComment(text, id) }
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .observeOn(scheduler.io())
+                        .flatMap { (text, id) -> commentRepository.saveComment(text, id) }
+                        .observeOn(scheduler.ui())
                         .loadControl(view)
                         .subscribe(
                                 { view.commentCreated() },
@@ -87,5 +87,4 @@ class CommentsPresenter(
             id == preferences.getInt(User.ID)
         }
     }
-
 }

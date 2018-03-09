@@ -15,13 +15,13 @@ class CommentsUIMapper : Function<List<ReportComment>, List<CommentUIModel>> {
 
         return comments.map {
             CommentUIModel(
-                    it.id,
-                    it.report,
-                    it.createdBy.id,
-                    userName(it.createdBy),
-                    it.text,
-                    it.createdOn.format("MMM dd, yyyy"),
-                    it.createdBy.avatar
+                it.id,
+                it.report,
+                it.createdBy.id,
+                userName(it.createdBy),
+                it.text,
+                it.createdOn.format("MMM dd, yyyy"),
+                it.createdBy.avatar
             )
         }
     }

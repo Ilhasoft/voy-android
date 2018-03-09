@@ -9,13 +9,56 @@ import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.realm.Realm
+import java.io.File
 
 /**
  * Created by lucasbarros on 09/02/18.
  */
 class ReportDbHelper(private val realm: Realm) : ReportDataSource {
+
+
+    override fun getReport(
+        id: Int,
+        theme: Int?,
+        project: Int?,
+        mapper: Int?,
+        status: Int?
+    ): Single<Report> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun saveReport(
+        theme: Int,
+        location: Location,
+        description: String?,
+        name: String,
+        tags: List<String>,
+        urls: List<String>?,
+        medias: List<File>
+    ): Observable<Report> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun updateReport(
+        reportId: Int,
+        theme: Int,
+        location: Location,
+        description: String?,
+        name: String,
+        tags: List<String>,
+        urls: List<String>?,
+        newFiles: List<File>?,
+        filesToDelete: List<Int>?
+    ): Observable<Report> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun saveFile(file: File, reportId: Int): Single<ReportFile> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
         return Single.fromCallable {

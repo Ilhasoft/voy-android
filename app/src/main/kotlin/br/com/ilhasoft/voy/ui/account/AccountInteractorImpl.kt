@@ -4,21 +4,27 @@ import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserChangeRequest
+import br.com.ilhasoft.voy.network.users.UserDataSource
+import br.com.ilhasoft.voy.network.users.UserRepository
 import br.com.ilhasoft.voy.network.users.UserService
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.realm.Realm
 
 /**
  * Created by erickjones on 09/02/18.
  */
-class AccountInteractorImpl(val preferences: Preferences,
-                            private val userService: UserService) : AccountInteractor {
+class AccountInteractorImpl(
+    private val preferences: Preferences,
+    val userRepository: UserRepository,
+    private val realm: Realm
+) : AccountInteractor {
 
     override fun getUser(): Flowable<User?> {
         return if (ConnectivityManager.isConnected()) {
-            userService.getUser()
+            userRepository.getUser()
                     .fromIoToMainThread()
                     .flatMap { saveUser(it) }
 
@@ -29,13 +35,16 @@ class AccountInteractorImpl(val preferences: Preferences,
 
     override fun editUser(user: User): Completable {
         val requestObject = UserChangeRequest(user.id, user.avatar.extractNumbers(), user.password)
-        return userService.editUser(requestObject)
+        return userRepository.editUser(requestObject)
                 .fromIoToMainThread()
                 .doOnComplete { saveAvatar(user.avatar) }
     }
 
-    override fun removeUserPreferencesEntries() {
+    override fun clearAllLocalData() {
         preferences.clear()
+        realm.executeTransaction {
+            it.deleteAll()
+        }
     }
 
     private fun getUserFromPreferences(): Flowable<User?> {

@@ -13,8 +13,13 @@ import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.FragmentAddDescriptionBinding
 import br.com.ilhasoft.voy.databinding.ItemLinkBinding
+import br.com.ilhasoft.voy.db.report.ReportDbHelper
+import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.ui.addreport.AddReportInteractorImpl
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModelFactory
@@ -22,16 +27,19 @@ import br.com.ilhasoft.voy.ui.base.BaseFragment
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.realm.Realm
 import java.util.concurrent.TimeUnit
 
-class AddTitleFragment : BaseFragment() {
+class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
 
     private val binding: FragmentAddDescriptionBinding by lazy {
         FragmentAddDescriptionBinding.inflate(LayoutInflater.from(context))
     }
 
     private val reportViewModel by lazy {
-        val factory = ReportViewModelFactory(AddReportInteractorImpl())
+        val factory = ReportViewModelFactory(
+            AddReportInteractorImpl(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this))
+        )
         ViewModelProviders.of(activity, factory).get(ReportViewModel::class.java)
     }
 
@@ -95,6 +103,8 @@ class AddTitleFragment : BaseFragment() {
         reportViewModel.setButtonEnable(reportViewModel.name?.isNotBlank() == true)
         reportViewModel.setButtonTitle(R.string.next)
     }
+
+    override fun hasConnection(): Boolean = ConnectivityManager.isConnected()
 
     private fun setupView() {
         binding.run {

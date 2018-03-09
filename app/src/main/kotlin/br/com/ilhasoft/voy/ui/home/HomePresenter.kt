@@ -1,22 +1,24 @@
 package br.com.ilhasoft.voy.ui.home
 
 import br.com.ilhasoft.support.core.mvp.Presenter
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import timber.log.Timber
 
 class HomePresenter(
     private val preferences: Preferences,
-    private val homeInteractor: HomeInteractor
+    private val homeInteractor: HomeInteractor,
+    private val scheduler: BaseScheduler
 ) : Presenter<HomeContract>(HomeContract::class.java) {
 
     private var selectedProject: Project? = null
     private val userId = preferences.getInt(User.ID)
 
-    override fun attachView(view: HomeContract) {
-        super.attachView(view)
+    override fun start() {
+        super.start()
         loadData()
     }
 
@@ -63,15 +65,23 @@ class HomePresenter(
 
     private fun loadData() {
         homeInteractor.getProjects(userId)
-            .doOnSubscribe { view.showLoading() }
-            .doOnTerminate { view.dismissLoading() }
-            .doOnNext { fillProjectsAdapter(it) }
-            .filter { it.isNotEmpty() }
-            .doOnNext { selectedProject = it.first() }
-            .observeOn(Schedulers.io())
-            .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
+                .doOnSubscribe { view.showLoading() }
+                .doOnNext { fillProjectsAdapter(it) }
+                .filter { it.isNotEmpty() }
+                .doOnNext { selectedProject = it.first() }
+                .observeOn(scheduler.io())
+                .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
+                .observeOn(scheduler.ui())
+                .doOnTerminate { view.dismissLoading() }
+                .subscribe(
+                        { fillThemesAdapter(it) },
+                        {
+                            Timber.e(it)
+                            ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                                view.showMessage(msg)
+                            }
+                        }
+                )
     }
 
     private fun loadThemesData(projectId: Int) {

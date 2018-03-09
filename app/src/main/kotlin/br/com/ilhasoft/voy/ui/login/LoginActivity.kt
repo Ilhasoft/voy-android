@@ -7,18 +7,20 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import br.com.ilhasoft.support.validation.Validator
-import br.com.ilhasoft.voy.BuildConfig
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.ActivityLoginBinding
 import br.com.ilhasoft.voy.models.Credentials
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.network.authorization.AuthorizationRepository
+import br.com.ilhasoft.voy.network.authorization.AuthorizationService
+import br.com.ilhasoft.voy.network.users.UserRepository
+import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.home.HomeActivity
 import com.jakewharton.rxbinding2.widget.RxTextView
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
-
 import java.util.concurrent.TimeUnit
 
 class LoginActivity : BaseActivity(), LoginContract {
@@ -37,8 +39,13 @@ class LoginActivity : BaseActivity(), LoginContract {
         DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
     }
 
-    private val presenter: LoginPresenter by lazy { LoginPresenter(SharedPreferences(this@LoginActivity)) }
+    private val presenter: LoginPresenter by lazy {
+        LoginPresenter(AuthorizationRepository(AuthorizationService()), UserRepository(UserService()),
+                SharedPreferences(this@LoginActivity), StandardScheduler())
+    }
+
     private val validator: Validator by lazy { Validator(binding) }
+
     private val credentials by lazy { Credentials() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,11 +81,7 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     private fun setupView() {
         binding.run {
-            credentials =
-//                    if (BuildConfig.DEBUG)
-//                Credentials("pirralho", "123456")
-//            else
-                this@LoginActivity.credentials
+            credentials = this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }
     }
