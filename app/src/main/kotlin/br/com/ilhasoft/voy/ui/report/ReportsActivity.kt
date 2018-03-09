@@ -24,11 +24,16 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         private val EXTRA_THEME_NAME = "themeName"
 
         @JvmStatic
-        fun createIntent(context: Context, themeId: Int,
-                         themeName: String, themeColor: String, themeBounds: List<List<Double>>): Intent {
+        fun createIntent(
+            context: Context, themeId: Int,
+            themeName: String, themeColor: String,
+            themeBounds: List<List<Double>>,
+            allowLinks: Boolean
+        ): Intent {
             ThemeData.themeId = themeId
             ThemeData.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds
+            ThemeData.allowLinks = allowLinks
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
@@ -96,12 +101,18 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportFragment.newInstance(ReportFragment.APPROVED_STATUS),
-                getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportFragment.newInstance(ReportFragment.PENDING_STATUS),
-                getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS),
-                getString(R.string.not_approved_fragment_title))
+        val approved = NavigationItem(
+            ReportFragment.newInstance(ReportFragment.APPROVED_STATUS),
+            getString(R.string.approved_fragment_title)
+        )
+        val pending = NavigationItem(
+            ReportFragment.newInstance(ReportFragment.PENDING_STATUS),
+            getString(R.string.pending_fragment_title)
+        )
+        val rejected = NavigationItem(
+            ReportFragment.newInstance(ReportFragment.NOT_APPROVED_STATUS),
+            getString(R.string.not_approved_fragment_title)
+        )
         return mutableListOf(approved, pending, rejected)
     }
 

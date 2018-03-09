@@ -104,6 +104,7 @@ class AddTitleFragment : BaseFragment() {
         binding.run {
             reportViewModel = this@AddTitleFragment.reportViewModel
             hasLinks = true
+            allowLinks = this@AddTitleFragment.reportViewModel.allowLinks
         }
         setupLinkList()
     }

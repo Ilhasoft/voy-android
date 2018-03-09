@@ -198,7 +198,8 @@ class HomeActivity : BaseActivity(), HomeContract {
                 theme.id,
                 theme.name,
                 theme.color,
-                theme.bounds
+                theme.bounds,
+                theme.allowLinks
             )
         )
     }
