@@ -27,6 +27,7 @@ import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
 import br.com.ilhasoft.voy.databinding.ItemIndicatorBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
+import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
@@ -36,13 +37,14 @@ import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.comment.CommentsActivity
 import br.com.ilhasoft.voy.ui.home.HomeActivity
+import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
-import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import br.com.ilhasoft.voy.ui.shared.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import io.realm.Realm
 
 class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
@@ -62,8 +64,13 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
     }
     private val presenter: ReportDetailPresenter by lazy {
-        ReportDetailPresenter(report!!, ReportRepository(ReportService()),
-                SharedPreferences(this), StandardScheduler(), this)
+        ReportDetailPresenter(
+            report!!,
+            ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this),
+            SharedPreferences(this),
+            StandardScheduler(),
+            this
+        )
     }
     private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, mutableListOf()) }
     private val indicatorViewHolder: OnCreateViewHolder<Indicator, IndicatorViewHolder> by lazy {
@@ -96,7 +103,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         setupView()
         presenter.attachView(this)
         presenter.loadReportData()
-        if (report?.status == ReportFragment.NOT_APPROVED_STATUS) showReportAlert()
+        if (report?.status == ReportStatus.UNAPPROVED.value) showReportAlert()
     }
 
     override fun onStart() {
@@ -209,7 +216,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     private fun showMenuOptionBasedOnReportState(menu: Menu) {
         report?.status.let {
-            if (it == ReportFragment.APPROVED_STATUS)
+            if (it ==  ReportStatus.APPROVED.value)
                 menu.apply {
                     findItem(R.id.edit).isVisible = false
                     findItem(R.id.share).isVisible = true

@@ -18,13 +18,22 @@ import java.io.File
  */
 class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), ReportDataSource {
 
-    override fun getReports(
-        page: Int?,
-        page_size: Int?,
-        theme: Int?,
-        project: Int?,
-        mapper: Int?,
-        status: Int?
+    override fun getReports(theme: Int? , project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
+        return api.getReports(createReportQuery(theme, project, mapper, status))
+            .map { it.results }
+    }
+
+    override fun saveReport(report: Report): Single<Report> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun getReports(
+        page: Int? = null,
+        page_size: Int? = null,
+        theme: Int? = null,
+        project: Int? = null,
+        mapper: Int? = null,
+        status: Int? = null
     ): Single<Response<Report>> {
 
         val reportsRequest = mutableMapOf<String, Int?>()
@@ -37,6 +46,18 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
             putIfNotNull("status", status)
         }
         return api.getReports(reportsRequest)
+    }
+
+    private fun createReportQuery(theme: Int? = null, project: Int? = null, mapper: Int? = null,
+                                  status: Int? = null): Map<String, Int?> {
+        return mutableMapOf<String, Int?>().apply {
+            putIfNotNull("page", 1)
+            putIfNotNull("page_size", 50)
+            putIfNotNull("theme", theme)
+            putIfNotNull("project", project)
+            putIfNotNull("mapper", mapper)
+            putIfNotNull("status", status)
+        }
     }
 
     override fun getReport(

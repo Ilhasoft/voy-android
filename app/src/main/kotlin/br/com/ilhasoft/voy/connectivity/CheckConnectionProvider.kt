@@ -6,5 +6,4 @@ package br.com.ilhasoft.voy.connectivity
 interface CheckConnectionProvider {
 
     fun hasConnection(): Boolean
-
 }

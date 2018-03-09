@@ -9,44 +9,47 @@ import java.util.*
 /**
  * Created by developer on 01/12/17.
  */
-data class Report(var id: Int = 0,
-                  var theme: Int = 0,
-                  var location: Location? = null,
-                  @SerializedName("can_receive_comments") var canReceiveComments: Boolean = false,
-                  var editable: Boolean = false,
-                  var visible: Boolean = false,
-                  @SerializedName("created_on") var createdOn: Date = Date(),
-                  var description: String? = "",
-                  var name: String = "",
-                  var tags: MutableList<String> = mutableListOf(),
-                  @SerializedName("theme_color") var themeColor: String = "",
-                  @SerializedName("created_by") var createdBy: User? = null,
-                  @SerializedName("last_image") var lastImage: ReportFile? = null,
-                  var status: Int = 0,
-                  var urls: MutableList<String> = mutableListOf(),
-                  var files: MutableList<ReportFile> = mutableListOf(),
-                  @SerializedName("last_notification") var lastNotification: String? = "",
-                  @Ignore var internalId: Int? = null
+data class Report(
+    var id: Int = 0,
+    var theme: Int = 0,
+    var location: Location? = null,
+    @SerializedName("can_receive_comments") var canReceiveComments: Boolean = false,
+    var editable: Boolean = false,
+    var visible: Boolean = false,
+    @SerializedName("created_on") var createdOn: Date = Date(),
+    var description: String? = "",
+    var name: String = "",
+    var tags: MutableList<String> = mutableListOf(),
+    @SerializedName("theme_color") var themeColor: String = "",
+    @SerializedName("created_by") var createdBy: User? = null,
+    @SerializedName("last_image") var lastImage: ReportFile? = null,
+    var status: Int = 0,
+    var urls: MutableList<String> = mutableListOf(),
+    var files: MutableList<ReportFile> = mutableListOf(),
+    @SerializedName("last_notification") var lastNotification: String? = "",
+    @Ignore var internalId: String? = null,
+    @Ignore var shouldSend: Boolean = true
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.readInt(),
-            source.readInt(),
-            source.readParcelable<Location>(Location::class.java.classLoader),
-            1 == source.readInt(),
-            1 == source.readInt(),
-            1 == source.readInt(),
-            source.readSerializable() as Date,
-            source.readString(),
-            source.readString(),
-            source.createStringArrayList(),
-            source.readString(),
-            source.readParcelable<User>(User::class.java.classLoader),
-            source.readParcelable<ReportFile>(ReportFile::class.java.classLoader),
-            source.readInt(),
-            source.createStringArrayList(),
-            source.createTypedArrayList(ReportFile.CREATOR),
-            source.readString(),
-            source.readValue(Int::class.java.classLoader) as Int?
+        source.readInt(),
+        source.readInt(),
+        source.readParcelable<Location>(Location::class.java.classLoader),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        source.readSerializable() as Date,
+        source.readString(),
+        source.readString(),
+        source.createStringArrayList(),
+        source.readString(),
+        source.readParcelable<User>(User::class.java.classLoader),
+        source.readParcelable<ReportFile>(ReportFile::class.java.classLoader),
+        source.readInt(),
+        source.createStringArrayList(),
+        source.createTypedArrayList(ReportFile.CREATOR),
+        source.readString(),
+        source.readString(),
+        source.readValue(Boolean::class.java.classLoader) as Boolean
     )
 
     override fun describeContents() = 0
@@ -69,7 +72,8 @@ data class Report(var id: Int = 0,
         writeStringList(urls)
         writeTypedList(files)
         writeString(lastNotification)
-        writeValue(internalId)
+        writeString(internalId)
+        writeValue(shouldSend)
     }
 
     companion object {
