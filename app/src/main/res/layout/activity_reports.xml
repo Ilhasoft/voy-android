@@ -9,6 +9,10 @@
             name="presenter"
             type="br.com.ilhasoft.voy.ui.report.ReportsPresenter" />
 
+        <variable
+            name="isLoading"
+            type="android.databinding.ObservableBoolean" />
+
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -67,6 +71,12 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="@dimen/progress_medium"
+            android:layout_height="@dimen/progress_medium"
+            android:layout_gravity="center"
+            app:isVisible="@{isLoading}"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

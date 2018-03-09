@@ -11,8 +11,11 @@ import android.view.ViewGroup
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.FragmentAddTagBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
+import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.TagDataUI
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
@@ -25,8 +28,9 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import io.realm.Realm
 
-class AddTagsFragment : BaseFragment() {
+class AddTagsFragment : BaseFragment(), CheckConnectionProvider {
 
     private val binding: FragmentAddTagBinding by lazy {
         FragmentAddTagBinding.inflate(LayoutInflater.from(context))
@@ -34,7 +38,7 @@ class AddTagsFragment : BaseFragment() {
 
     private val reportViewModel by lazy {
         val factory = ReportViewModelFactory(
-            AddReportInteractorImpl(ReportRepository(ReportService()))
+            AddReportInteractorImpl(ReportRepository(ReportService(),  ReportDbHelper(Realm.getDefaultInstance()), this))
         )
         ViewModelProviders.of(activity, factory).get(ReportViewModel::class.java)
     }
@@ -65,6 +69,8 @@ class AddTagsFragment : BaseFragment() {
         reportViewModel.setButtonEnable(true)
         reportViewModel.setButtonTitle(R.string.send_report)
     }
+
+    override fun hasConnection(): Boolean = ConnectivityManager.isConnected()
 
     private fun setupTagData(): TagDataUI {
         return TagDataUI().apply {
