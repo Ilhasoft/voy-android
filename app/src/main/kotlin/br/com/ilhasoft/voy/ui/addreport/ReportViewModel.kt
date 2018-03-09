@@ -7,7 +7,6 @@ import android.net.Uri
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.shared.extensions.toFilePath
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 
@@ -34,18 +33,18 @@ class ReportViewModel(private val addReportInteractor: AddReportInteractor) : Vi
     var name: String = ""
     var description: String? = null
     val links by lazy { mutableListOf<String>() }
-    var medias = mutableListOf<Uri>()
+    var medias = mutableListOf<String>()
     var mediasFromServer = mutableListOf<ReportFile>()
     val selectedTags by lazy { mutableListOf<String>() }
 
     var report = Report()
 
-    fun addUri(uri: Uri) {
+    fun addUri(uri: String) {
         medias.add(uri)
         setButtonEnable(medias.isNotEmpty())
     }
 
-    fun removeUri(uri: Uri) {
+    fun removeUri(uri: String) {
         medias.apply {
             remove(single { it == uri })
         }
@@ -103,19 +102,19 @@ class ReportViewModel(private val addReportInteractor: AddReportInteractor) : Vi
     fun mediasToDelete(): List<ReportFile> {
         val toDelete: MutableList<ReportFile> = mutableListOf()
         mediasFromServer.forEach {
-            if(!medias.contains(Uri.parse(it.file)))
+            if(!medias.contains(it.file))
                 toDelete.add(it)
         }
         return toDelete
     }
 
-    fun mediasToSave(): List<Uri> = medias.minus(mediasFromServer.map { Uri.parse(it.file) })
+    fun mediasToSave(): List<String> = medias.minus(mediasFromServer.map { it.file })
 
     fun setUpWithReport(report: Report) {
         this.report = report
         mediasFromServer.addAll(report.files)
         medias.clear()
-        medias.addAll(mediasFromServer.map { Uri.parse(it.file) })
+        medias.addAll(mediasFromServer.map { it.file })
         name = report.name
         description = report.description
         links.clear()

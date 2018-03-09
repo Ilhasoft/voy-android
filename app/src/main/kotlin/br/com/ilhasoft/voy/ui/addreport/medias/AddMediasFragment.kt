@@ -78,7 +78,7 @@ class AddMediasFragment :
     }
 
     override fun onClickRemove(uri: Uri) {
-        reportViewModel.removeUri(uri)
+        reportViewModel.removeUri(uri.toString())
     }
 
     private fun getMedia() {
@@ -109,7 +109,7 @@ class AddMediasFragment :
 
     private fun onNewPhoto(uri: Uri) {
         imageViewSelected?.setMediaFromUri(uri)
-        reportViewModel.addUri(uri)
+        reportViewModel.addUri(uri.toString())
     }
 
 }

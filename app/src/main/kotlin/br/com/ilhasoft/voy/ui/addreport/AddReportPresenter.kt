@@ -103,72 +103,74 @@ class AddReportPresenter(
 
     private fun saveReport() = with(reportViewModel) {
         Flowable.fromIterable(medias)
-            .subscribeOn(Schedulers.io())
-            .flatMap {
-                val file = getFile(it)
-                if (FileHelper.imageTypes.contains(getMimeType(it)))
-                    FileCompressor.compressPicture(file, 1280, 720, 80)
-                else
-                    FileCompressor.compressVideo(file)
-            }
-            .toList()
-            .flatMapObservable {
-                reportInteractor.saveReport(
-                    report.internalId,
-                    ThemeData.themeId,
-                    userLocation,
-                    description,
-                    name,
-                    selectedTags,
-                    it,
-                    links
-                )
-            }
-            .doOnSubscribe { view.showLoading() }
-            .doOnTerminate { view.dismissLoading() }
-            .doOnComplete { view.navigateToThanks() }
-            .subscribe({
-                reportViewModel.report = it
-            }, {
-                Timber.e(it)
-            })
+                .subscribeOn(Schedulers.io())
+                .map { Uri.parse(it) }
+                .flatMap {
+                    val file = getFile(it)
+                    if (FileHelper.imageTypes.contains(getMimeType(it)))
+                        FileCompressor.compressPicture(file, 1280, 720, 80)
+                    else
+                        FileCompressor.compressVideo(file)
+                }
+                .toList()
+                .flatMapObservable {
+                    reportInteractor.saveReport(
+                            report.internalId,
+                            ThemeData.themeId,
+                            userLocation,
+                            description,
+                            name,
+                            selectedTags,
+                            it,
+                            links
+                    )
+                }
+                .doOnSubscribe { view.showLoading() }
+                .doOnTerminate { view.dismissLoading() }
+                .doOnComplete { view.navigateToThanks() }
+                .subscribe({
+                    reportViewModel.report = it
+                }, {
+                    Timber.e(it)
+                })
     }
 
     private fun updateReport() = with(reportViewModel) {
         val mediasToSave = mediasToSave()
         Flowable.fromIterable(mediasToSave)
-            .subscribeOn(Schedulers.io())
-            .flatMap {
-                val file = getFile(it)
-                if (FileHelper.imageTypes.contains(getMimeType(it)))
-                    FileCompressor.compressPicture(file, 1280, 720, 80)
-                else
-                    FileCompressor.compressVideo(file)
-            }
-            .toList()
-            .flatMapObservable {
-                reportInteractor.updateReport(
-                    report.internalId,
-                    report.id,
-                    ThemeData.themeId,
-                    report.location!!,
-                    description,
-                    name,
-                    selectedTags,
-                    links,
-                    medias.map { it.toString() },
-                    it,
-                    mediasToDelete()
-                )
-            }
-            .doOnSubscribe { view.showLoading() }
-            .doAfterTerminate { view.dismissLoading() }
-            .doOnComplete { view.navigateToThanks() }
-            .subscribe({
-                reportViewModel.report = it
-            }, {
-                Timber.e(it)
-            })
+                .subscribeOn(Schedulers.io())
+                .map { Uri.parse(it) }
+                .flatMap {
+                    val file = getFile(it)
+                    if (FileHelper.imageTypes.contains(getMimeType(it)))
+                        FileCompressor.compressPicture(file, 1280, 720, 80)
+                    else
+                        FileCompressor.compressVideo(file)
+                }
+                .toList()
+                .flatMapObservable {
+                    reportInteractor.updateReport(
+                            report.internalId,
+                            report.id,
+                            ThemeData.themeId,
+                            report.location!!,
+                            description,
+                            name,
+                            selectedTags,
+                            links,
+                            medias.map { it.toString() },
+                            it,
+                            mediasToDelete()
+                    )
+                }
+                .doOnSubscribe { view.showLoading() }
+                .doAfterTerminate { view.dismissLoading() }
+                .doOnComplete { view.navigateToThanks() }
+                .subscribe({
+                    reportViewModel.report = it
+                }, {
+                    Timber.e(it)
+                })
     }
 
     private fun getFile(uri: Uri) = view.getFileFromUri(uri)
