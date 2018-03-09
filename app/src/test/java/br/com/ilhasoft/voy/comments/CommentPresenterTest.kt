@@ -18,6 +18,7 @@ import br.com.ilhasoft.voy.ui.comment.CommentsUIMapper
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -238,6 +239,14 @@ class CommentPresenterTest {
         verify(view, times(1)).showLoading()
         verify(view, times(1)).showMessage(R.string.login_network_error)
         verify(view, times(1)).dismissLoading()
+    }
+
+    @Test
+    fun shouldAssertThatIdIsMineWhenUseID1() {
+        `when`(preferences.contains(User.ID)).thenReturn(true)
+        `when`(preferences.getInt(User.ID)).thenReturn(1)
+
+        assertEquals(presenter.isMyID(1), true)
     }
 
     private fun getCommentsRef(reportId: Int) = dataSource.getComments(reportId)
