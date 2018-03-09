@@ -3,34 +3,31 @@ package br.com.ilhasoft.voy.ui.report.detail
 import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
-import br.com.ilhasoft.voy.connectivity.ConnectivityManager
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Indicator
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportRepository
-import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselFragment
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class ReportDetailPresenter(
-    private val report: Report,
-    private val preferences: Preferences,
-    private val reportRepository: ReportRepository
-) : Presenter<ReportDetailContract>(ReportDetailContract::class.java) {
+        private val report: Report,
+        private val reportRepository: ReportRepository,
+        private val preferences: Preferences,
+        private val scheduler: BaseScheduler,
+        private val connectionProvider: CheckConnectionProvider)
+    : Presenter<ReportDetailContract>(ReportDetailContract::class.java) {
 
     var indicator = Indicator(Uri.EMPTY, true)
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
-    override fun attachView(view: ReportDetailContract?) {
-        super.attachView(view)
-        loadReportData()
-    }
 
     override fun detachView() {
         compositeDisposable.clear()
@@ -39,10 +36,6 @@ class ReportDetailPresenter(
 
     fun onClickNavigateBack() {
         view.navigateBack()
-    }
-
-    fun onClickReportAlert() {
-        view.showReportAlert()
     }
 
     fun onClickPopupMenu() {
@@ -57,33 +50,32 @@ class ReportDetailPresenter(
         view.swapPage(indicator)
     }
 
-    private fun loadReportData() {
-
-        val getReportFlow: Single<Report> = if (ConnectivityManager.isConnected()) {
+    fun loadReportData() {
+        val getReportFlow: Single<Report> = if (connectionProvider.hasConnection()) {
             reportRepository.getReport(
-                id = report.id, theme = report.theme,
-                mapper = preferences.getInt(User.ID), status = report.status
-            ).fromIoToMainThread()
+                    id = report.id, theme = report.theme,
+                    mapper = preferences.getInt(User.ID), status = report.status
+            ).fromIoToMainThread(scheduler)
         } else {
             Single.just(report).onMainThread()
         }
 
         compositeDisposable.add(
-            getReportFlow
-                .doOnSubscribe { view.showLoading() }
-                .doAfterTerminate { view.dismissLoading() }
-                .doOnSuccess { view.showReportData(it) }
-                .doOnSuccess { view.populateIndicator(getIndicators(it)) }
-                .subscribe(
-                    {
-                        view.populateCarousel(getCarouselItems(it))
-                    },
-                    {
-                        ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
-                            view.showMessage(msg)
-                        }
-                    }
-                )
+                getReportFlow
+                        .doOnSubscribe { view.showLoading() }
+                        .doAfterTerminate { view.dismissLoading() }
+                        .doOnSuccess { view.showReportData(it) }
+                        .doOnSuccess { view.populateIndicator(getIndicators(it)) }
+                        .subscribe(
+                                {
+                                    view.populateCarousel(getCarouselItems(it))
+                                },
+                                {
+                                    ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                                        view.showMessage(msg)
+                                    }
+                                }
+                        )
         )
     }
 

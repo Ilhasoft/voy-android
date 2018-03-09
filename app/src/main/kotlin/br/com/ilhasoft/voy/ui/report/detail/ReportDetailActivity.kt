@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
@@ -23,17 +22,15 @@ import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
 import br.com.ilhasoft.voy.databinding.ItemIndicatorBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
-import br.com.ilhasoft.voy.db.report.ReportDbHelper
-import br.com.ilhasoft.voy.models.Indicator
-import br.com.ilhasoft.voy.models.Report
-import br.com.ilhasoft.voy.models.SharedPreferences
-import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.models.TagDataUI
+import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.shared.widget.WrapContentViewPager
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
@@ -48,7 +45,8 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
 class ReportDetailActivity : BaseActivity(), ReportDetailContract,
-        PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
+        PopupMenu.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
+        CheckConnectionProvider {
 
     companion object {
         private const val EXTRA_REPORT = "extraReport"
@@ -64,11 +62,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         DataBindingUtil.setContentView<ActivityReportDetailBinding>(this, R.layout.activity_report_detail)
     }
     private val presenter: ReportDetailPresenter by lazy {
-        ReportDetailPresenter(
-            report!!,
-            SharedPreferences(this),
-            ReportRepository(ReportService())
-        )
+        ReportDetailPresenter(report!!, ReportRepository(ReportService()),
+                SharedPreferences(this), StandardScheduler(), this)
     }
     private val carouselAdapter by lazy { CarouselAdapter(supportFragmentManager, mutableListOf()) }
     private val indicatorViewHolder: OnCreateViewHolder<Indicator, IndicatorViewHolder> by lazy {
@@ -100,6 +95,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
+        presenter.loadReportData()
         if (report?.status == ReportFragment.NOT_APPROVED_STATUS) showReportAlert()
     }
 
@@ -189,6 +185,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         presenter.indicator = indicatorAdapter[position]
         indicatorAdapter.notifyDataSetChanged()
     }
+
+    override fun hasConnection(): Boolean = ConnectivityManager.isConnected()
 
     private fun setupView() {
         binding.presenter = this@ReportDetailActivity.presenter
