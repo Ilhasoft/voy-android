@@ -14,6 +14,7 @@ import br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.ResponseBody
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -26,8 +27,13 @@ import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 
-/** Create tests for getCarouselItems and getIndicators methods, but pay attention
- * because this methods depends on Android Framework.
+/** Create missing tests below for code coverage:
+ *
+ *  getCarouselItems
+ *  getIndicators
+ *  checkDetachView
+ *
+ *  But pay attention, because this methods depends on Android Framework.
  */
 class ReportDetailPresentTest {
 
@@ -55,6 +61,11 @@ class ReportDetailPresentTest {
         presenter = ReportDetailPresenter(mockedReport, ReportRepository(dataSource),
                 preferences, ImmediateScheduler(), connectionProvider)
         presenter.attachView(view)
+    }
+
+    @After
+    fun finishing() {
+        presenter.detachView()
     }
 
     @Test
