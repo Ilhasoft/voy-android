@@ -26,6 +26,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
             '**/*Service**',
             '**/*UIModel**',
             '**/*DbModel**',
+            '**/*DbHelper**',
             '**/*ViewHolder**',
             '**/*Activity**',
             '**/*Fragment**',

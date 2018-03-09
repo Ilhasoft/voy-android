@@ -8,7 +8,6 @@ import io.reactivex.Scheduler
 interface BaseScheduler {
 
     fun io(): Scheduler
-
     fun ui(): Scheduler
-
+    fun computation(): Scheduler
 }

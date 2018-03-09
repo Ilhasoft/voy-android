@@ -9,7 +9,6 @@ import io.reactivex.schedulers.Schedulers
 class ImmediateScheduler : BaseScheduler {
 
     override fun io(): Scheduler = Schedulers.trampoline()
-
     override fun ui(): Scheduler = Schedulers.trampoline()
-
+    override fun computation(): Scheduler = Schedulers.trampoline()
 }

@@ -46,7 +46,7 @@ class LoginPresenter(
                         if (it != null && it.isMapper)
                             view.showMessage(R.string.login_success)
                     }
-                    .delay(1, TimeUnit.SECONDS)
+                    .delay(800, TimeUnit.MILLISECONDS, scheduler.computation())
                     .observeOn(scheduler.ui())
                     .subscribe({
                         if (it != null && it.isMapper) {
