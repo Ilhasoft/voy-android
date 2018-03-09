@@ -13,6 +13,7 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.realm.Realm
 import java.io.File
 
 /**
@@ -20,12 +21,12 @@ import java.io.File
  */
 class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddReportInteractor {
 
-    private val reportDbHelper by lazy { ReportDbHelper() }
+    private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance()) }
 
     private val themeDbHelper by lazy { ThemeDbHelper() }
 
     override fun saveReport(
-        reportInternalId: Int?,
+        reportInternalId: String?,
         theme: Int,
         location: Location,
         description: String?,
@@ -44,7 +45,6 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             urls,
             medias.map { it.absolutePath }
         )
-            .onMainThread()
             .observeOn(Schedulers.io())
             .flatMapObservable {
                 if (ConnectivityManager.isConnected()) {
@@ -59,7 +59,7 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
     }
 
     override fun updateReport(
-        reportInternalId: Int?,
+        reportInternalId: String?,
         reportId: Int,
         theme: Int,
         location: Location,
@@ -118,7 +118,7 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
         urls: List<String>?,
         newFiles: List<File>?,
         filesToDelete: List<Int>?,
-        reportInternalId: Int
+        reportInternalId: String
     ): Observable<Report>? {
         return reportRepository.updateReport(
             reportId,

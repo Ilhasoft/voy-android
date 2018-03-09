@@ -12,14 +12,8 @@ import java.io.File
  */
 interface ReportDataSource {
 
-    fun getReports(
-        page: Int? = null,
-        page_size: Int? = null,
-        theme: Int? = null,
-        project: Int? = null,
-        mapper: Int? = null,
-        status: Int? = null
-    ): Single<Response<Report>>
+    fun getReports(theme: Int? = null, project: Int? = null,
+                   mapper: Int? = null, status: Int? = null): Single<List<Report>>
 
     fun getReport(
         id: Int,
@@ -28,6 +22,8 @@ interface ReportDataSource {
         mapper: Int? = null,
         status: Int? = null
     ): Single<Report>
+
+    fun saveReport(report: Report): Single<Report>
 
     fun saveReport(
         theme: Int, location: Location, description: String?, name: String,

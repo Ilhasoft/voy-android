@@ -1,8 +1,10 @@
 package br.com.ilhasoft.voy.network.reports
 
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.File
@@ -10,18 +12,31 @@ import java.io.File
 /**
  * Created by erickjones on 06/03/18.
  */
-class ReportRepository(private val remoteReportDataSource: ReportDataSource) : ReportDataSource {
+class ReportRepository(
+    private val remoteReportDataSource: ReportDataSource,
+    private val localDataSource: ReportDataSource,
+    private val connectionProvider: CheckConnectionProvider
+) : ReportDataSource {
 
+    override fun getReports(theme: Int?, project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
+        return if (connectionProvider.hasConnection()) {
+            remoteReportDataSource.getReports(theme, project, mapper, status)
+                .flatMap { saveOnCache(it) }
+        } else {
+            localDataSource.getReports(theme, project, mapper, status)
+        }
+    }
 
-    override fun getReports(
-        page: Int?,
-        page_size: Int?,
-        theme: Int?,
-        project: Int?,
-        mapper: Int?,
-        status: Int?
-    ): Single<Response<Report>> =
-        remoteReportDataSource.getReports(page, page_size, theme, project, mapper, status)
+    // TODO real implementation
+    override fun saveReport(report: Report): Single<Report> = Single.just(report)
+
+    private fun saveOnCache(reports: List<Report>): Single<List<Report>> {
+        return Flowable.just(reports)
+            .flatMap { Flowable.fromIterable(it) }
+            .map { it.copy(shouldSend = false) }
+            .flatMapSingle { localDataSource.saveReport(it) }
+            .toList()
+    }
 
     override fun getReport(
         id: Int,

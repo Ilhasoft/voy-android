@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.report
 
 import android.accounts.NetworkErrorException
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.extensions.emitSingleError
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
@@ -28,12 +29,14 @@ class ReportDataTest {
 
     @Mock
     lateinit var reportService: ReportDataSource
+    @Mock
+    lateinit var reportDbHelper: ReportDataSource
+    @Mock
+    lateinit var connectionProvider: CheckConnectionProvider
 
     lateinit var reportRepository: ReportRepository
 
     private val mockReportId = 1
-    private val mockPage = 1
-    private val mockPageSize = 50
     private val mockTheme = 1
     private val mockProject = 1
     private val mockMapper = 1
@@ -57,31 +60,28 @@ class ReportDataTest {
     lateinit var mockReponse: Response<Report>
     lateinit var mockReport: Report
 
-
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        reportRepository = ReportRepository(reportService)
+        reportRepository = ReportRepository(reportService, reportDbHelper, connectionProvider)
         mockReponse = createMockResponse()
         mockReport = createMockReport()
     }
 
     @Test
     fun `should return a valid report response`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+
         `when`(
             reportService.getReports(
-                mockPage,
-                mockPageSize,
                 mockTheme,
                 mockProject,
                 mockMapper,
                 mockStatus
             )
-        ).thenReturn(Single.just(mockReponse))
+        ).thenReturn(Single.just(mockReponse.results))
 
         reportRepository.getReports(
-            mockPage,
-            mockPageSize,
             mockTheme,
             mockProject,
             mockMapper,
@@ -90,16 +90,15 @@ class ReportDataTest {
             .test()
             .assertSubscribed()
             .assertNoErrors()
-            .assertValue { it == mockReponse }
-
+            .assertValue { it == mockReponse.results }
     }
 
     @Test
     fun `should not return reports when there is no internet connection`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+
         `when`(
             reportService.getReports(
-                mockPage,
-                mockPageSize,
                 mockTheme,
                 mockProject,
                 mockMapper,
@@ -108,8 +107,6 @@ class ReportDataTest {
         ).thenReturn(Single.error(UnknownHostException()))
 
         reportRepository.getReports(
-            mockPage,
-            mockPageSize,
             mockTheme,
             mockProject,
             mockMapper,
@@ -122,10 +119,10 @@ class ReportDataTest {
 
     @Test
     fun `should not return reports when there is no server answer`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+
         `when`(
             reportService.getReports(
-                mockPage,
-                mockPageSize,
                 mockTheme,
                 mockProject,
                 mockMapper,
@@ -134,8 +131,6 @@ class ReportDataTest {
         ).thenReturn(Single.error(TimeoutException()))
 
         reportRepository.getReports(
-            mockPage,
-            mockPageSize,
             mockTheme,
             mockProject,
             mockMapper,
@@ -148,10 +143,10 @@ class ReportDataTest {
 
     @Test
     fun `should not return reports when a bad request happens`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+
         `when`(
             reportService.getReports(
-                mockPage,
-                mockPageSize,
                 mockTheme,
                 mockProject,
                 mockMapper,
@@ -160,8 +155,6 @@ class ReportDataTest {
         ).thenReturn(Single.error(NetworkErrorException()))
 
         reportRepository.getReports(
-            mockPage,
-            mockPageSize,
             mockTheme,
             mockProject,
             mockMapper,

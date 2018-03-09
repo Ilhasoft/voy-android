@@ -1,5 +1,8 @@
 package br.com.ilhasoft.voy.ui.report.fragment
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.databinding.ObservableBoolean
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,10 +18,10 @@ import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
-import br.com.ilhasoft.voy.network.reports.ReportRepository
-import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
+import br.com.ilhasoft.voy.ui.report.ReportStatus
+import br.com.ilhasoft.voy.ui.report.ReportViewModel
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
@@ -26,9 +29,6 @@ class ReportFragment : BaseFragment(), ReportContract {
 
     companion object {
         private const val EXTRA_STATUS = "status"
-        const val APPROVED_STATUS = 1
-        const val PENDING_STATUS = 2
-        const val NOT_APPROVED_STATUS = 3
 
         @JvmStatic
         fun newInstance(status: Int): ReportFragment {
@@ -44,19 +44,16 @@ class ReportFragment : BaseFragment(), ReportContract {
         }
     }
 
-    private val binding: FragmentReportsBinding by lazy {
-        FragmentReportsBinding.inflate(LayoutInflater.from(context))
-    }
-    private val presenter: ReportPresenter by lazy {
-        ReportPresenter(
-            SharedPreferences(context),
-            ReportInteractorImpl(status, ReportRepository(ReportService()))
-        )
-    }
+    private lateinit var binding: FragmentReportsBinding
+    private lateinit var presenter: ReportPresenter
+    private lateinit var viewModel: ReportViewModel
+    private val itemsQuantityObserver = ObservableBoolean(false)
+    private val emptyStateObserver = ObservableBoolean(false)
+
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
-                    presenter)
+                presenter)
         }
     }
     private val reportsAdapter: AutoRecyclerAdapter<Report, ReportViewHolder> by lazy {
@@ -68,23 +65,17 @@ class ReportFragment : BaseFragment(), ReportContract {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        setupView()
+        binding = FragmentReportsBinding.inflate(inflater!!, container, false)
+        presenter = ReportPresenter(SharedPreferences(context))
+        viewModel = ViewModelProviders.of(activity).get(ReportViewModel::class.java)
         return binding.root
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView(binding)
+        loadReports()
         presenter.attachView(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.start()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.stop()
     }
 
     override fun onDestroy() {
@@ -92,72 +83,96 @@ class ReportFragment : BaseFragment(), ReportContract {
         presenter.detachView()
     }
 
-    override fun getStatus(): Int? = status
-
-    override fun fillReportsAdapter(reports: List<Report>) {
-        reports.let {
-            binding.noReports = it.isNotEmpty().not()
-            if (it.isNotEmpty()) {
-                binding.reportsQuantity = it.size
-                reportsAdapter.addAll(it)
-                reportsAdapter.notifyDataSetChanged()
-            } else {
-                binding.run {
-                    greetings = getGreetings(status)
-                    createReportTip = getGreetingsTip(status)
-                }
-            }
-        }
-    }
-
     //TODO pass projectID to query
     override fun navigateToReportDetail(report: Report) {
         startActivity(ReportDetailActivity.createIntent(context, report))
     }
 
-    private fun setupView() {
-        binding.run {
-            setupRecyclerView(reports)
-            presenter = this@ReportFragment.presenter
-            val position = presenter!!.getAvatarPositionFromPreferences()
+    private fun setupView(binding: FragmentReportsBinding) = with(binding) {
+        isBiggerThenZero = this@ReportFragment.itemsQuantityObserver
+        isEmptyState = this@ReportFragment.emptyStateObserver
+        setupRecyclerView(reports)
+        this.presenter = this@ReportFragment.presenter
+        presenter?.let {
+            val position = it.getAvatarPositionFromPreferences()
             drawableResId = ResourcesHelper.getAvatarsResources(activity)[position]
         }
     }
 
-    private fun getGreetings(status: Int): String {
-        status.let {
-            return when (it) {
-                APPROVED_STATUS -> getString(R.string.approved_greetings)
-                PENDING_STATUS -> getString(R.string.pending_greetings)
-                else -> getString(R.string.rejected_greetings)
-            }
+    private fun checkGreetings() {
+        emptyStateObserver.set(reportsAdapter.itemCount <= 0)
+        binding.run {
+            greetings = getGreetings(status)
+            createReportTip = getGreetingsTip(status)
+            quantity = getQuantityMessage(reportsAdapter.itemCount, status)
         }
+        itemsQuantityObserver.set(reportsAdapter.itemCount > 0)
     }
 
-    private fun getGreetingsTip(status: Int): String {
-        status.let {
-            return when (it) {
-                APPROVED_STATUS -> getString(R.string.approved_greetings_tip)
-                PENDING_STATUS -> getString(R.string.pending_greetings_tip)
-                else -> getString(R.string.rejected_greetings_tip)
-            }
-        }
+    private fun getGreetings(status: Int): String = when (getReportStatus(status)) {
+        ReportStatus.APPROVED -> getString(R.string.approved_greetings)
+        ReportStatus.PENDING -> getString(R.string.pending_greetings)
+        else -> getString(R.string.rejected_greetings)
+    }
+
+    private fun getGreetingsTip(status: Int): String = when (getReportStatus(status)) {
+        ReportStatus.APPROVED -> getString(R.string.approved_greetings_tip)
+        ReportStatus.PENDING -> getString(R.string.pending_greetings_tip)
+        else -> getString(R.string.rejected_greetings_tip)
+    }
+
+    private fun getQuantityMessage(qtd: Int, status: Int): String =  when (getReportStatus(status)) {
+        ReportStatus.APPROVED ->
+            getString(
+                R.string.reports_quantity,
+                qtd,
+                getString(R.string.approved_fragment_title).toLowerCase()
+            )
+        ReportStatus.PENDING ->
+            getString(
+                R.string.reports_quantity,
+                qtd,
+                getString(R.string.pending_fragment_title).toLowerCase()
+            )
+        else ->
+            getString(
+                R.string.reports_quantity,
+                qtd,
+                getString(R.string.not_approved_fragment_title).toLowerCase()
+            )
     }
 
     private fun setupRecyclerView(reports: RecyclerView) = with(reports) {
-        layoutManager = setupLayoutManager()
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         addItemDecoration(setupItemDecoration())
         setHasFixedSize(true)
         adapter = reportsAdapter
     }
 
-    private fun setupLayoutManager(): RecyclerView.LayoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    private fun setupItemDecoration(): LinearSpaceItemDecoration =
+        LinearSpaceItemDecoration(LinearLayoutManager.VERTICAL).apply {
+            space = DimensionHelper.toPx(context, 12f)
+        }
 
-    private fun setupItemDecoration(): LinearSpaceItemDecoration {
-        val itemDecoration = LinearSpaceItemDecoration(LinearLayoutManager.VERTICAL)
-        itemDecoration.space = DimensionHelper.toPx(context, 12f)
-        return itemDecoration
+    private fun loadReports() {
+        viewModel.getReports(getReportStatus(status))
+            .observe(activity, Observer<List<Report>> { reports ->
+                reports?.let { fillReportsAdapter(it) }
+            })
     }
 
+    private fun getReportStatus(status: Int): ReportStatus = when(status) {
+        ReportStatus.APPROVED.value -> ReportStatus.APPROVED
+        ReportStatus.PENDING.value -> ReportStatus.PENDING
+        else -> ReportStatus.UNAPPROVED
+    }
+
+    private fun fillReportsAdapter(reports: List<Report>) {
+        if (reports.isNotEmpty()) {
+            binding.reportsQuantity = reports.size
+            reportsAdapter.addAll(reports)
+        }
+
+        checkGreetings()
+    }
 }
