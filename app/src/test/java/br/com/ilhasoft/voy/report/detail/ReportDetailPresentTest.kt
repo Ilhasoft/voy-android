@@ -16,8 +16,8 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import java.util.*
 
-/**
- * Created by developer on 08/03/18.
+/** Create tests for getCarouselItems and getIndicators methods, but pay attention
+ * because this methods depends on Android Framework.
  */
 class ReportDetailPresentTest {
 
@@ -79,6 +79,27 @@ class ReportDetailPresentTest {
     fun shouldLoadReportWithConnection() {
         `when`(connectionProvider.hasConnection())
                 .thenReturn(true)
+
+        `when`(preferences.getInt(User.ID))
+                .thenReturn(1)
+
+        `when`(dataSource.getReport(id = mockedReport.id, theme = mockedReport.theme,
+                mapper = preferences.getInt(User.ID), status = mockedReport.status))
+                .thenReturn(Single.just(mockedReport))
+
+        presenter.loadReportData()
+
+        verify(view).showLoading()
+        verify(view).populateCarousel(presenter.getCarouselItems(mockedReport))
+        verify(view).populateIndicator(presenter.getIndicators(mockedReport))
+        verify(view).showReportData(mockedReport)
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun shouldLoadReportWithoutConnection() {
+        `when`(connectionProvider.hasConnection())
+                .thenReturn(false)
 
         `when`(preferences.getInt(User.ID))
                 .thenReturn(1)
