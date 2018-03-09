@@ -90,6 +90,14 @@ fun <T> Single<T>.onMainThread(): Single<T> {
     }
 }
 
+fun <T> Single<T>.onMainThread(baseScheduler: BaseScheduler): Single<T> {
+    return compose { upstream ->
+        upstream
+                .subscribeOn(baseScheduler.ui())
+                .observeOn(baseScheduler.ui())
+    }
+}
+
 fun <T> Single<T>.loadControl(loadView: LoadView): Single<T> {
     return compose { upstream ->
         upstream
