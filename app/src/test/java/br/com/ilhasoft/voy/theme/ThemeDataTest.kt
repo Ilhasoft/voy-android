@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.theme
 
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.themes.ThemeDataSource
 import br.com.ilhasoft.voy.network.themes.ThemeRepository
@@ -18,7 +19,11 @@ import java.util.concurrent.TimeoutException
 class ThemeDataTest {
 
     @Mock
-    lateinit var themeService: ThemeDataSource
+    lateinit var themeRemoteDataSource: ThemeDataSource
+    @Mock
+    lateinit var themeLocalDataSource: ThemeDataSource
+    @Mock
+    lateinit var connectionProvider: CheckConnectionProvider
 
     lateinit var themeRepository: ThemeRepository
 
@@ -34,12 +39,12 @@ class ThemeDataTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        themeRepository = ThemeRepository(themeService)
+        themeRepository = ThemeRepository(themeRemoteDataSource, themeLocalDataSource, connectionProvider)
     }
 
     @Test
     fun shouldReturnThemes() {
-        `when`(themeService.getThemes()).thenReturn(Flowable.just(mutableListOf<Theme>()))
+        `when`(themeRemoteDataSource.getThemes()).thenReturn(Flowable.just(mutableListOf<Theme>()))
 
         themeRepository.getThemes()
                 .test()
@@ -50,7 +55,7 @@ class ThemeDataTest {
 
     @Test
     fun shouldReturnThemeById() {
-        `when`(themeService.getTheme(mockThemeObject.id)).thenReturn(Single.just(mockThemeObject))
+        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id)).thenReturn(Single.just(mockThemeObject))
 
          themeRepository.getTheme(mockThemeObject.id)
                 .test()
@@ -62,7 +67,7 @@ class ThemeDataTest {
 
     @Test
     fun shouldNotReturnThemesTimeoutConnection() {
-        `when`(themeService.getThemes())
+        `when`(themeRemoteDataSource.getThemes())
                 .thenReturn(Flowable.error(TimeoutException()))
 
         themeRepository.getThemes()
@@ -73,7 +78,7 @@ class ThemeDataTest {
 
     @Test
     fun shouldNotReturnThemeTimeoutConnection() {
-        `when`(themeService.getTheme(mockThemeObject.id))
+        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id))
                 .thenReturn(Single.error(TimeoutException()))
 
         themeRepository.getTheme(mockThemeObject.id)

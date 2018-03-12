@@ -13,7 +13,7 @@ import retrofit2.http.QueryMap
 interface ThemeApi {
 
     @GET("/api/themes/")
-    fun getThemes(@QueryMap parameters: Map<String, Int?>): Flowable<MutableList<Theme>>
+    fun getThemes(@QueryMap parameters: Map<String, Int?>): Flowable<List<Theme>>
 
     @GET("/api/themes/{id}/")
     fun getTheme(@Path("id") themeId: Int,

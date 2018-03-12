@@ -9,12 +9,15 @@ import io.reactivex.Single
  */
 interface ThemeDataSource {
 
-    fun getThemes(project: Int? = null,
-                  user: Int? = null): Flowable<MutableList<Theme>>
+    fun getThemes(project: Int? = null, user: Int? = null): Flowable<List<Theme>>
 
-    fun getTheme(themeId: Int,
-                 project: Int? = null,
-                 yearStart: Int? = null,
-                 yearEnd: Int? = null,
-                 user: Int? = null): Single<Theme>
+    fun getTheme(
+        themeId: Int,
+        project: Int? = null,
+        yearStart: Int? = null,
+        yearEnd: Int? = null,
+        user: Int? = null
+    ): Single<Theme>
+
+    fun saveThemes(themes: List<Theme>): Flowable<MutableList<Theme>>
 }
