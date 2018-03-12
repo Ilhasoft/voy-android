@@ -10,5 +10,5 @@ import java.util.*
  */
 fun Date?.format(pattern: String): String {
     val formatter = SimpleDateFormat(pattern, Locale.getDefault())
-    return this?.let { formatter.format(it) } ?: ""
+    return this?.let { formatter.format(it).capitalize() } ?: ""
 }

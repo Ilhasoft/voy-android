@@ -32,13 +32,23 @@ class CommentsUIMapperTest {
     }
 
     private fun createCommentsData(isUsername: Boolean): List<ReportComment> = listOf(
-        if (isUsername) ReportComment(1, "body", createFakeUser(), createFakeDate(), createFakeDate(), 1)
-        else ReportComment(1, "body", createFakeFullUser(), createFakeDate(), createFakeDate(), 1)
+        if (isUsername) {
+            ReportComment(1, "body", createFakeUser(),
+                createFakeDate(), createFakeDate(), 1)
+        } else {
+            ReportComment(1, "body", createFakeFullUser(), createFakeDate(),
+                createFakeDate(), 1)
+        }
     )
 
     private fun createCommentsUI(isUsername: Boolean): List<CommentUIModel> = listOf(
-        if (isUsername) CommentUIModel(1, 1, 1, "username", "body", "Jan 01, 2018", "avatar")
-        else CommentUIModel(1, 1, 1, "Jake Wharton", "body", "Jan 01, 2018", "avatar")
+        if (isUsername) {
+            CommentUIModel(1, 1, 1, "username",
+                "body", "Jan 01, 2018", "avatar")
+        } else {
+            CommentUIModel(1, 1, 1, "Jake Wharton",
+                "body", "Jan 01, 2018", "avatar")
+        }
     )
 
     private fun createFakeUser(): User {
@@ -46,7 +56,11 @@ class CommentsUIMapperTest {
     }
 
     private fun createFakeFullUser(): User {
-        return User(1, "Jake", "Wharton", "portuguese", "avatar", "username", "email", true, true, "password")
+        return User(
+            1, "Jake", "Wharton", "portuguese",
+            "avatar", "username", "email", true, true,
+            "password"
+        )
     }
 
     private fun createFakeDate(): Date {
