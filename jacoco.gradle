@@ -29,6 +29,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
             '**/*DbHelper**',
             '**/*ViewHolder**',
             '**/*NavigationItem**',
+            '**/*CarouselItem**',
             '**/*Activity**',
             '**/*Fragment**',
             '**/*Adapter**',
