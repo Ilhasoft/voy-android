@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by developer on 05/01/18.
  */
-data class ReportFile(val id: Int = 0,
+data class ReportFile(@SerializedName("id") val id: Int = 0,
                       val title: String = "",
                       val description: String = "",
                       @SerializedName("media_type") val mediaType: String = "",

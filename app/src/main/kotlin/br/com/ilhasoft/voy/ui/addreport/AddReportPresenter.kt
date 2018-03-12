@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.ui.addreport
 
 import android.net.Uri
+import android.util.Log
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.support.rxgraphics.FileCompressor
 import br.com.ilhasoft.voy.R
@@ -150,9 +151,10 @@ class AddReportPresenter(
                     else
                         FileCompressor.compressVideo(file)
                 }
-                .toList()
-                .flatMapObservable {
-                    reportInteractor.updateReport(
+            .toList()
+            .onMainThread()
+            .flatMapObservable {
+                reportInteractor.updateReport(
                             report.internalId,
                             report.id,
                             ThemeData.themeId,
@@ -173,6 +175,7 @@ class AddReportPresenter(
                     reportViewModel.report = it
                 }, {
                     Timber.e(it)
+                    Log.e("TAG", it.message)
                 })
     }
 

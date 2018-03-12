@@ -35,4 +35,7 @@ interface ReportsApi {
 
     @DELETE("/api/report-files/{id}/")
     fun deleteFile(@Path("id") id: Int): Completable
+
+    @POST("/api/report-files/delete/")
+    fun deleteFiles(@Body body: ReportDeleteRequest): Completable
 }
