@@ -51,10 +51,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
             "**/br/com/ilhasoft/voy/models/*",
             "**/br/com/ilhasoft/voy/shared/*",
             "**/br/com/ilhasoft/voy/ui/shared/*",
-            "**/br/com/ilhasoft/voy/ui/base/*",
-            "**/br/com/ilhasoft/voy/network/urls/*",
-            "**/br/com/ilhasoft/voy/network/interceptors/*",
-            "**/br/com/ilhasoft/voy/network/authorization/*"
+            "**/br/com/ilhasoft/voy/ui/base/*"
     ]
     def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/kotlin"
