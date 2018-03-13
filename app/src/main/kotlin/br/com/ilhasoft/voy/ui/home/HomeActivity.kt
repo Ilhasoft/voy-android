@@ -18,6 +18,7 @@ import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
 import br.com.ilhasoft.voy.databinding.ItemMapBinding
 import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
 import br.com.ilhasoft.voy.databinding.ItemThemeBinding
+import br.com.ilhasoft.voy.db.project.ProjectDbHelper
 import br.com.ilhasoft.voy.db.theme.ThemeDbHelper
 import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
@@ -38,6 +39,7 @@ import br.com.ilhasoft.voy.ui.home.holder.ProjectViewHolder
 import br.com.ilhasoft.voy.ui.home.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
+import io.realm.Realm
 
 class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
 
@@ -62,8 +64,8 @@ class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
         HomePresenter(
             SharedPreferences(this),
             HomeInteractorImpl(
-                ThemeRepository(ThemeService(), ThemeDbHelper(), this),
-                ProjectRepository(ProjectService()),
+                ThemeRepository(ThemeService(), ThemeDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
+                ProjectRepository(ProjectService(), ProjectDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
                 NotificationRepository(NotificationService()),
                 StandardScheduler()
             ),

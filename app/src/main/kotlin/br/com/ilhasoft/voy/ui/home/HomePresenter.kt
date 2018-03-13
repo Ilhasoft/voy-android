@@ -84,10 +84,10 @@ class HomePresenter(
     }
 
     private fun loadThemesData(projectId: Int) {
-       /* homeInteractor.getThemes(projectId, userId)
+        homeInteractor.getThemes(projectId, userId)
             .doOnSubscribe { view.showLoading() }
             .doOnTerminate { view.dismissLoading() }
-            .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })*/
+            .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })
     }
 
     private fun loadNotifications() {

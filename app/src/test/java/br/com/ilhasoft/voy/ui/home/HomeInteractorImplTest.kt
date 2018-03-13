@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.ui.home
 
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Notification
+import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.notification.NotificationDataSource
 import br.com.ilhasoft.voy.network.notification.NotificationRepository
@@ -33,7 +34,9 @@ class HomeInteractorImplTest {
     @Mock
     private lateinit var themeLocalDataSource: ThemeDataSource
     @Mock
-    private lateinit var projectDataSource: ProjectDataSource
+    private lateinit var projectRemoteDataSource: ProjectDataSource
+    @Mock
+    private lateinit var projectLocalDataSource: ProjectDataSource
     @Mock
     private lateinit var notificationDataSource: NotificationDataSource
     @Mock
@@ -41,6 +44,7 @@ class HomeInteractorImplTest {
 
     private val mockedNotifications = listOf(mock(Notification::class.java))
     private val mockedThemes = mutableListOf(mock(Theme::class.java), mock(Theme::class.java))
+    private val mockedProjects = mutableListOf(mock(Project::class.java), mock(Project::class.java))
     private val mockedNotificationId = 1
     private val mockedProjectId = 1
     private val mockedUserId = 1
@@ -49,12 +53,37 @@ class HomeInteractorImplTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         themeRepository = ThemeRepository(themeRemoteDataSource, themeLocalDataSource, connectionProvider)
-        projectRepository = ProjectRepository(projectDataSource)
+        projectRepository = ProjectRepository(projectRemoteDataSource, projectLocalDataSource, connectionProvider)
         notificationRepository = NotificationRepository(notificationDataSource)
         homeInteractor = HomeInteractorImpl(
             themeRepository, projectRepository,
             notificationRepository, ImmediateScheduler()
         )
+    }
+
+    @Test
+    fun `Should get projects and save on cache when online`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+        `when`(projectRemoteDataSource.getProjects()).thenReturn(Flowable.just(mockedProjects))
+        `when`(projectLocalDataSource.saveProjects(mockedProjects)).thenReturn(Flowable.just(mockedProjects))
+
+        homeInteractor.getProjects(mockedUserId)
+            .test()
+            .assertNoErrors()
+            .assertComplete()
+            .assertValues(mockedProjects)
+    }
+
+    @Test
+    fun `Should get projects when offline`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(false)
+        `when`(projectLocalDataSource.getProjects()).thenReturn(Flowable.just(mockedProjects))
+
+        homeInteractor.getProjects(mockedUserId)
+            .test()
+            .assertNoErrors()
+            .assertComplete()
+            .assertValues(mockedProjects)
     }
 
     @Test
@@ -65,6 +94,19 @@ class HomeInteractorImplTest {
 
         homeInteractor.getThemes(mockedProjectId, mockedUserId)
             .test()
+            .assertNoErrors()
+            .assertComplete()
+            .assertValues(mockedThemes)
+    }
+
+    @Test
+    fun `Should get themes when offline`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(false)
+        `when`(themeLocalDataSource.getThemes(mockedProjectId, mockedUserId)).thenReturn(Flowable.just(mockedThemes))
+
+        homeInteractor.getThemes(mockedProjectId, mockedUserId)
+            .test()
+            .assertNoErrors()
             .assertComplete()
             .assertValues(mockedThemes)
     }
@@ -79,6 +121,7 @@ class HomeInteractorImplTest {
 
         homeInteractor.getNotifications()
             .test()
+            .assertNoErrors()
             .assertComplete()
             .assertValue(mockedNotifications)
     }
@@ -99,5 +142,6 @@ class HomeInteractorImplTest {
         homeInteractor.markAsRead(mockedNotificationId)
             .test()
             .assertComplete()
+            .assertNoErrors()
     }
 }
