@@ -15,4 +15,7 @@ class ProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java), Proje
 
     override fun getProject(projectId: Int): Single<Project> = api.getProject(projectId)
 
+    override fun saveProjects(projects: MutableList<Project>): Flowable<MutableList<Project>> {
+        return Flowable.just(projects)
+    }
 }

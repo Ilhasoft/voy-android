@@ -242,11 +242,22 @@ class CommentPresenterTest {
     }
 
     @Test
-    fun shouldAssertThatIdIsMineWhenUseID1() {
+    fun shouldAssertThatIdIsMine() {
         `when`(preferences.contains(User.ID)).thenReturn(true)
         `when`(preferences.getInt(User.ID)).thenReturn(1)
 
-        assertEquals(presenter.isMyID(1), true)
+        val response = presenter.isMyID(1)
+
+        assertEquals(response, true)
+    }
+
+    @Test
+    fun shouldAssertThatIdIsNotMine() {
+        `when`(preferences.contains(User.ID)).thenReturn(false)
+
+        val response = presenter.isMyID(2)
+
+        assertEquals(response, false)
     }
 
     private fun getCommentsRef(reportId: Int) = dataSource.getComments(reportId)

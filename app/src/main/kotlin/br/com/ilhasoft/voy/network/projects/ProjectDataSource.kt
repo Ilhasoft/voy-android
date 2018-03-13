@@ -11,4 +11,5 @@ import io.reactivex.Single
 interface ProjectDataSource {
     fun getProjects(): Flowable<MutableList<Project>>
     fun getProject(projectId: Int): Single<Project>
+    fun saveProjects(projects: MutableList<Project>): Flowable<MutableList<Project>>
 }

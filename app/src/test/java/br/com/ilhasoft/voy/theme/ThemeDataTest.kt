@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.theme
 
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.themes.ThemeDataSource
 import br.com.ilhasoft.voy.network.themes.ThemeRepository
@@ -9,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import java.util.concurrent.TimeoutException
 
@@ -18,68 +20,73 @@ import java.util.concurrent.TimeoutException
 class ThemeDataTest {
 
     @Mock
-    lateinit var themeService: ThemeDataSource
+    lateinit var themeRemoteDataSource: ThemeDataSource
+    @Mock
+    lateinit var themeLocalDataSource: ThemeDataSource
+    @Mock
+    lateinit var connectionProvider: CheckConnectionProvider
 
     lateinit var themeRepository: ThemeRepository
 
-    private val mockThemeObject = Theme(
-            id = 22,
-            project = "",
-            bounds = mutableListOf(),
-            name = "",
-            tags = arrayListOf(),
-            color = "",
-            allowLinks = false)
+    private val mockThemeObject = mock(Theme::class.java)
+    private val mockThemeList = mutableListOf(mock(Theme::class.java), mock(Theme::class.java))
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        themeRepository = ThemeRepository(themeService)
+        themeRepository =
+                ThemeRepository(themeRemoteDataSource, themeLocalDataSource, connectionProvider)
     }
 
     @Test
-    fun shouldReturnThemes() {
-        `when`(themeService.getThemes()).thenReturn(Flowable.just(mutableListOf<Theme>()))
+    fun shouldReturnThemesWhenOnline() {
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+        `when`(themeRemoteDataSource.getThemes()).thenReturn(Flowable.just(mockThemeList))
 
         themeRepository.getThemes()
-                .test()
-                .assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
+            .test()
+            .assertSubscribed()
+            .assertComplete()
+            .assertNoErrors()
+            .assertValues(mockThemeList)
     }
 
     @Test
     fun shouldReturnThemeById() {
-        `when`(themeService.getTheme(mockThemeObject.id)).thenReturn(Single.just(mockThemeObject))
+        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id)).thenReturn(
+            Single.just(
+                mockThemeObject
+            )
+        )
 
-         themeRepository.getTheme(mockThemeObject.id)
-                .test()
-                .assertSubscribed()
-                .assertComplete()
-                .assertNoErrors()
-                .assertValue { it.id == mockThemeObject.id}
+        themeRepository.getTheme(mockThemeObject.id)
+            .test()
+            .assertSubscribed()
+            .assertComplete()
+            .assertNoErrors()
+            .assertValue { it.id == mockThemeObject.id }
     }
 
     @Test
     fun shouldNotReturnThemesTimeoutConnection() {
-        `when`(themeService.getThemes())
-                .thenReturn(Flowable.error(TimeoutException()))
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+        `when`(themeRemoteDataSource.getThemes())
+            .thenReturn(Flowable.error(TimeoutException()))
 
         themeRepository.getThemes()
-                .test()
-                .assertSubscribed()
-                .assertError { it is TimeoutException }
+            .test()
+            .assertSubscribed()
+            .assertError { it is TimeoutException }
     }
 
     @Test
     fun shouldNotReturnThemeTimeoutConnection() {
-        `when`(themeService.getTheme(mockThemeObject.id))
-                .thenReturn(Single.error(TimeoutException()))
+        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id))
+            .thenReturn(Single.error(TimeoutException()))
 
         themeRepository.getTheme(mockThemeObject.id)
-                .test()
-                .assertSubscribed()
-                .assertError { it is TimeoutException }
+            .test()
+            .assertSubscribed()
+            .assertError { it is TimeoutException }
     }
-
 }

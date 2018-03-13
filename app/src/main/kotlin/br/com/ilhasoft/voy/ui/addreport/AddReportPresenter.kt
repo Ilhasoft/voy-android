@@ -12,8 +12,8 @@ import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
@@ -24,7 +24,8 @@ class AddReportPresenter(
     private val reportViewModel: ReportViewModel,
     private val bound: List<List<Double>>,
     private val report: Report?,
-    private val reportInteractor: AddReportInteractor
+    private val reportInteractor: AddReportInteractor,
+    private val scheduler: BaseScheduler
 ) : Presenter<AddReportContract>(AddReportContract::class.java) {
 
     private val boundPairs: List<Pair<Double, Double>> by lazy {
@@ -34,7 +35,7 @@ class AddReportPresenter(
             listOf()
     }
     private lateinit var userLocation: Location
-    private var isFinalStep = false
+    var isFinalStep = false
     var requestingUpdates = false
 
     override fun attachView(view: AddReportContract) {
@@ -142,7 +143,7 @@ class AddReportPresenter(
     private fun updateReport() = with(reportViewModel) {
         val mediasToSave = mediasToSave()
         Flowable.fromIterable(mediasToSave)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(scheduler.io())
                 .map { Uri.parse(it) }
                 .flatMap {
                     val file = getFile(it)
@@ -195,8 +196,8 @@ class AddReportPresenter(
             userLocation.coordinates[0],
             boundPairs
         )
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(scheduler.io())
+            .observeOn(scheduler.ui())
             .subscribe({
                 onSuccess(it)
             }, {

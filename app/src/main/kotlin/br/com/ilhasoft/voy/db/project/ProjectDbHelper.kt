@@ -1,38 +1,47 @@
 package br.com.ilhasoft.voy.db.project
 
 import br.com.ilhasoft.voy.models.Project
+import br.com.ilhasoft.voy.network.projects.ProjectDataSource
+import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Single
 import io.realm.Realm
 
 /**
  * Created by lucas on 07/02/18.
  */
-class ProjectDbHelper {
+class ProjectDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) :
+    ProjectDataSource {
 
-    private val realm by lazy { Realm.getDefaultInstance() }
-
-    fun getProjects(): Flowable<MutableList<Project>> {
-        //TODO: Refactor to include realm with RxJava
-        return Flowable.fromCallable {
-            val localProjects = realm.where(ProjectDbModel::class.java).findAll()
-            localProjects.map { Project(id = it.id, name = it.name) }.toMutableList()
-        }
+    override fun getProjects(): Flowable<MutableList<Project>> {
+        return Flowable.just(realm)
+            .onMainThread(scheduler)
+            .flatMap {
+                Flowable.just(it.where(ProjectDbModel::class.java).findAll())
+            }.map { it.map { Project(id = it.id, name = it.name) }.toMutableList() }
     }
 
-    fun saveProjects(projects: MutableList<Project>): Flowable<MutableList<Project>> {
-        return Flowable.fromCallable {
-            var projectsDb = projects.map { project ->
-                ProjectDbModel().apply {
-                    id = project.id
-                    name = project.name
+    override fun getProject(projectId: Int): Single<Project> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun saveProjects(projects: MutableList<Project>): Flowable<MutableList<Project>> {
+        return Flowable.fromIterable(projects)
+            .onMainThread(scheduler)
+            .doOnNext { project ->
+                realm.executeTransaction {
+                    it.copyToRealmOrUpdate(createDbModel(project))
                 }
             }
-            realm.beginTransaction()
-            projectsDb = realm.copyToRealmOrUpdate(projectsDb)
-            realm.commitTransaction()
-            projectsDb.map { Project(id = it.id, name = it.name) }.toMutableList()
-        }
+            .toList()
+            .flatMapPublisher { Flowable.just(it) }
     }
 
+    private fun createDbModel(project: Project): ProjectDbModel {
+        return ProjectDbModel().apply {
+            id = project.id
+            name = project.name
+        }
+    }
 }

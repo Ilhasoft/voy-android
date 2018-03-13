@@ -1,48 +1,61 @@
 package br.com.ilhasoft.voy.db.theme
 
 import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.network.themes.ThemeDataSource
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
+import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
+import io.reactivex.Single
 import io.realm.Realm
 
 /**
  * Created by lucasbarros on 08/02/18.
  */
-class ThemeDbHelper {
-    private val realm by lazy { Realm.getDefaultInstance() }
+class ThemeDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) : ThemeDataSource {
 
-    fun getThemes(project: Int): Flowable<MutableList<Theme>> {
-        //TODO: Refactor to include realm with RxJava
-        return Flowable.fromCallable {
-            val localThemes = realm.where(ThemeDbModel::class.java).equalTo("projectId", project).findAll()
-            localThemes.map { it.toTheme() }.toMutableList()
-        }
+    override fun getThemes(project: Int?, user: Int?): Flowable<List<Theme>> {
+        return Flowable.just(project)
+            .onMainThread(scheduler)
+            .flatMap {
+                Flowable.just(
+                    realm.where(ThemeDbModel::class.java)
+                        .equalTo("projectId", project)
+                        .findAll()
+                )
+            }.map { it.map { it.toTheme() } }
     }
 
-    fun saveThemes(themes: MutableList<Theme>): Flowable<MutableList<Theme>> {
-        //TODO: Refactor to include realm with RxJava
-        return Flowable.fromCallable {
-            var themesDb = themes.map { theme ->
-                ThemeDbModel().apply {
-                    id = theme.id
-                    projectId = theme.project.extractNumbers().toInt()
-                    name = theme.name
-                    bounds.addAll(theme.bounds.map { bound ->
-                        BoundDbModel().apply {
-                            lat = bound[0]
-                            lng = bound[1]
-                        }
-                    })
-                    tags.addAll(theme.tags)
-                    color = theme.color
-                    allowLinks = theme.allowLinks
+    override fun getTheme(themeId: Int, project: Int?, yearStart: Int?, yearEnd: Int?, user: Int?): Single<Theme> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun saveThemes(themes: List<Theme>): Flowable<MutableList<Theme>> {
+        val themesDb = themes.map { createThemeDb(it) }
+        return Flowable.fromIterable(themesDb)
+            .onMainThread(scheduler)
+            .doOnNext { dbModel ->
+                realm.executeTransaction {
+                    it.copyToRealmOrUpdate(dbModel)
                 }
             }
-            realm.beginTransaction()
-            themesDb = realm.copyToRealmOrUpdate(themesDb)
-            realm.commitTransaction()
-            themesDb.map { it.toTheme() }.toMutableList()
-        }
+            .toList()
+            .flatMapPublisher { Flowable.just(it.map { it.toTheme() }.toMutableList()) }
+    }
+
+    private fun createThemeDb(theme: Theme): ThemeDbModel = ThemeDbModel().apply {
+        id = theme.id
+        projectId = theme.project.extractNumbers().toInt()
+        name = theme.name
+        bounds.addAll(theme.bounds.map { bound ->
+            BoundDbModel().apply {
+                lat = bound[0]
+                lng = bound[1]
+            }
+        })
+        tags.addAll(theme.tags)
+        color = theme.color
+        allowLinks = theme.allowLinks
     }
 
     fun getThemeTags(themeId: Int): Flowable<MutableList<String>> {

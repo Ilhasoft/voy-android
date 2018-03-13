@@ -14,17 +14,21 @@ import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.LinearSpaceItemDecoration
 import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityAccountBinding
 import br.com.ilhasoft.voy.databinding.ItemAvatarBinding
+import br.com.ilhasoft.voy.db.base.BaseDbHelperImpl
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.users.UserRepository
 import br.com.ilhasoft.voy.network.users.UserService
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.login.LoginActivity
 import io.realm.Realm
 
-class AccountActivity : BaseActivity(), AccountContract {
+class AccountActivity : BaseActivity(), AccountContract, CheckConnectionProvider {
 
     companion object {
         private const val AVATARS_SPAN_COUNT = 5
@@ -41,7 +45,9 @@ class AccountActivity : BaseActivity(), AccountContract {
             AccountInteractorImpl(
                 SharedPreferences(this@AccountActivity),
                 UserRepository(UserService()),
-                Realm.getDefaultInstance()
+                BaseDbHelperImpl(Realm.getDefaultInstance()),
+                this,
+                StandardScheduler()
             )
         )
     }
@@ -132,6 +138,8 @@ class AccountActivity : BaseActivity(), AccountContract {
     }
 
     override fun navigateToMakeLogout() = startActivity(LoginActivity.createIntent(this))
+
+    override fun hasConnection(): Boolean = ConnectivityManager.isConnected()
 
     private fun setupView() {
         binding.apply {

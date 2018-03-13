@@ -12,7 +12,6 @@ class UserRepository(private val remoteUserDataSource: UserDataSource) : UserDat
     override fun getUser(): Flowable<User?> =
         remoteUserDataSource.getUser()
 
-
     override fun editUser(userRequest: UserChangeRequest): Completable =
         remoteUserDataSource.editUser(userRequest)
 

@@ -69,14 +69,13 @@ class HomePresenter(
                 .doOnNext { fillProjectsAdapter(it) }
                 .filter { it.isNotEmpty() }
                 .doOnNext { selectedProject = it.first() }
-                .observeOn(scheduler.io())
                 .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
-                .observeOn(scheduler.ui())
                 .doOnTerminate { view.dismissLoading() }
                 .subscribe(
                         { fillThemesAdapter(it) },
                         {
                             Timber.e(it)
+                            it.printStackTrace()
                             ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
                                 view.showMessage(msg)
                             }

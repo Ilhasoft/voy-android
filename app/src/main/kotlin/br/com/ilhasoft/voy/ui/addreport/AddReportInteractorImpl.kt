@@ -10,6 +10,7 @@ import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,7 +25,7 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
 
     private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance()) }
 
-    private val themeDbHelper by lazy { ThemeDbHelper() }
+    private val themeDbHelper by lazy { ThemeDbHelper(Realm.getDefaultInstance(), StandardScheduler()) }
 
     override fun saveReport(
         reportInternalId: String?,
