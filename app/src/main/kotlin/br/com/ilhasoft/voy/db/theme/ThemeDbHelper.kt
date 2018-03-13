@@ -3,6 +3,8 @@ package br.com.ilhasoft.voy.db.theme
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.themes.ThemeDataSource
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
+import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.realm.Realm
@@ -10,11 +12,18 @@ import io.realm.Realm
 /**
  * Created by lucasbarros on 08/02/18.
  */
-class ThemeDbHelper : ThemeDataSource {
+class ThemeDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) : ThemeDataSource {
 
     override fun getThemes(project: Int?, user: Int?): Flowable<List<Theme>> {
-        // TODO work with realm on correct thread
-        return Flowable.just(listOf())
+        return Flowable.just(project)
+            .onMainThread(scheduler)
+            .flatMap {
+                Flowable.just(
+                    realm.where(ThemeDbModel::class.java)
+                        .equalTo("projectId", project)
+                        .findAll()
+                )
+            }.map { it.map { it.toTheme() } }
     }
 
     override fun getTheme(themeId: Int, project: Int?, yearStart: Int?, yearEnd: Int?, user: Int?): Single<Theme> {
@@ -23,18 +32,15 @@ class ThemeDbHelper : ThemeDataSource {
 
     override fun saveThemes(themes: List<Theme>): Flowable<MutableList<Theme>> {
         val themesDb = themes.map { createThemeDb(it) }
-        val realm = getRealm()
-        val persistedThemes = mutableListOf<Theme>()
-
-        themesDb.forEach { dbModel ->
-            realm.executeTransaction {
-                it.copyToRealmOrUpdate(dbModel)
+        return Flowable.fromIterable(themesDb)
+            .onMainThread(scheduler)
+            .doOnNext { dbModel ->
+                realm.executeTransaction {
+                    it.copyToRealmOrUpdate(dbModel)
+                }
             }
-
-            persistedThemes.add(dbModel.toTheme())
-        }
-
-        return Flowable.just(persistedThemes)
+            .toList()
+            .flatMapPublisher { Flowable.just(it.map { it.toTheme() }.toMutableList()) }
     }
 
     private fun createThemeDb(theme: Theme): ThemeDbModel = ThemeDbModel().apply {
@@ -53,14 +59,9 @@ class ThemeDbHelper : ThemeDataSource {
     }
 
     fun getThemeTags(themeId: Int): Flowable<MutableList<String>> {
-        val realm = getRealm()
         return Flowable.fromCallable {
             val theme = realm.where(ThemeDbModel::class.java).equalTo("id", themeId).findFirst()
             theme?.tags?.toMutableList() ?: mutableListOf()
         }
-    }
-
-    private fun getRealm(): Realm {
-        return Realm.getDefaultInstance()
     }
 }
