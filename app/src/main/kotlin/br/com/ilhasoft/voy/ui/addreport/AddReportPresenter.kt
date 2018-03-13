@@ -1,10 +1,10 @@
 package br.com.ilhasoft.voy.ui.addreport
 
 import android.net.Uri
-import android.util.Log
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.support.rxgraphics.FileCompressor
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.db.report.ReportFileDbModel
 import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
@@ -163,7 +163,7 @@ class AddReportPresenter(
                             name,
                             selectedTags,
                             links,
-                            medias.map { it.toString() },
+                            medias.map { ReportFileDbModel().apply { file = it } }.toMutableList(),
                             it,
                             mediasToDelete()
                     )
@@ -175,7 +175,6 @@ class AddReportPresenter(
                     reportViewModel.report = it
                 }, {
                     Timber.e(it)
-                    Log.e("TAG", it.message)
                 })
     }
 

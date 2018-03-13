@@ -71,10 +71,11 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
     override fun saveReport(report: Report): Single<Report> {
         return saveReport(report.internalId, theme = report.theme, location = report.location!!,
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
-            medias = report.files.map { it.file }, reportId = report.id, status = report.status,
+            medias = createReportFileDbModel(report.files), reportId = report.id, status = report.status,
             shouldSend = report.shouldSend
         ).onMainThread()
     }
+
 
     fun getReportDbModels(): Flowable<List<ReportDbModel>> {
         return Flowable.fromCallable {
@@ -92,7 +93,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        medias: List<String>,
+        medias: MutableList<ReportFileDbModel>,
         reportId: Int? = null,
         newFiles: List<String>? = null,
         filesToDelete: List<ReportFile>? = null,
@@ -144,7 +145,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         name: String,
         description: String?,
         tags: List<String>,
-        medias: List<String>,
+        medias: MutableList<ReportFileDbModel>,
         urls: List<String>?,
         reportId: Int?,
         newFiles: List<String>?,
@@ -162,7 +163,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
             this.status = status
             this.description = description
             this.tags.addAll(tags)
-            this.mediasPath.addAll(medias)
+            this.medias.addAll(medias)
             this.shouldSend = shouldSend
             urls?.let {
                 this.urls.addAll(it)
@@ -171,15 +172,25 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
             newFiles?.let {
                 this.newFiles.addAll(it)
             }
-            filesToDelete?.let {
-                this.filesToDelete.addAll(filesToDelete.map { reportFile ->
-                    mediasPath.remove(reportFile.file)
+            filesToDelete?.map { reportFile ->
+                medias.filter { it.id == reportFile.id }.map {
                     ReportFileDbModel().apply {
-                        id = reportFile.id
-                        file = reportFile.file
+                        id = it.id
+                        file = it.file
                     }
-                })
+                }
             }
         }
     }
+
+    private fun createReportFileDbModel(files: MutableList<ReportFile>): MutableList<ReportFileDbModel> {
+        return files.map {
+            ReportFileDbModel().apply {
+                id = it.id
+                file = it.file
+            }
+        }.toMutableList()
+
+    }
+
 }

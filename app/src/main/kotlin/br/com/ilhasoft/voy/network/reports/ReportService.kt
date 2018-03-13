@@ -148,7 +148,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
     ): Observable<Report> {
         return Observable.just(filesToDelete)
             .flatMapCompletable {
-                deleteFiles(ReportDeleteRequest(it))
+                deleteFiles(it)
             }
             .toSingleDefault(true)
             .flatMapObservable {
@@ -200,7 +200,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
 
     private fun deleteFile(fileId: Int): Completable = api.deleteFile(fileId)
 
-    private fun deleteFiles(deleteRequest: ReportDeleteRequest):Completable = api.deleteFiles(deleteRequest)
+    private fun deleteFiles(ids: List<Int>):Completable = api.deleteFiles(ids.joinToString(","))
 
     private fun saveReportInternal(
         theme: Int,

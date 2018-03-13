@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.ui.addreport
 
+import br.com.ilhasoft.voy.db.report.ReportFileDbModel
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
@@ -31,7 +32,7 @@ interface AddReportInteractor {
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        medias: List<String>,
+        medias: MutableList<ReportFileDbModel>,
         newFiles: List<File>?,
         filesToDelete: List<ReportFile>?
     ): Observable<Report>

@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.ui.addreport
 
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.db.report.ReportDbHelper
+import br.com.ilhasoft.voy.db.report.ReportFileDbModel
 import br.com.ilhasoft.voy.db.theme.ThemeDbHelper
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
@@ -43,7 +44,11 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             name,
             tags,
             urls,
-            medias.map { it.absolutePath }
+            medias.map {
+                ReportFileDbModel().apply {
+                file = it.absolutePath
+            }
+            }.toMutableList()
         )
             .observeOn(Schedulers.io())
             .flatMapObservable {
@@ -67,7 +72,7 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        medias: List<String>,
+        medias: MutableList<ReportFileDbModel>,
         newFiles: List<File>?,
         filesToDelete: List<ReportFile>?
     ): Observable<Report> {
