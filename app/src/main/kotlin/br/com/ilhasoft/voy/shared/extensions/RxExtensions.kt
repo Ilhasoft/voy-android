@@ -33,6 +33,14 @@ fun <T> Flowable<T>.onMainThread(): Flowable<T> {
     }
 }
 
+fun <T> Flowable<T>.onMainThread(scheduler: BaseScheduler): Flowable<T> {
+    return compose { upstream ->
+        upstream
+            .subscribeOn(scheduler.io())
+            .observeOn(scheduler.ui())
+    }
+}
+
 fun <T> Flowable<T>.loadControl(loadView: LoadView): Flowable<T> {
     return compose { upstream ->
         upstream

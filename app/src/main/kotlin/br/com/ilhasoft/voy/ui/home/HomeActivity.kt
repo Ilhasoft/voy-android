@@ -12,10 +12,14 @@ import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
 import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityHomeBinding
 import br.com.ilhasoft.voy.databinding.ItemMapBinding
 import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
 import br.com.ilhasoft.voy.databinding.ItemThemeBinding
+import br.com.ilhasoft.voy.db.project.ProjectDbHelper
+import br.com.ilhasoft.voy.db.theme.ThemeDbHelper
 import br.com.ilhasoft.voy.models.Notification
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.models.SharedPreferences
@@ -35,8 +39,9 @@ import br.com.ilhasoft.voy.ui.home.holder.ProjectViewHolder
 import br.com.ilhasoft.voy.ui.home.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
+import io.realm.Realm
 
-class HomeActivity : BaseActivity(), HomeContract {
+class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
 
     companion object {
         @JvmField
@@ -57,13 +62,14 @@ class HomeActivity : BaseActivity(), HomeContract {
     }
     private val presenter: HomePresenter by lazy {
         HomePresenter(
-                SharedPreferences(this),
-                HomeInteractorImpl(
-                        ThemeRepository(ThemeService()),
-                        ProjectRepository(ProjectService()),
-                        NotificationRepository(NotificationService())
-                ),
+            SharedPreferences(this),
+            HomeInteractorImpl(
+                ThemeRepository(ThemeService(), ThemeDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
+                ProjectRepository(ProjectService(), ProjectDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
+                NotificationRepository(NotificationService()),
                 StandardScheduler()
+            ),
+            StandardScheduler()
         )
     }
     private val projectViewHolder: OnCreateViewHolder<Project, ProjectViewHolder> by lazy {
@@ -152,6 +158,8 @@ class HomeActivity : BaseActivity(), HomeContract {
         notificationsAdapter.addAll(notifications)
         binding.viewToolbar?.hasNotification = notificationsAdapter.isNotEmpty()
     }
+
+    override fun hasConnection(): Boolean = ConnectivityManager.isConnected()
 
     override fun navigateToMyAccount() =
         startActivityForResult(AccountActivity.createIntent(this), ACCOUNT_REQUEST_CODE)

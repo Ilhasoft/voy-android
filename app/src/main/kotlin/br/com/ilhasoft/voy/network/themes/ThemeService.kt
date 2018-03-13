@@ -1,7 +1,6 @@
 package br.com.ilhasoft.voy.network.themes
 
 import br.com.ilhasoft.voy.models.Theme
-import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.ServiceFactory
 import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
 import io.reactivex.Flowable
@@ -13,7 +12,7 @@ import io.reactivex.Single
 class ThemeService : ServiceFactory<ThemeApi>(ThemeApi::class.java), ThemeDataSource {
 
     override fun getThemes(project: Int?,
-                           user: Int?): Flowable<MutableList<Theme>> {
+                           user: Int?): Flowable<List<Theme>> {
         val themesRequest = mutableMapOf<String, Int?>()
         themesRequest.apply {
             putIfNotNull("project", project)
@@ -35,5 +34,9 @@ class ThemeService : ServiceFactory<ThemeApi>(ThemeApi::class.java), ThemeDataSo
             putIfNotNull("user", user)
         }
         return api.getTheme(themeId, themesRequest)
+    }
+
+    override fun saveThemes(themes: List<Theme>): Flowable<MutableList<Theme>> {
+        return Flowable.just(themes.toMutableList())
     }
 }

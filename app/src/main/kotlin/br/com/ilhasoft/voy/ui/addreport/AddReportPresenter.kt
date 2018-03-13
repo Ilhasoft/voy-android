@@ -13,7 +13,6 @@ import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 

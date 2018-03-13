@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.project
 
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Project
 import br.com.ilhasoft.voy.network.projects.ProjectDataSource
 import br.com.ilhasoft.voy.network.projects.ProjectRepository
@@ -19,7 +20,11 @@ import java.util.concurrent.TimeoutException
 class ProjectDataTest {
 
     @Mock
-    lateinit var projectService: ProjectDataSource
+    lateinit var projectRemoteDataSource: ProjectDataSource
+    @Mock
+    lateinit var projectLocalDataSource: ProjectDataSource
+    @Mock
+    lateinit var connectionProvider: CheckConnectionProvider
 
     lateinit var projectRepository: ProjectRepository
 
@@ -28,14 +33,14 @@ class ProjectDataTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        projectRepository = ProjectRepository(projectService)
+        projectRepository = ProjectRepository(projectRemoteDataSource, projectLocalDataSource, connectionProvider)
     }
 
     @Test
     fun shouldReturnProjects() {
-        `when`(projectService.getProjects())
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+        `when`(projectRemoteDataSource.getProjects())
                 .thenReturn(Flowable.just(createMockProjectList()))
-
 
         projectRepository.getProjects()
                 .test()
@@ -47,10 +52,10 @@ class ProjectDataTest {
 
     @Test
     fun shouldNotReturnProjects() {
-        `when`(projectService.getProjects())
+        `when`(projectRemoteDataSource.getProjects())
                 .thenReturn(Flowable.error(TimeoutException()))
 
-        projectService.getProjects()
+        projectRemoteDataSource.getProjects()
                 .test()
                 .assertSubscribed()
                 .assertError { it is TimeoutException }
@@ -58,7 +63,8 @@ class ProjectDataTest {
 
     @Test
     fun shouldNotReturnProjectsUnknownHost() {
-        `when`(projectService.getProjects()).thenReturn(Flowable.error(UnknownHostException()))
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+        `when`(projectRemoteDataSource.getProjects()).thenReturn(Flowable.error(UnknownHostException()))
 
         projectRepository.getProjects()
                 .test()
@@ -68,7 +74,7 @@ class ProjectDataTest {
 
     @Test
     fun shouldReturnSingleProject() {
-        `when`(projectService.getProject(mockProjectId))
+        `when`(projectRemoteDataSource.getProject(mockProjectId))
                 .thenReturn(Single.just(createMockProject()))
 
         projectRepository.getProject(mockProjectId)
