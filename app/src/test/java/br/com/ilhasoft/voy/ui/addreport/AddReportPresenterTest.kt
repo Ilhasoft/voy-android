@@ -1,14 +1,18 @@
 package br.com.ilhasoft.voy.ui.addreport
 
+import android.location.Location
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
+import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
+import io.reactivex.Observable
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
 /**
@@ -20,19 +24,21 @@ class AddReportPresenterTest {
     private lateinit var view: AddReportContract
     @Mock
     private lateinit var interactor: AddReportInteractor
+    @Mock
+    private lateinit var mockedLocation: Location
 
     private lateinit var presenter: AddReportPresenter
-    private lateinit var report: Report
     private lateinit var viewModel: ReportViewModel
+    private lateinit var mockedReport: Report
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        report = Report(name = "name", description = "description")
+        mockedReport = Report(name = "name", description = "description", location = br.com.ilhasoft.voy.models.Location("", arrayListOf()))
         viewModel = ReportViewModel(interactor)
 
-        presenter = AddReportPresenter(viewModel, listOf(), report, interactor)
+        presenter = AddReportPresenter(viewModel, listOf(), mockedReport, interactor, ImmediateScheduler())
         presenter.attachView(view)
     }
 
@@ -43,8 +49,8 @@ class AddReportPresenterTest {
 
     @Test
     fun `should set up report and navigate to medias fragment when view is attached`() {
-        assertEquals(report.name, viewModel.name)
-        assertEquals(report.description, viewModel.description)
+        assertEquals(mockedReport.name, viewModel.name)
+        assertEquals(mockedReport.description, viewModel.description)
         verify(view).navigateToNext(AddReportFragmentType.MEDIAS)
     }
 
@@ -80,6 +86,88 @@ class AddReportPresenterTest {
         `when`(view.getVisibleFragmentType()).thenReturn(AddReportFragmentType.TITLE)
         presenter.onClickNavigateNext()
         verify(view).navigateToNext(AddReportFragmentType.TAG)
+    }
+
+    @Test
+    fun `should add report when is final step and user is inside bounds`() {
+        `when`(mockedLocation.longitude).thenReturn(0.0)
+        `when`(mockedLocation.latitude).thenReturn(0.0)
+        `when`(mock(LocationHelpers::class.java).isLocationInsidePolygon(mockedLocation.latitude, mockedLocation.longitude, listOf()))
+                .thenReturn(Observable.just(true))
+        presenter.isFinalStep = true
+        viewModel.report.id = 0
+
+        presenter.onLocationLoaded(mockedLocation)
+
+        verify(view).dismissLoadLocationDialog()
+        verify(view).showLoading()
+        verify(view).dismissLoading()
+        verify(view).navigateToThanks()
+    }
+
+    @Test
+    fun `should not add report when is final step and user is outside bounds`() {
+        `when`(mockedLocation.longitude).thenReturn(0.0)
+        `when`(mockedLocation.latitude).thenReturn(0.0)
+        `when`(mock(LocationHelpers::class.java).isLocationInsidePolygon(mockedLocation.latitude, mockedLocation.longitude, listOf()))
+                .thenReturn(Observable.just(false))
+        presenter.isFinalStep = true
+        viewModel.report.id = 0
+
+        presenter.onLocationLoaded(mockedLocation)
+
+        verify(view).dismissLoadLocationDialog()
+        verify(view).showMessage(R.string.outside_theme_bounds)
+        assertFalse(presenter.isFinalStep)
+    }
+
+    @Test
+    fun `should update report when is final step and there view model report`() {
+        mockedReport.name = "new report name"
+
+        `when`(mockedLocation.longitude).thenReturn(0.0)
+        `when`(mockedLocation.latitude).thenReturn(0.0)
+        `when`(mock(LocationHelpers::class.java).isLocationInsidePolygon(mockedLocation.latitude, mockedLocation.longitude, listOf()))
+                .thenReturn(Observable.just(true))
+        `when`(interactor.updateReport(
+                mockedReport.internalId,
+                mockedReport.id,
+                mockedReport.theme,
+                mockedReport.location!!,
+                mockedReport.description,
+                mockedReport.name,
+                viewModel.selectedTags,
+                viewModel.links,
+                viewModel.medias,
+                mutableListOf(),
+                viewModel.mediasToDelete()
+
+        )).thenReturn(Observable.just(mockedReport))
+        presenter.isFinalStep = true
+        viewModel.report.id = 1
+
+        presenter.onLocationLoaded(mockedLocation)
+
+        verify(view).dismissLoadLocationDialog()
+        verify(view).showLoading()
+        verify(view).dismissLoading()
+    }
+
+    @Test
+    fun `should not save report when user is not on final step of save report and is outside theme bounds`() {
+        `when`(mockedLocation.longitude).thenReturn(0.0)
+        `when`(mockedLocation.latitude).thenReturn(0.0)
+        `when`(mock(LocationHelpers::class.java).isLocationInsidePolygon(mockedLocation.latitude, mockedLocation.longitude, listOf()))
+                .thenReturn(Observable.just(false))
+        presenter.isFinalStep = false
+        viewModel.report.id = 0
+
+        presenter.onLocationLoaded(mockedLocation)
+
+        verify(view).dismissLoadLocationDialog()
+        verify(view).showOutsideDialog()
+        verify(view).stopGettingLocation()
+        assertFalse(presenter.requestingUpdates)
     }
 
 }
