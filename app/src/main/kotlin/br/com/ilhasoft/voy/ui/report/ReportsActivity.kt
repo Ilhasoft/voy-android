@@ -16,6 +16,7 @@ import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
@@ -57,7 +58,13 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
     private lateinit var viewModel: ReportViewModel
     private val presenter: ReportsPresenter by lazy {
-        ReportsPresenter(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this))
+        ReportsPresenter(
+            ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
+            StandardScheduler(),
+            ViewModelProviders
+                .of(this)
+                .get(ReportViewModel::class.java)
+        )
     }
     private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
     private val themeId: Int by lazy { intent.extras.getInt(EXTRA_THEME_ID, 0) }
@@ -65,12 +72,8 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders
-            .of(this)
-            .get(ReportViewModel::class.java)
         setupView()
         presenter.attachView(this)
-        presenter.viewModel = viewModel
         presenter.loadReports(theme = themeId, mapper = SharedPreferences(this).getInt(User.ID))
     }
 

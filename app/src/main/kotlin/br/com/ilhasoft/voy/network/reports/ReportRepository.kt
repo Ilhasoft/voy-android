@@ -4,7 +4,6 @@ import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.File
@@ -21,21 +20,24 @@ class ReportRepository(
     override fun getReports(theme: Int?, project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
         return if (connectionProvider.hasConnection()) {
             remoteReportDataSource.getReports(theme, project, mapper, status)
-                .flatMap { saveOnCache(it) }
         } else {
             localDataSource.getReports(theme, project, mapper, status)
         }
     }
 
-    // TODO real implementation
     override fun saveReport(report: Report): Single<Report> = Single.just(report)
 
-    private fun saveOnCache(reports: List<Report>): Single<List<Report>> {
-        return Flowable.just(reports)
-            .flatMap { Flowable.fromIterable(it) }
-            .map { it.copy(shouldSend = false) }
-            .flatMapSingle { localDataSource.saveReport(it) }
-            .toList()
+    override fun saveReports(reports: List<Report>): Single<List<Report>> {
+        return if (connectionProvider.hasConnection()) {
+            localDataSource.saveReports(reports)
+            /*Flowable.just(reports)
+                .flatMap { Flowable.fromIterable(it) }
+                .map { it.copy(shouldSend = false) }
+                .flatMap { localDataSource.saveReport(it) }
+                .toList()*/
+        } else {
+            Single.just(reports)
+        }
     }
 
     override fun getReport(

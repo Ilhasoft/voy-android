@@ -63,7 +63,7 @@ class AddReportActivity : BaseActivity(), AddReportContract, CheckConnectionProv
     private val locationClient by lazy { LocationServices.getFusedLocationProviderClient(this) }
 
     private val addReportInteractor: AddReportInteractor by lazy {
-        AddReportInteractorImpl(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this))
+        AddReportInteractorImpl(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this))
     }
 
     private val reportViewModel by lazy {

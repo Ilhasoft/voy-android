@@ -22,7 +22,7 @@ import java.io.File
  */
 class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddReportInteractor {
 
-    private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance()) }
+    private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()) }
 
     private val themeDbHelper by lazy { ThemeDbHelper(Realm.getDefaultInstance(), StandardScheduler()) }
 
