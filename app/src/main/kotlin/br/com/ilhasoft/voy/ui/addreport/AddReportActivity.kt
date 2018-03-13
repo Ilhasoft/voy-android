@@ -25,6 +25,7 @@ import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.addreport.description.AddTitleFragment
 import br.com.ilhasoft.voy.ui.addreport.medias.AddMediasFragment
 import br.com.ilhasoft.voy.ui.addreport.tag.AddTagsFragment
@@ -74,7 +75,8 @@ class AddReportActivity : BaseActivity(), AddReportContract, CheckConnectionProv
         AddReportPresenter(reportViewModel,
                 ThemeData.themeBounds,
                 intent.extras.getParcelable(EXTRA_REPORT),
-                addReportInteractor
+                addReportInteractor,
+                StandardScheduler()
         )
     }
 
