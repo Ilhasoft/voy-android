@@ -153,7 +153,7 @@ class AddReportPresenter(
                         FileCompressor.compressVideo(file)
                 }
             .toList()
-            .onMainThread()
+            .subscribeOn(scheduler.ui())
             .flatMapObservable {
                 reportInteractor.updateReport(
                             report.internalId,
