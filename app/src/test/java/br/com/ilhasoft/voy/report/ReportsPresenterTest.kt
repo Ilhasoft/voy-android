@@ -6,7 +6,6 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
-import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.ReportViewModel
 import br.com.ilhasoft.voy.ui.report.ReportsContract
 import br.com.ilhasoft.voy.ui.report.ReportsPresenter
@@ -40,7 +39,6 @@ class ReportsPresenterTest {
     private val mockedThemeId = 1
     private val mockedMapperId = 1
     private val mockedReportList = listOf(mock(Report::class.java), mock(Report::class.java))
-    private val mockedReportStatus = mock(ReportStatus::class.java)
     private val viewModel = mock(ReportViewModel::class.java)
 
     private fun <T> any(): T {

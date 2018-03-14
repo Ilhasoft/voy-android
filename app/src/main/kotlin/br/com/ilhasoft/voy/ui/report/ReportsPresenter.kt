@@ -23,8 +23,10 @@ class ReportsPresenter(
             .flatMap { reportRepository.saveReports(it) }
             .fromIoToMainThread(scheduler)
             .loadControl(view)
+            .doOnSuccess { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.APPROVED.value }, ReportStatus.APPROVED) }
+            .doOnSuccess { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.PENDING.value }, ReportStatus.PENDING) }
             .subscribe(
-                { notifyReportsOnViewModel(it) },
+                { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.UNAPPROVED.value }, ReportStatus.UNAPPROVED) },
                 {
                     ErrorHandlerHelper.showError(it, R.string.report_list_error) { msg ->
                         view.showMessage(msg)
@@ -33,10 +35,8 @@ class ReportsPresenter(
             )
     }
 
-    private fun notifyReportsOnViewModel(reports: List<Report>) {
-        viewModel.notifyReports(reports.filter { it.status == ReportStatus.APPROVED.value }, ReportStatus.APPROVED)
-        viewModel.notifyReports(reports.filter { it.status == ReportStatus.PENDING.value }, ReportStatus.PENDING)
-        viewModel.notifyReports(reports.filter { it.status == ReportStatus.UNAPPROVED.value }, ReportStatus.UNAPPROVED)
+    private fun notifyReportsOnViewModel(reports: List<Report>, status: ReportStatus) {
+        viewModel.notifyReports(reports, status)
     }
 
     fun onClickNavigateBack() {

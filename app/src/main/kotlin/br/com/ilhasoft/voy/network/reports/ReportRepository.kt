@@ -30,11 +30,6 @@ class ReportRepository(
     override fun saveReports(reports: List<Report>): Single<List<Report>> {
         return if (connectionProvider.hasConnection()) {
             localDataSource.saveReports(reports)
-            /*Flowable.just(reports)
-                .flatMap { Flowable.fromIterable(it) }
-                .map { it.copy(shouldSend = false) }
-                .flatMap { localDataSource.saveReport(it) }
-                .toList()*/
         } else {
             Single.just(reports)
         }
