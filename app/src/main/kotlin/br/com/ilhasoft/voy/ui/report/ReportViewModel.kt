@@ -10,9 +10,9 @@ import br.com.ilhasoft.voy.models.Report
  */
 class ReportViewModel : ViewModel() {
 
-    var pendingReports: MutableLiveData<List<Report>> = MutableLiveData()
-    var approvedReports: MutableLiveData<List<Report>> = MutableLiveData()
-    var unApprovedReports: MutableLiveData<List<Report>> = MutableLiveData()
+    private var pendingReports: MutableLiveData<List<Report>> = MutableLiveData()
+    private var approvedReports: MutableLiveData<List<Report>> = MutableLiveData()
+    private var unApprovedReports: MutableLiveData<List<Report>> = MutableLiveData()
 
     fun notifyReports(reports: List<Report>, status: ReportStatus) {
         getReportsFromStatus(status).value = reports

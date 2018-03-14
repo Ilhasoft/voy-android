@@ -5,6 +5,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.ReportViewModel
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,6 +20,9 @@ class ReportViewModelTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: ReportViewModel
+    private val mockedApprovedReports = mutableListOf(Report(id = 100, status = 1))
+    private val mockedPendingReports = mutableListOf(Report(id = 200, status = 2))
+    private val mockedUnapprovedReports = mutableListOf(Report(id = 300, status = 3))
 
     @Before
     fun setup() {
@@ -28,29 +32,25 @@ class ReportViewModelTest {
 
     @Test
     fun shouldLoadReportsWhenHavingApprovedReports() {
-        viewModel.approvedReports.value = createMockedApprovedReports()
-        viewModel.getReports(ReportStatus.APPROVED)
-        assertNotNull(viewModel.getReports(ReportStatus.APPROVED))
+        viewModel.notifyReports(mockedApprovedReports, ReportStatus.APPROVED)
+        val newApprovedReports = viewModel.getReports(ReportStatus.APPROVED)
+        assertNotNull(newApprovedReports)
+        assertTrue(newApprovedReports.value == mockedApprovedReports)
     }
 
     @Test
     fun shouldLoadReportsWhenHavingPendingReports() {
-        viewModel.pendingReports.value = createMockedPendingReports()
-        viewModel.getReports(ReportStatus.PENDING)
-        assertNotNull(viewModel.getReports(ReportStatus.PENDING))
+        viewModel.notifyReports(mockedPendingReports, ReportStatus.PENDING)
+        val newPendingReports = viewModel.getReports(ReportStatus.PENDING)
+        assertNotNull(newPendingReports)
+        assertTrue(newPendingReports.value == mockedPendingReports)
     }
 
     @Test
     fun shouldLoadReportsWhenHavingUnapprovedReports() {
-        viewModel.unApprovedReports.value = createMockedUnapprovedReports()
-        viewModel.getReports(ReportStatus.UNAPPROVED)
-        assertNotNull(viewModel.getReports(ReportStatus.UNAPPROVED))
+        viewModel.notifyReports(mockedUnapprovedReports, ReportStatus.UNAPPROVED)
+        val newUnapprovedReports = viewModel.getReports(ReportStatus.UNAPPROVED)
+        assertNotNull(newUnapprovedReports)
+        assertTrue(newUnapprovedReports.value == mockedUnapprovedReports)
     }
-
-    private fun createMockedApprovedReports() = mutableListOf(Report(id = 100, status = 1))
-
-    private fun createMockedPendingReports() = mutableListOf(Report(id = 200, status = 2))
-
-    private fun createMockedUnapprovedReports() = mutableListOf(Report(id = 300, status = 3))
-
 }
