@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.ui.addreport
 
 import android.location.Location
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.db.report.ReportFileDbModel
 import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.shared.helpers.LocationHelpers
@@ -141,7 +142,7 @@ class AddReportPresenterTest {
                 mockedReport.name,
                 viewModel.selectedTags,
                 viewModel.links,
-                viewModel.medias,
+                viewModel.medias.map { ReportFileDbModel().apply { file = it } }.toMutableList(),
                 mutableListOf(),
                 viewModel.mediasToDelete()
 
