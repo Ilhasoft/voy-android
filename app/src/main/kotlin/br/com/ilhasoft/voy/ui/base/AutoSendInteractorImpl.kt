@@ -7,6 +7,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -25,7 +26,7 @@ class AutoSendInteractorImpl : AutoSendInteractor {
     }
 
     private val reportService by lazy { ReportService() }
-    private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance()) }
+    private val reportDbHelper by lazy { ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()) }
 
     private fun getFromDb() = reportDbHelper.getReportDbModels().onMainThread()
 

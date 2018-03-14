@@ -66,7 +66,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private val presenter: ReportDetailPresenter by lazy {
         ReportDetailPresenter(
             report!!,
-            ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this),
+            ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
             SharedPreferences(this),
             StandardScheduler(),
             this

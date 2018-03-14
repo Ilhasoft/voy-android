@@ -7,6 +7,7 @@ import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -17,7 +18,7 @@ import java.io.File
 /**
  * Created by lucasbarros on 09/02/18.
  */
-class ReportDbHelper(private val realm: Realm) : ReportDataSource {
+class ReportDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) : ReportDataSource {
 
 
     override fun getReport(
@@ -40,6 +41,15 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         medias: List<File>
     ): Observable<Report> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun saveReports(reports: List<Report>): Single<List<Report>> {
+        return Flowable.just(reports)
+            .onMainThread(scheduler)
+            .flatMap { Flowable.fromIterable(it) }
+            .map { it.copy(shouldSend = false) }
+            .flatMapSingle { saveReport(it) }
+            .toList()
     }
 
     override fun updateReport(
@@ -65,7 +75,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
             val reportsDb = realm.where(ReportDbModel::class.java)
                 .equalTo(ReportDbModel::themeId.name, theme).findAll()
             reportsDb.map { it.toReport() }.toList()
-        }.onMainThread()
+        }.onMainThread(scheduler)
     }
 
     override fun saveReport(report: Report): Single<Report> {
@@ -73,7 +83,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
             medias = report.files.map { it.file }, reportId = report.id, status = report.status,
             shouldSend = report.shouldSend
-        ).onMainThread()
+        ).onMainThread(scheduler)
     }
 
     fun getReportDbModels(): Flowable<List<ReportDbModel>> {

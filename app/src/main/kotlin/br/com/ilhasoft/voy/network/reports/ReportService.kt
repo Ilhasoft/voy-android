@@ -27,6 +27,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun saveReports(reports: List<Report>): Single<List<Report>> = Single.just(reports)
+
     fun getReports(
         page: Int? = null,
         page_size: Int? = null,

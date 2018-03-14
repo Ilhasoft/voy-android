@@ -30,6 +30,8 @@ interface ReportDataSource {
         tags: List<String>, urls: List<String>?, medias: List<File>
     ): Observable<Report>
 
+    fun saveReports(reports: List<Report>): Single<List<Report>>
+
     fun updateReport(
         reportId: Int,
         theme: Int,

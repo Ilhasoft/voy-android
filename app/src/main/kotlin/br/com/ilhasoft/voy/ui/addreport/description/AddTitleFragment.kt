@@ -20,6 +20,7 @@ import br.com.ilhasoft.voy.databinding.ItemLinkBinding
 import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.addreport.AddReportInteractorImpl
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModel
 import br.com.ilhasoft.voy.ui.addreport.ReportViewModelFactory
@@ -38,7 +39,7 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
 
     private val reportViewModel by lazy {
         val factory = ReportViewModelFactory(
-            AddReportInteractorImpl(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this))
+            AddReportInteractorImpl(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this))
         )
         ViewModelProviders.of(activity, factory).get(ReportViewModel::class.java)
     }
