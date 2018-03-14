@@ -60,7 +60,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
+    override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<List<Report>> {
         return Single.fromCallable {
             val reportsDb = realm.where(ReportDbModel::class.java)
                 .equalTo(ReportDbModel::themeId.name, theme).findAll()

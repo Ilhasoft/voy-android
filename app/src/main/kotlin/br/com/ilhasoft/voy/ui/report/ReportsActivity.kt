@@ -11,6 +11,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
 import br.com.ilhasoft.voy.db.report.ReportDbHelper
+import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.User
@@ -20,6 +21,7 @@ import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
+import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import io.realm.Realm
 
@@ -41,7 +43,8 @@ class ReportsActivity : BaseActivity(), ReportsContract {
             allowLinks: Boolean
         ): Intent {
             ThemeData.themeId = themeId
-            ThemeData.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
+            ThemeData.themeColor =
+                    Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds
             ThemeData.allowLinks = allowLinks
 
@@ -57,7 +60,14 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
     private lateinit var viewModel: ReportViewModel
     private val presenter: ReportsPresenter by lazy {
-        ReportsPresenter(ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance()), this))
+        ReportsPresenter(
+            SharedPreferences(this),
+            ReportRepository(
+                ReportService(),
+                ReportDbHelper(Realm.getDefaultInstance()),
+                this
+            )
+        )
     }
     private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
     private val themeId: Int by lazy { intent.extras.getInt(EXTRA_THEME_ID, 0) }
@@ -107,6 +117,10 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         loadingObserver.set(false)
     }
 
+    override fun navigateToReportDetail(report: Report) {
+        startActivity(ReportDetailActivity.createIntent(this, report))
+    }
+
     private fun setupView() {
         binding.apply {
             isLoading = loadingObserver
@@ -133,12 +147,18 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
 
     private fun createNavigationItems(): MutableList<NavigationItem> {
-        val approved = NavigationItem(ReportFragment.newInstance(ReportStatus.APPROVED.value),
-                getString(R.string.approved_fragment_title))
-        val pending = NavigationItem(ReportFragment.newInstance(ReportStatus.PENDING.value),
-                getString(R.string.pending_fragment_title))
-        val rejected = NavigationItem(ReportFragment.newInstance(ReportStatus.UNAPPROVED.value),
-                getString(R.string.not_approved_fragment_title))
+        val approved = NavigationItem(
+            ReportFragment.newInstance(ReportStatus.APPROVED.value),
+            getString(R.string.approved_fragment_title)
+        )
+        val pending = NavigationItem(
+            ReportFragment.newInstance(ReportStatus.PENDING.value),
+            getString(R.string.pending_fragment_title)
+        )
+        val rejected = NavigationItem(
+            ReportFragment.newInstance(ReportStatus.UNAPPROVED.value),
+            getString(R.string.not_approved_fragment_title)
+        )
         return mutableListOf(approved, pending, rejected)
     }
 

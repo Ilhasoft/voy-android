@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import br.com.ilhasoft.support.core.helpers.DimensionHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
+import br.com.ilhasoft.support.recyclerview.adapters.OnDemandListener
 import br.com.ilhasoft.support.recyclerview.decorations.LinearSpaceItemDecoration
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
@@ -25,7 +26,7 @@ import br.com.ilhasoft.voy.ui.report.ReportViewModel
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
-class ReportFragment : BaseFragment(), ReportContract {
+class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
 
     companion object {
         private const val EXTRA_STATUS = "status"
@@ -57,7 +58,7 @@ class ReportFragment : BaseFragment(), ReportContract {
         }
     }
     private val reportsAdapter: AutoRecyclerAdapter<Report, ReportViewHolder> by lazy {
-        AutoRecyclerAdapter(mutableListOf(), reportViewHolder).apply {
+        AutoRecyclerAdapter(reportViewHolder, this).apply {
             setHasStableIds(true)
         }
     }
@@ -88,11 +89,14 @@ class ReportFragment : BaseFragment(), ReportContract {
         startActivity(ReportDetailActivity.createIntent(context, report))
     }
 
+    override fun onLoadMore() {
+        // call presenter to load more
+    }
+
     private fun setupView(binding: FragmentReportsBinding) = with(binding) {
         isBiggerThenZero = this@ReportFragment.itemsQuantityObserver
         isEmptyState = this@ReportFragment.emptyStateObserver
         setupRecyclerView(reports)
-        this.presenter = this@ReportFragment.presenter
         presenter?.let {
             val position = it.getAvatarPositionFromPreferences()
             drawableResId = ResourcesHelper.getAvatarsResources(activity)[position]

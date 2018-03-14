@@ -19,7 +19,7 @@
 
         <variable
             name="presenter"
-            type="br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter" />
+            type="br.com.ilhasoft.voy.ui.report.ReportsPresenter" />
 
     </data>
 

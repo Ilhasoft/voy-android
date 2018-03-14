@@ -13,7 +13,8 @@ import java.io.File
 interface ReportDataSource {
 
     fun getReports(theme: Int? = null, project: Int? = null,
-                   mapper: Int? = null, status: Int? = null): Single<List<Report>>
+                   mapper: Int? = null, status: Int? = null,
+                   page: Int? = null, page_size: Int? = null): Single<List<Report>>
 
     fun getReport(
         id: Int,

@@ -35,10 +35,6 @@
             name="isEmptyState"
             type="android.databinding.ObservableBoolean" />
 
-        <variable
-            name="presenter"
-            type="br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter" />
-
     </data>
 
     <FrameLayout
