@@ -201,14 +201,16 @@ class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
 
     override fun navigateToThemeReports(theme: Theme) {
         startActivity(
-            ReportsActivity.createIntent(
-                this,
-                theme.id,
-                theme.name,
-                theme.color,
-                theme.bounds,
-                theme.allowLinks
-            )
+                ReportsActivity.createIntent(
+                        this,
+                        theme.id,
+                        theme.name,
+                        theme.color,
+                        theme.bounds,
+                        theme.allowLinks,
+                        theme.startAt,
+                        theme.endAt
+                )
         )
     }
 

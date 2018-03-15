@@ -3,11 +3,13 @@ package br.com.ilhasoft.voy.ui.report
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
+import java.util.*
 
 /**
  * Created by developer on 11/01/18.
@@ -44,6 +46,10 @@ class ReportsPresenter(
     }
 
     fun onClickAddReport() {
-        view.navigateToAddReport()
+        val currentTime = Calendar.getInstance().time
+        if ((ThemeData.startAt..ThemeData.endAt).contains(currentTime))
+            view.navigateToAddReport()
+        else
+            view.showMessage(R.string.period_ended_text)
     }
 }

@@ -56,6 +56,8 @@ class ThemeDbHelper(private val realm: Realm, private val scheduler: BaseSchedul
         tags.addAll(theme.tags)
         color = theme.color
         allowLinks = theme.allowLinks
+        startAt = theme.startAt
+        endAt = theme.endAt
     }
 
     fun getThemeTags(themeId: Int): Flowable<MutableList<String>> {
