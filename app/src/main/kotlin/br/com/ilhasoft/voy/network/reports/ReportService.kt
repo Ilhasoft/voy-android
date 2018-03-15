@@ -1,5 +1,7 @@
 package br.com.ilhasoft.voy.network.reports
 
+import android.util.Log
+import android.webkit.MimeTypeMap
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
@@ -230,7 +232,13 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         }
 
         val requestFile = RetrofitHelper.prepareFilePart("file", file, mimeType)
+        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(file.path)
+        val fileType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
+        if (fileType.contains("video")) {
+            val requestVideoThumbnail = RetrofitHelper.prepareVideoThumbnail("thumbnail", file)
+            return apiFile.saveFile(requestMap, requestFile, requestVideoThumbnail)
+        }
         return apiFile.saveFile(requestMap, requestFile)
     }
 
