@@ -9,7 +9,7 @@ import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
-import java.util.*
+import java.util.Calendar
 
 /**
  * Created by developer on 11/01/18.

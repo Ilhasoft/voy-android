@@ -1,6 +1,6 @@
 package br.com.ilhasoft.voy.models
 
-import java.util.*
+import java.util.Date
 
 /**
  * Created by lucasbarros on 01/02/18.

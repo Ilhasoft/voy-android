@@ -4,7 +4,7 @@ import br.com.ilhasoft.voy.models.Theme
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
-import java.util.*
+import java.util.Date
 
 /**
  * Created by lucasbarros on 08/02/18.

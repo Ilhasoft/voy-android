@@ -1,7 +1,7 @@
 package br.com.ilhasoft.voy.models
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
+import java.util.Date
 
 /**
  * Created by geral on 13/12/17.

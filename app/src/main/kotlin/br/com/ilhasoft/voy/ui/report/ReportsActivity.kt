@@ -23,7 +23,7 @@ import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import io.realm.Realm
-import java.util.*
+import java.util.Date
 
 /**
  * Created by developer on 11/01/18.
