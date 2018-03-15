@@ -16,6 +16,7 @@ import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import br.com.ilhasoft.voy.ui.login.LoginContract
 import br.com.ilhasoft.voy.ui.login.LoginPresenter
 import io.reactivex.Flowable
+import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.junit.After
@@ -90,7 +91,7 @@ class LoginPresenterTest {
                 .thenReturn(Flowable.just(AuthorizationResponse(token)))
 
         `when`(userDataSource.getUser())
-                .thenReturn(Flowable.just(mockedUser))
+                .thenReturn(Single.just(mockedUser))
 
         presenter.onClickLogin(validCredentials)
 
@@ -114,7 +115,7 @@ class LoginPresenterTest {
                 .thenReturn(Flowable.just(AuthorizationResponse(token)))
 
         `when`(userDataSource.getUser())
-                .thenReturn(Flowable.just(mockedUser))
+                .thenReturn(Single.just(mockedUser))
 
         presenter.onClickLogin(validCredentials)
 

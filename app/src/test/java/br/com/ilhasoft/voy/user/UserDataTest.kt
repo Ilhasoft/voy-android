@@ -5,7 +5,7 @@ import br.com.ilhasoft.voy.network.users.UserChangeRequest
 import br.com.ilhasoft.voy.network.users.UserDataSource
 import br.com.ilhasoft.voy.network.users.UserRepository
 import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -33,7 +33,7 @@ class UserDataTest {
 
     @Test
     fun shouldReturnUserFromAPI() {
-        `when`(userService.getUser()).thenReturn(Flowable.just(createMockUser()))
+        `when`(userService.getUser()).thenReturn(Single.just(createMockUser()))
 
         userRepository.getUser()
                 .test()
@@ -45,7 +45,7 @@ class UserDataTest {
 
     @Test
     fun shouldNotReturnUserFromAPI() {
-        `when`(userService.getUser()).thenReturn(Flowable.error(TimeoutException()))
+        `when`(userService.getUser()).thenReturn(Single.error(TimeoutException()))
 
         userRepository.getUser()
                 .test()
