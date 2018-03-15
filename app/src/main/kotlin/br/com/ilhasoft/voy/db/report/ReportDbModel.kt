@@ -6,7 +6,6 @@ import br.com.ilhasoft.voy.db.theme.BoundDbModel
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
-import br.com.ilhasoft.voy.shared.extensions.toFilePath
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.realm.RealmList
@@ -28,7 +27,7 @@ open class ReportDbModel : RealmObject() {
     var description: String? = null
     var tags: RealmList<String> = RealmList()
     var urls: RealmList<String> = RealmList()
-    var mediasPath: RealmList<String> = RealmList()
+    var medias: RealmList<ReportFileDbModel> = RealmList()
     var newFiles: RealmList<String> = RealmList()
     var filesToDelete: RealmList<ReportFileDbModel> = RealmList()
     var createdOn: String = ""
@@ -38,14 +37,14 @@ open class ReportDbModel : RealmObject() {
 fun ReportDbModel.toReport(): Report {
     var lastImage: ReportFile? = null
     val files = mutableListOf<ReportFile>()
-    mediasPath.forEach {
-        var mimeType = FileHelper.getMimeTypeFromUri(VoyApplication.instance, Uri.parse(it))
+    medias.forEach {
+        var mimeType = FileHelper.getMimeTypeFromUri(VoyApplication.instance, Uri.parse(it.file))
         mimeType = if (FileHelper.imageTypes.contains(mimeType)) {
             "image"
         } else {
             "video"
         }
-        files.add(ReportFile(file = it.toFilePath(), reportId = id, mediaType = mimeType))
+        files.add(ReportFile(id = it.id, file = it.file, reportId = id, mediaType = mimeType))
     }
 
     if (files.size > 0) {

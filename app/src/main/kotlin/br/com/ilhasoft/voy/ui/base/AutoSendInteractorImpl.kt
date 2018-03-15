@@ -63,7 +63,7 @@ class AutoSendInteractorImpl : AutoSendInteractor {
                 report.name,
                 report.tags,
                 report.urls,
-                reportDbModel.mediasPath.map { File(it) }
+                reportDbModel.medias.map { File(it.file) }
             )
         } else {
             reportService.updateReport(
