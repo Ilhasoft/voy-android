@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.network.reports
 
-import android.util.Log
 import android.webkit.MimeTypeMap
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
