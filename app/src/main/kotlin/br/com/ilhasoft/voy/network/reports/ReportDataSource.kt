@@ -14,7 +14,7 @@ interface ReportDataSource {
 
     fun getReports(theme: Int? = null, project: Int? = null,
                    mapper: Int? = null, status: Int? = null,
-                   page: Int? = null, page_size: Int? = null): Single<Pair<Int, List<Report>>>
+                   page: Int? = null, page_size: Int? = null): Single<Pair<String?, List<Report>>>
 
     fun getReport(
         id: Int,

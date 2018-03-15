@@ -14,7 +14,6 @@ import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
@@ -29,7 +28,8 @@ import io.realm.Realm
 /**
  * Created by developer on 11/01/18.
  */
-class ReportsActivity : BaseActivity(), ReportsContract {
+class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
+
 
     companion object {
         @JvmStatic
@@ -77,7 +77,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
-        presenter.loadReports(theme = themeId, mapper = SharedPreferences(this).getInt(User.ID))
+        presenter.loadReports(themeId,null, 1)//default initial request
     }
 
     override fun onStart() {
@@ -115,6 +115,14 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
     override fun navigateToReportDetail(report: Report) {
         startActivity(ReportDetailActivity.createIntent(this, report))
+    }
+
+    override fun requestMoreReports(displayedCount: Int, reportStatus: Int, actualPage: Int?) {
+        presenter.loadReports(ThemeData.themeId, reportStatus, actualPage)
+    }
+
+    override fun disableLoadDemand() {
+
     }
 
     private fun setupView() {

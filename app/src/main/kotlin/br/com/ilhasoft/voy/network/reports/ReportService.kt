@@ -18,9 +18,9 @@ import java.io.File
  */
 class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), ReportDataSource {
 
-    override fun getReports(theme: Int? , project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<Pair<Int,List<Report>>> {
+    override fun getReports(theme: Int? , project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<Pair<String?, List<Report>>> {
         return api.getReports(createReportQuery(theme, project, mapper, status, page, page_size))
-            .map { it.count to it.results }
+            .map { it.next to it.results }
     }
 
     override fun saveReport(report: Report): Single<Report> {

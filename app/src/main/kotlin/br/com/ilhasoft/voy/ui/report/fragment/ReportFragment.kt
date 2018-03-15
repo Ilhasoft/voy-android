@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.ui.report.fragment
 
+import android.app.DownloadManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.ObservableBoolean
@@ -23,6 +24,8 @@ import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.ReportViewModel
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
+import br.com.ilhasoft.voy.ui.report.RequestReportListener
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
@@ -51,6 +54,8 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     private val itemsQuantityObserver = ObservableBoolean(false)
     private val emptyStateObserver = ObservableBoolean(false)
 
+    private val requestReportListener: RequestReportListener by lazy { activity as ReportsActivity }
+
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
             ReportViewHolder(ItemReportBinding.inflate(layoutInflater, parent, false),
@@ -63,6 +68,7 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
         }
     }
     private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
+    private var page = 1
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -90,7 +96,8 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     }
 
     override fun onLoadMore() {
-        // call presenter to load more
+        requestReportListener.requestMoreReports(reportsAdapter.itemCount, status, page)
+        page++
     }
 
     private fun setupView(binding: FragmentReportsBinding) = with(binding) {
