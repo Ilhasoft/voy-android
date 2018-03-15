@@ -1,7 +1,6 @@
 package br.com.ilhasoft.voy.network.projects
 
 import br.com.ilhasoft.voy.models.Project
-import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.ServiceFactory
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -11,7 +10,7 @@ import io.reactivex.Single
  */
 class ProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java), ProjectDataSource {
 
-    override fun getProjects(): Flowable<MutableList<Project>> = api.getProjects(BaseFactory.accessToken)
+    override fun getProjects(): Flowable<MutableList<Project>> = api.getProjects()
 
     override fun getProject(projectId: Int): Single<Project> = api.getProject(projectId)
 
