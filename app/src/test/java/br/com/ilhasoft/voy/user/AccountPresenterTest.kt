@@ -7,7 +7,7 @@ import br.com.ilhasoft.voy.ui.account.AccountContract
 import br.com.ilhasoft.voy.ui.account.AccountInteractor
 import br.com.ilhasoft.voy.ui.account.AccountPresenter
 import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.junit.Before
@@ -41,10 +41,9 @@ class AccountPresenterTest {
         mockedUser = createMockUser()
     }
 
-
     @Test
     fun shouldLoadAndDisplayUser() {
-        `when`(accountInteractor.getUser()).thenReturn(Flowable.just(mockedUser))
+        `when`(accountInteractor.getUser()).thenReturn(Single.just(mockedUser))
 
         accountPresenter.start()
 
@@ -53,7 +52,7 @@ class AccountPresenterTest {
 
     @Test
     fun `should not load user when trying to request offline`() {
-        `when`(accountInteractor.getUser()).thenReturn(Flowable.error(UnknownHostException()))
+        `when`(accountInteractor.getUser()).thenReturn(Single.error(UnknownHostException()))
 
         accountPresenter.start()
 
@@ -64,7 +63,7 @@ class AccountPresenterTest {
     fun `should not load user when a bad request happens`() {
         `when`(accountInteractor.getUser())
             .thenReturn(
-                Flowable.error(
+                Single.error(
                     HttpException(
                         Response.error<UserApi>(
                             403,
@@ -86,7 +85,7 @@ class AccountPresenterTest {
     fun `should not save user when a server error occur`() {
         `when`(accountInteractor.getUser())
             .thenReturn(
-                Flowable.error(
+                Single.error(
                     HttpException(
                         Response.error<UserApi>(
                             500,

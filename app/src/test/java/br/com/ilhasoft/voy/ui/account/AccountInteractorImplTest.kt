@@ -10,13 +10,12 @@ import br.com.ilhasoft.voy.network.users.UserRepository
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.realm.Realm
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import java.lang.NullPointerException
 
@@ -51,7 +50,7 @@ class AccountInteractorImplTest {
     @Test
     fun `Should get user from service when online`() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(userDataSource.getUser()).thenReturn(Flowable.just(mockedUser))
+        `when`(userDataSource.getUser()).thenReturn(Single.just(mockedUser))
 
         accountInteractor.getUser()
             .test()
@@ -81,7 +80,7 @@ class AccountInteractorImplTest {
     @Test
     fun `Should throw NPE when not find user access token`() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(userDataSource.getUser()).thenReturn(Flowable.error(NullPointerException()))
+        `when`(userDataSource.getUser()).thenReturn(Single.error(NullPointerException()))
 
         accountInteractor.getUser()
             .test()

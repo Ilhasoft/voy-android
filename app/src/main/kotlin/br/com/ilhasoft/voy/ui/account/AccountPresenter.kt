@@ -9,7 +9,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class AccountPresenter(
-        private val accountInteractor: AccountInteractor
+    private val accountInteractor: AccountInteractor
 ) : Presenter<AccountContract>(AccountContract::class.java) {
 
     var avatarDrawableId: Int? = null
@@ -25,38 +25,37 @@ class AccountPresenter(
         super.detachView()
     }
 
-    fun loadUser() {
+    private fun loadUser() {
         compositeDisposable.add(
-                accountInteractor.getUser()
-                        .subscribe(
-                                {
-                                    it?.apply {
-                                        setAvatarByPosition(avatar.extractNumbers())
-                                        view.setUser(it)
-                                    }
-                                },
-                                {
-                                    ErrorHandlerHelper.showError(it) { msg ->
-                                        view.showMessage(msg)
-                                    }
-                                }
-                        )
+            accountInteractor.getUser()
+                .subscribe(
+                    {
+                        it?.apply {
+                            setAvatarByPosition(avatar.extractNumbers())
+                            view.setUser(it)
+                        }
+                    },
+                    {
+                        ErrorHandlerHelper.showError(it) { msg ->
+                            view.showMessage(msg)
+                        }
+                    }
+                )
         )
-
     }
 
     fun saveUser(user: User) {
         compositeDisposable.add(
-                accountInteractor.editUser(user)
-                        .loadControl(view)
-                        .subscribe(
-                                { view.userUpdatedMessage() },
-                                {
-                                    ErrorHandlerHelper.showError(it) { msg ->
-                                        view.showMessage(msg)
-                                    }
-                                }
-                        )
+            accountInteractor.editUser(user)
+                .loadControl(view)
+                .subscribe(
+                    { view.userUpdatedMessage() },
+                    {
+                        ErrorHandlerHelper.showError(it) { msg ->
+                            view.showMessage(msg)
+                        }
+                    }
+                )
         )
     }
 
@@ -70,9 +69,9 @@ class AccountPresenter(
 
     fun onClickSaveMyAccount() {
         compositeDisposable.add(
-                Single.just(view)
-                        .filter { it.isValidUser() }
-                        .subscribe { view.saveUser() }
+            Single.just(view)
+                .filter { it.isValidUser() }
+                .subscribe { view.saveUser() }
         )
     }
 
