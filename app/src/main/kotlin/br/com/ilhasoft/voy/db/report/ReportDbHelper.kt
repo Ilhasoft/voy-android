@@ -7,6 +7,7 @@ import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -17,7 +18,7 @@ import java.io.File
 /**
  * Created by lucasbarros on 09/02/18.
  */
-class ReportDbHelper(private val realm: Realm) : ReportDataSource {
+class ReportDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) : ReportDataSource {
 
 
     override fun getReport(
@@ -42,6 +43,15 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun saveReports(reports: List<Report>): Single<List<Report>> {
+        return Flowable.just(reports)
+            .onMainThread(scheduler)
+            .flatMap { Flowable.fromIterable(it) }
+            .map { it.copy(shouldSend = false) }
+            .flatMapSingle { saveReport(it) }
+            .toList()
+    }
+
     override fun updateReport(
         reportId: Int,
         theme: Int,
@@ -60,21 +70,24 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<List<Report>> {
+    override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<Pair<Int, List<Report>>> {
         return Single.fromCallable {
             val reportsDb = realm.where(ReportDbModel::class.java)
                 .equalTo(ReportDbModel::themeId.name, theme).findAll()
             reportsDb.map { it.toReport() }.toList()
-        }.onMainThread()
+        }
+            .map { it.size to it }
+            .onMainThread(scheduler)
     }
 
     override fun saveReport(report: Report): Single<Report> {
         return saveReport(report.internalId, theme = report.theme, location = report.location!!,
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
-            medias = report.files.map { it.file }, reportId = report.id, status = report.status,
+            medias = createReportFileDbModel(report.files), reportId = report.id, status = report.status,
             shouldSend = report.shouldSend
-        ).onMainThread()
+        ).onMainThread(scheduler)
     }
+
 
     fun getReportDbModels(): Flowable<List<ReportDbModel>> {
         return Flowable.fromCallable {
@@ -92,7 +105,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        medias: List<String>,
+        medias: MutableList<ReportFileDbModel>,
         reportId: Int? = null,
         newFiles: List<String>? = null,
         filesToDelete: List<ReportFile>? = null,
@@ -144,7 +157,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
         name: String,
         description: String?,
         tags: List<String>,
-        medias: List<String>,
+        medias: MutableList<ReportFileDbModel>,
         urls: List<String>?,
         reportId: Int?,
         newFiles: List<String>?,
@@ -162,7 +175,7 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
             this.status = status
             this.description = description
             this.tags.addAll(tags)
-            this.mediasPath.addAll(medias)
+            this.medias.addAll(medias)
             this.shouldSend = shouldSend
             urls?.let {
                 this.urls.addAll(it)
@@ -171,15 +184,25 @@ class ReportDbHelper(private val realm: Realm) : ReportDataSource {
             newFiles?.let {
                 this.newFiles.addAll(it)
             }
-            filesToDelete?.let {
-                this.filesToDelete.addAll(filesToDelete.map { reportFile ->
-                    mediasPath.remove(reportFile.file)
+            filesToDelete?.map { reportFile ->
+                medias.filter { it.id == reportFile.id }.map {
                     ReportFileDbModel().apply {
-                        id = reportFile.id
-                        file = reportFile.file
+                        id = it.id
+                        file = it.file
                     }
-                })
+                }
             }
         }
     }
+
+    private fun createReportFileDbModel(files: MutableList<ReportFile>): MutableList<ReportFileDbModel> {
+        return files.map {
+            ReportFileDbModel().apply {
+                id = it.id
+                file = it.file
+            }
+        }.toMutableList()
+
+    }
+
 }

@@ -14,7 +14,7 @@ interface ReportDataSource {
 
     fun getReports(theme: Int? = null, project: Int? = null,
                    mapper: Int? = null, status: Int? = null,
-                   page: Int? = null, page_size: Int? = null): Single<List<Report>>
+                   page: Int? = null, page_size: Int? = null): Single<Pair<Int, List<Report>>>
 
     fun getReport(
         id: Int,
@@ -30,6 +30,8 @@ interface ReportDataSource {
         theme: Int, location: Location, description: String?, name: String,
         tags: List<String>, urls: List<String>?, medias: List<File>
     ): Observable<Report>
+
+    fun saveReports(reports: List<Report>): Single<List<Report>>
 
     fun updateReport(
         reportId: Int,

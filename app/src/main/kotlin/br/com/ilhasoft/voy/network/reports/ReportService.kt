@@ -18,14 +18,37 @@ import java.io.File
  */
 class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), ReportDataSource {
 
-    override fun getReports(theme: Int? , project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<List<Report>> {
+    override fun getReports(theme: Int? , project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<Pair<Int,List<Report>>> {
         return api.getReports(createReportQuery(theme, project, mapper, status, page, page_size))
-            .map { it.results }
+            .map { it.count to it.results }
     }
 
     override fun saveReport(report: Report): Single<Report> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun saveReports(reports: List<Report>): Single<List<Report>> = Single.just(reports)
+//
+//    fun getReports(
+//        page: Int? = null,
+//        page_size: Int? = null,
+//        theme: Int? = null,
+//        project: Int? = null,
+//        mapper: Int? = null,
+//        status: Int? = null
+//    ): Single<Response<Report>> {
+//
+//        val reportsRequest = mutableMapOf<String, Int?>()
+//        reportsRequest.apply {
+//            putIfNotNull("page", page)
+//            putIfNotNull("page_size", page_size)
+//            putIfNotNull("theme", theme)
+//            putIfNotNull("project", project)
+//            putIfNotNull("mapper", mapper)
+//            putIfNotNull("status", status)
+//        }
+//        return api.getReports(reportsRequest)
+//    }
 
     private fun createReportQuery(theme: Int? = null, project: Int? = null, mapper: Int? = null,
                                   status: Int? = null, page: Int? = null, page_size: Int? = null): Map<String, Int?> {
@@ -125,9 +148,9 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         newFiles: List<File>? = null,
         filesToDelete: List<Int>?
     ): Observable<Report> {
-        return Observable.fromIterable(filesToDelete)
+        return Observable.just(filesToDelete)
             .flatMapCompletable {
-                deleteFile(it)
+                deleteFiles(it)
             }
             .toSingleDefault(true)
             .flatMapObservable {
@@ -178,6 +201,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
     }
 
     private fun deleteFile(fileId: Int): Completable = api.deleteFile(fileId)
+
+    private fun deleteFiles(ids: List<Int>):Completable = api.deleteFiles(ids.joinToString(","))
 
     private fun saveReportInternal(
         theme: Int,

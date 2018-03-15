@@ -4,6 +4,7 @@ import android.net.Uri
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.support.rxgraphics.FileCompressor
 import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.db.report.ReportFileDbModel
 import br.com.ilhasoft.voy.models.AddReportFragmentType
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
@@ -151,9 +152,10 @@ class AddReportPresenter(
                     else
                         FileCompressor.compressVideo(file)
                 }
-                .toList()
-                .flatMapObservable {
-                    reportInteractor.updateReport(
+            .toList()
+            .subscribeOn(scheduler.ui())
+            .flatMapObservable {
+                reportInteractor.updateReport(
                             report.internalId,
                             report.id,
                             ThemeData.themeId,
@@ -162,7 +164,7 @@ class AddReportPresenter(
                             name,
                             selectedTags,
                             links,
-                            medias.map { it },
+                            medias.map { ReportFileDbModel().apply { file = it } }.toMutableList(),
                             it,
                             mediasToDelete()
                     )

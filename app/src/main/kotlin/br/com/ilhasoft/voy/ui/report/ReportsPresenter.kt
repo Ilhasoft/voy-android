@@ -10,27 +10,38 @@ import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
+import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
+import timber.log.Timber
 
 /**
  * Created by developer on 11/01/18.
  */
 class ReportsPresenter(
     private val preferences: Preferences,
-    private val reportRepository: ReportRepository):
-    Presenter<ReportsContract>(ReportsContract::class.java) {
+    private val reportRepository: ReportRepository,
+    private val scheduler: BaseScheduler,
+    private val viewModel: ReportViewModel
+) : Presenter<ReportsContract>(ReportsContract::class.java) {
 
-    var viewModel: ReportViewModel? = null
-    var page = 1
-    var page_size = 10
+
+    private var page = 1
+    private var page_size = 50
 
     fun loadReports(theme: Int, mapper: Int) {
-        reportRepository.getReports(theme = theme, mapper = mapper, page = page, page_size = page_size)
-            .fromIoToMainThread()
+        reportRepository.getReports(theme = theme, mapper = mapper, page= page, page_size = page_size)
+            .doOnSuccess { (count, _) ->
+                updateRequestParameters(count)
+            }
+            .flatMap { (_, reports) ->
+                reportRepository.saveReports(reports)
+            }
+            .fromIoToMainThread(scheduler)
             .loadControl(view)
+            .doOnSuccess { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.APPROVED.value }, ReportStatus.APPROVED) }
+            .doOnSuccess { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.PENDING.value }, ReportStatus.PENDING) }
             .subscribe(
-                { notifyReportsOnViewModel(it) },
+                { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.UNAPPROVED.value }, ReportStatus.UNAPPROVED) },
                 {
-                    it.printStackTrace()
                     ErrorHandlerHelper.showError(it, R.string.report_list_error) { msg ->
                         view.showMessage(msg)
                     }
@@ -38,10 +49,12 @@ class ReportsPresenter(
             )
     }
 
-    private fun notifyReportsOnViewModel(reports: List<Report>) {
-        viewModel?.notifyReports(reports.filter { it.status == ReportStatus.APPROVED.value }, ReportStatus.APPROVED)
-        viewModel?.notifyReports(reports.filter { it.status == ReportStatus.PENDING.value }, ReportStatus.PENDING)
-        viewModel?.notifyReports(reports.filter { it.status == ReportStatus.UNAPPROVED.value }, ReportStatus.UNAPPROVED)
+    private fun updateRequestParameters(count: Int) {
+        Timber.e("the count is $count")
+    }
+
+    private fun notifyReportsOnViewModel(reports: List<Report>, status: ReportStatus) {
+        viewModel.notifyReports(reports, status)
     }
 
     fun onClickNavigateBack() {
