@@ -10,7 +10,7 @@ import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.Single
 
 /**
  * Created by erickjones on 09/02/18.
@@ -23,7 +23,7 @@ class AccountInteractorImpl(
     private val scheduler: BaseScheduler
 ) : AccountInteractor {
 
-    override fun getUser(): Flowable<User?> {
+    override fun getUser(): Single<User?> {
         return if (connectionProvider.hasConnection()) {
             userRepository.getUser()
                 .fromIoToMainThread(scheduler)
@@ -45,8 +45,8 @@ class AccountInteractorImpl(
         baseDbHelper.deleteAllData()
     }
 
-    private fun getUserFromPreferences(): Flowable<User?> {
-        return Flowable.fromCallable {
+    private fun getUserFromPreferences(): Single<User?> {
+        return Single.fromCallable {
             preferences.run {
                 User(
                     getInt(User.ID),
@@ -58,8 +58,8 @@ class AccountInteractorImpl(
         }
     }
 
-    private fun saveUser(user: User): Flowable<User> {
-        return Flowable.fromCallable {
+    private fun saveUser(user: User): Single<User> {
+        return Single.fromCallable {
             preferences.run {
                 put(User.ID, user.id)
                 put(User.USERNAME, user.username)
