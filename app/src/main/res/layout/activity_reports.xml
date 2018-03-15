@@ -5,6 +5,9 @@
 
     <data>
 
+        <import type="java.util.Calendar" />
+        <import type="java.util.Date" />
+
         <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.report.ReportsPresenter" />
@@ -64,7 +67,7 @@
                 android:layout_gravity="bottom"
                 android:background="@color/bright_sky_blue"
                 android:text="@string/add_report_label"
-                android:onClick="@{() -> presenter.onClickAddReport()}"
+                android:onClick="@{() -> presenter.onClickAddReport(Calendar.getInstance().time)}"
                 android:textAllCaps="false"
                 android:textColor="@color/white_three"
                 android:textSize="16sp"

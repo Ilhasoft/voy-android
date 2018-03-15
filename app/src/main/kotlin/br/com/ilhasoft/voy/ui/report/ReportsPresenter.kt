@@ -9,7 +9,7 @@ import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
-import java.util.Calendar
+import java.util.*
 
 /**
  * Created by developer on 11/01/18.
@@ -45,8 +45,7 @@ class ReportsPresenter(
         view.navigateBack()
     }
 
-    fun onClickAddReport() {
-        val currentTime = Calendar.getInstance().time
+    fun onClickAddReport(currentTime: Date) {
         if ((ThemeData.startAt..ThemeData.endAt).contains(currentTime))
             view.navigateToAddReport()
         else
