@@ -4,6 +4,7 @@ import br.com.ilhasoft.voy.models.Theme
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+import java.util.Date
 
 /**
  * Created by lucasbarros on 08/02/18.
@@ -17,6 +18,8 @@ open class ThemeDbModel : RealmObject() {
     var tags: RealmList<String> = RealmList()
     var color: String = "00cbff"
     var allowLinks: Boolean = true
+    var startAt: Date = Date()
+    var endAt: Date = Date()
 }
 
 fun ThemeDbModel.toTheme(): Theme {
@@ -25,5 +28,7 @@ fun ThemeDbModel.toTheme(): Theme {
             bounds = this.bounds.map { arrayListOf(it.lat, it.lng) }.toList(),
             tags = this.tags,
             color = this.color,
-            allowLinks = this.allowLinks)
+            allowLinks = this.allowLinks,
+            startAt = this.startAt,
+            endAt = this.endAt)
 }
