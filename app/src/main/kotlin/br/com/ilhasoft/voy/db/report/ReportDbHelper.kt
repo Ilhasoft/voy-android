@@ -70,12 +70,15 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
+    override fun getReports(theme: Int? ,project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<Pair<String?, List<Report>>> {
+        val next: String? = ""
         return Single.fromCallable {
             val reportsDb = realm.where(ReportDbModel::class.java)
                 .equalTo(ReportDbModel::themeId.name, theme).findAll()
             reportsDb.map { it.toReport() }.toList()
-        }.onMainThread(scheduler)
+        }
+            .map { next to it }
+            .onMainThread(scheduler)
     }
 
     override fun saveReport(report: Report): Single<Report> {

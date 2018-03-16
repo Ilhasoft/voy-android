@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.ui.report
 
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.ui.base.BaseView
 
 /**
@@ -11,4 +12,7 @@ interface ReportsContract : BaseView, CheckConnectionProvider{
     fun navigateBack()
 
     fun navigateToAddReport()
+
+    fun navigateToReportDetail(report: Report)
+
 }

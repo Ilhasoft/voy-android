@@ -41,6 +41,8 @@ class ReportDataTest {
     private val mockProject = 1
     private val mockMapper = 1
     private val mockStatus = 1
+    private val mockPage = 1
+    private val mockNext = ""
     private val mockName = "FakeName"
     private val mockDescription = "FakeDescription"
     private val mockLocation = Location("GPS", arrayListOf(1.2, 2.2))
@@ -79,7 +81,7 @@ class ReportDataTest {
                 mockMapper,
                 mockStatus
             )
-        ).thenReturn(Single.just(mockReponse.results))
+        ).thenReturn(Single.just(mockNext to mockReponse.results))
 
         reportRepository.getReports(
             mockTheme,

@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.report
 
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
+import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
@@ -27,6 +28,9 @@ import java.util.*
 class ReportsPresenterTest {
 
     @Mock
+    private lateinit var preferences: Preferences
+
+    @Mock
     private lateinit var remoteDataSource: ReportDataSource
 
     @Mock
@@ -40,7 +44,9 @@ class ReportsPresenterTest {
     private lateinit var presenter: ReportsPresenter
     private val mockedThemeId = 1
     private val mockedMapperId = 1
-    private val mockedReportList = listOf(mock(Report::class.java), mock(Report::class.java))
+    private val mockedPage = "1"
+    private val mockedPair = mockedPage to listOf(mock(Report::class.java), mock(Report::class.java))
+    private val mockedList = listOf(mock(Report::class.java), mock(Report::class.java))
     private val viewModel = mock(ReportViewModel::class.java)
     private val mockedInvalidDateToReport = createFakeDate(6, 1, 2018)
     private val mockedValidDateToReport = createFakeDate(2, 1, 2018)
@@ -57,8 +63,14 @@ class ReportsPresenterTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        presenter = ReportsPresenter(ReportRepository(remoteDataSource, localDataSource,
-            connectionProvider), ImmediateScheduler(), viewModel)
+        presenter = ReportsPresenter(
+            preferences,
+            ReportRepository(
+                remoteDataSource,
+                localDataSource,
+                connectionProvider
+            ), ImmediateScheduler(), viewModel
+        )
         presenter.attachView(view)
         ThemeData.startAt = mockedThemeStartAt
         ThemeData.endAt = mockedThemeEndAt
@@ -94,10 +106,14 @@ class ReportsPresenterTest {
     fun `Should get reports from service when online`() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
         `when`(remoteDataSource.getReports(theme = mockedThemeId, mapper = mockedMapperId))
-            .thenReturn(Single.just(mockedReportList))
-        `when`(localDataSource.saveReports(mockedReportList)).thenReturn(Single.just(mockedReportList))
+            .thenReturn(Single.just(mockedPair))
+        `when`(localDataSource.saveReports(mockedList)).thenReturn(
+            Single.just(
+                mockedList
+            )
+        )
 
-        presenter.loadReports(mockedThemeId, mockedMapperId)
+        presenter.loadReports(mockedThemeId, mockedMapperId, mockedPage.toInt())
 
         verify(view).showLoading()
         verify(view).dismissLoading()
@@ -108,9 +124,9 @@ class ReportsPresenterTest {
     fun `Should get reports from cache when offline`() {
         `when`(connectionProvider.hasConnection()).thenReturn(false)
         `when`(localDataSource.getReports(theme = mockedThemeId, mapper = mockedMapperId))
-            .thenReturn(Single.just(mockedReportList))
+            .thenReturn(Single.just(mockedPair))
 
-        presenter.loadReports(mockedThemeId, mockedMapperId)
+        presenter.loadReports(mockedThemeId, mockedMapperId, mockedPage.toInt())
 
         verify(view).showLoading()
         verify(view).dismissLoading()
@@ -120,9 +136,15 @@ class ReportsPresenterTest {
     @Test
     fun `Should show an error message when something wrong`() {
         `when`(connectionProvider.hasConnection()).thenReturn(false)
-        `when`(localDataSource.getReports(theme = mockedThemeId, mapper = mockedMapperId)).thenReturn(Single.error(Exception()))
+        `when`(
+            localDataSource.getReports(
+                theme = mockedThemeId,
+                mapper = mockedMapperId,
+                page = mockedPage.toInt()
+            )
+        ).thenReturn(Single.error(Exception()))
 
-        presenter.loadReports(mockedThemeId, mockedMapperId)
+        presenter.loadReports(mockedThemeId, mockedMapperId, mockedPage.toInt())
 
         verify(view).showLoading()
         verify(view).dismissLoading()

@@ -11,9 +11,9 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
 import br.com.ilhasoft.voy.db.report.ReportDbHelper
+import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
@@ -21,6 +21,7 @@ import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
+import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import io.realm.Realm
 import java.util.*
@@ -28,7 +29,8 @@ import java.util.*
 /**
  * Created by developer on 11/01/18.
  */
-class ReportsActivity : BaseActivity(), ReportsContract {
+class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
+
 
     companion object {
         @JvmStatic
@@ -45,7 +47,8 @@ class ReportsActivity : BaseActivity(), ReportsContract {
             endAt: Date
         ): Intent {
             ThemeData.themeId = themeId
-            ThemeData.themeColor = Color.parseColor(context.getString(R.string.color_hex, themeColor))
+            ThemeData.themeColor =
+                    Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds
             ThemeData.allowLinks = allowLinks
             ThemeData.startAt = startAt
@@ -63,6 +66,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
     }
     private val presenter: ReportsPresenter by lazy {
         ReportsPresenter(
+            SharedPreferences(this),
             ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
             StandardScheduler(),
             ViewModelProviders
@@ -78,7 +82,7 @@ class ReportsActivity : BaseActivity(), ReportsContract {
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
-        presenter.loadReports(theme = themeId, mapper = SharedPreferences(this).getInt(User.ID))
+        presenter.loadReports(themeId,null, 1)//default initial request
     }
 
     override fun onStart() {
@@ -112,6 +116,14 @@ class ReportsActivity : BaseActivity(), ReportsContract {
 
     override fun dismissLoading() {
         loadingObserver.set(false)
+    }
+
+    override fun navigateToReportDetail(report: Report) {
+        startActivity(ReportDetailActivity.createIntent(this, report))
+    }
+
+    override fun requestMoreReports(displayedCount: Int, reportStatus: Int, actualPage: Int?) {
+        presenter.loadReports(ThemeData.themeId, reportStatus, actualPage)
     }
 
     private fun setupView() {

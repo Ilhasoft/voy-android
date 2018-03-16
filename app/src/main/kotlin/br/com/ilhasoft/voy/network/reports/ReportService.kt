@@ -19,9 +19,9 @@ import java.io.File
  */
 class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), ReportDataSource {
 
-    override fun getReports(theme: Int? , project: Int?, mapper: Int?, status: Int?): Single<List<Report>> {
-        return api.getReports(createReportQuery(theme, project, mapper, status))
-            .map { it.results }
+    override fun getReports(theme: Int? , project: Int?, mapper: Int?, status: Int?, page: Int?, page_size: Int?): Single<Pair<String?, List<Report>>> {
+        return api.getReports(createReportQuery(theme, project, mapper, status, page, page_size))
+            .map { it.next to it.results }
     }
 
     override fun saveReport(report: Report): Single<Report> {
@@ -29,33 +29,33 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
     }
 
     override fun saveReports(reports: List<Report>): Single<List<Report>> = Single.just(reports)
-
-    fun getReports(
-        page: Int? = null,
-        page_size: Int? = null,
-        theme: Int? = null,
-        project: Int? = null,
-        mapper: Int? = null,
-        status: Int? = null
-    ): Single<Response<Report>> {
-
-        val reportsRequest = mutableMapOf<String, Int?>()
-        reportsRequest.apply {
-            putIfNotNull("page", page)
-            putIfNotNull("page_size", page_size)
-            putIfNotNull("theme", theme)
-            putIfNotNull("project", project)
-            putIfNotNull("mapper", mapper)
-            putIfNotNull("status", status)
-        }
-        return api.getReports(reportsRequest)
-    }
+//
+//    fun getReports(
+//        page: Int? = null,
+//        page_size: Int? = null,
+//        theme: Int? = null,
+//        project: Int? = null,
+//        mapper: Int? = null,
+//        status: Int? = null
+//    ): Single<Response<Report>> {
+//
+//        val reportsRequest = mutableMapOf<String, Int?>()
+//        reportsRequest.apply {
+//            putIfNotNull("page", page)
+//            putIfNotNull("page_size", page_size)
+//            putIfNotNull("theme", theme)
+//            putIfNotNull("project", project)
+//            putIfNotNull("mapper", mapper)
+//            putIfNotNull("status", status)
+//        }
+//        return api.getReports(reportsRequest)
+//    }
 
     private fun createReportQuery(theme: Int? = null, project: Int? = null, mapper: Int? = null,
-                                  status: Int? = null): Map<String, Int?> {
+                                  status: Int? = null, page: Int? = null, page_size: Int? = null): Map<String, Int?> {
         return mutableMapOf<String, Int?>().apply {
-            putIfNotNull("page", 1)
-            putIfNotNull("page_size", 50)
+            putIfNotNull("page", page)
+            putIfNotNull("page_size", page_size)
             putIfNotNull("theme", theme)
             putIfNotNull("project", project)
             putIfNotNull("mapper", mapper)
