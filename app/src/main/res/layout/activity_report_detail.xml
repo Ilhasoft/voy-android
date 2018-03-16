@@ -7,6 +7,8 @@
 
         <import type="br.com.ilhasoft.voy.shared.extensions.DateHelper"/>
 
+        <import type="br.com.ilhasoft.voy.ui.report.ReportStatus" />
+
         <variable
             name="report"
             type="br.com.ilhasoft.voy.models.Report" />
@@ -15,9 +17,6 @@
             name="presenter"
             type="br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter" />
 
-        <import type="br.com.ilhasoft.voy.ui.report.ReportStatus" />
-
-        <import type="android.view.View" />
 
     </data>
 
@@ -122,7 +121,7 @@
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:theme="@style/WhiteRaisedButton"
-            android:visibility="@{report.status == ReportStatus.APPROVED.value ? View.VISIBLE : View.GONE}"
+            app:visible="@{report.status == ReportStatus.APPROVED.value}"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
 </layout>
