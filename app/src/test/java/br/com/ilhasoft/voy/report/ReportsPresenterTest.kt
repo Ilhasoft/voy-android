@@ -4,6 +4,7 @@ import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
@@ -19,6 +20,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import java.lang.Exception
+import java.util.*
 
 /**
  * Created by developer on 09/03/18.
@@ -46,6 +48,10 @@ class ReportsPresenterTest {
     private val mockedPair = mockedPage to listOf(mock(Report::class.java), mock(Report::class.java))
     private val mockedList = listOf(mock(Report::class.java), mock(Report::class.java))
     private val viewModel = mock(ReportViewModel::class.java)
+    private val mockedInvalidDateToReport = createFakeDate(6, 1, 2018)
+    private val mockedValidDateToReport = createFakeDate(2, 1, 2018)
+    private val mockedThemeStartAt = createFakeDate(1, 1, 2018)
+    private val mockedThemeEndAt = createFakeDate(5, 1, 2018)
 
     private fun <T> any(): T {
         Mockito.any<T>()
@@ -66,6 +72,8 @@ class ReportsPresenterTest {
             ), ImmediateScheduler(), viewModel
         )
         presenter.attachView(view)
+        ThemeData.startAt = mockedThemeStartAt
+        ThemeData.endAt = mockedThemeEndAt
     }
 
     @After
@@ -81,10 +89,17 @@ class ReportsPresenterTest {
     }
 
     @Test
-    fun shouldNavigateToAddReportWhenClickedOnImageButton() {
-        presenter.onClickAddReport()
+    fun shouldNavigateToAddReportWhenClickedOnImageButtonIfValidDate() {
+        presenter.onClickAddReport(mockedValidDateToReport)
 
         verify(view).navigateToAddReport()
+    }
+
+    @Test
+    fun shouldNavigateToAddReportWhenClickedOnImageButtonIfInvalidDate() {
+        presenter.onClickAddReport(mockedInvalidDateToReport)
+
+        verify(view).showMessage(R.string.period_ended_text)
     }
 
     @Test
@@ -134,5 +149,12 @@ class ReportsPresenterTest {
         verify(view).showLoading()
         verify(view).dismissLoading()
         verify(view).showMessage(R.string.report_list_error)
+    }
+
+    private fun createFakeDate(day: Int, month: Int, year: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day)
+
+        return calendar.time
     }
 }

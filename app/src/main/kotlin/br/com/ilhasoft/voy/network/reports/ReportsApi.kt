@@ -33,6 +33,12 @@ interface ReportsApi {
     fun saveFile(@PartMap map: Map<String, @JvmSuppressWildcards RequestBody>,
                  @Part file: MultipartBody.Part): Single<ReportFile>
 
+    @Multipart
+    @POST("/api/report-files/")
+    fun saveFile(@PartMap map: Map<String, @JvmSuppressWildcards RequestBody>,
+                 @Part file: MultipartBody.Part,
+                 @Part videoThumbnail: MultipartBody.Part): Single<ReportFile>
+
     @DELETE("/api/report-files/{id}/")
     fun deleteFile(@Path("id") id: Int): Completable
 

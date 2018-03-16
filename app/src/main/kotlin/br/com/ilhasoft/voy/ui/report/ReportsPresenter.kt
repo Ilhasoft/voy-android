@@ -4,6 +4,7 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
@@ -12,6 +13,8 @@ import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import retrofit2.HttpException
 
+
+import java.util.*
 /**
  * Created by developer on 11/01/18.
  */
@@ -35,7 +38,6 @@ class ReportsPresenter(
             .loadControl(view)
             .doOnSuccess { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.APPROVED.value }, ReportStatus.APPROVED) }
             .doOnSuccess { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.PENDING.value }, ReportStatus.PENDING) }
-            .doOnError{ }
             .subscribe(
                 { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.UNAPPROVED.value }, ReportStatus.UNAPPROVED) },
                 {
@@ -57,8 +59,11 @@ class ReportsPresenter(
         view.navigateBack()
     }
 
-    fun onClickAddReport() {
-        view.navigateToAddReport()
+    fun onClickAddReport(currentTime: Date) {
+        if ((ThemeData.startAt..ThemeData.endAt).contains(currentTime))
+            view.navigateToAddReport()
+        else
+            view.showMessage(R.string.period_ended_text)
     }
 
 }

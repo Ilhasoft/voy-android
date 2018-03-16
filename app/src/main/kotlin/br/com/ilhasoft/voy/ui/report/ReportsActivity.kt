@@ -24,6 +24,7 @@ import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
 import io.realm.Realm
+import java.util.*
 
 /**
  * Created by developer on 11/01/18.
@@ -41,13 +42,17 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
             context: Context, themeId: Int,
             themeName: String, themeColor: String,
             themeBounds: List<List<Double>>,
-            allowLinks: Boolean
+            allowLinks: Boolean,
+            startAt: Date,
+            endAt: Date
         ): Intent {
             ThemeData.themeId = themeId
             ThemeData.themeColor =
                     Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds
             ThemeData.allowLinks = allowLinks
+            ThemeData.startAt = startAt
+            ThemeData.endAt = endAt
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
