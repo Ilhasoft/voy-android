@@ -29,4 +29,6 @@ interface AccountContract : BaseView {
 
     fun changeLockState()
 
+    fun logoutAlert()
+
 }

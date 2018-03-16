@@ -144,8 +144,14 @@ class AccountPresenterTest {
     }
 
     @Test
-    fun shouldLogoutUser() {
+    fun shouldShowLogoutAlert() {
         accountPresenter.onClickLogout()
+        verify(accountView).logoutAlert()
+    }
+
+    @Test
+    fun shouldLogoutUser() {
+        accountPresenter.logout()
         verify(accountInteractor).clearAllLocalData()
         verify(accountView).navigateToMakeLogout()
     }

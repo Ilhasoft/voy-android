@@ -80,6 +80,10 @@ class AccountPresenter(
     }
 
     fun onClickLogout() {
+        view.logoutAlert()
+    }
+
+    fun logout() {
         accountInteractor.clearAllLocalData()
         view.navigateToMakeLogout()
     }

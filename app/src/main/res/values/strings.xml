@@ -97,4 +97,7 @@
     <string name="offline_error">Couldn\'t find connection. Check it and try again</string>
 
     <string name="report_list_error">We have an error on get reports from server!</string>
+
+    <string name="logout_alert_title">Will you logout?</string>
+    <string name="logout_alert_message">When logging out all reports that were not sent will be lost do you want to continue?</string>
 </resources>
