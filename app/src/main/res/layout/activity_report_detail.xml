@@ -15,6 +15,10 @@
             name="presenter"
             type="br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter" />
 
+        <import type="br.com.ilhasoft.voy.ui.report.ReportStatus" />
+
+        <import type="android.view.View" />
+
     </data>
 
     <LinearLayout
@@ -118,6 +122,7 @@
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:theme="@style/WhiteRaisedButton"
+            android:visibility="@{report.status == ReportStatus.APPROVED.value ? View.VISIBLE : View.GONE}"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
 </layout>
