@@ -14,6 +14,8 @@ class ReportViewModel : ViewModel() {
     private var approvedReports: MutableLiveData<List<Report>> = MutableLiveData()
     private var unApprovedReports: MutableLiveData<List<Report>> = MutableLiveData()
 
+    var onDemandStatus = true
+
     fun notifyReports(reports: List<Report>, status: ReportStatus) {
         getReportsFromStatus(status).value = reports
     }
@@ -24,5 +26,10 @@ class ReportViewModel : ViewModel() {
         ReportStatus.APPROVED -> approvedReports
         ReportStatus.PENDING -> pendingReports
         ReportStatus.UNAPPROVED -> unApprovedReports
+    }
+
+    fun notifyOnDemand(next: String?) {
+        if(next == "")
+            onDemandStatus = false
     }
 }

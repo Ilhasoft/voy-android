@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report.fragment
 
-import android.app.DownloadManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.ObservableBoolean
@@ -96,8 +95,10 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     }
 
     override fun onLoadMore() {
-        requestReportListener.requestMoreReports(reportsAdapter.itemCount, status, page)
-        page++
+        if(viewModel.onDemandStatus) {
+            requestReportListener.requestMoreReports(reportsAdapter.itemCount, status, page)
+            page++
+        }
     }
 
     private fun setupView(binding: FragmentReportsBinding) = with(binding) {

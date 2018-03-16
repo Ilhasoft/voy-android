@@ -1,6 +1,5 @@
 package br.com.ilhasoft.voy.ui.report
 
-import android.accounts.NetworkErrorException
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.Preferences
@@ -25,16 +24,11 @@ class ReportsPresenter(
 
 
     private var page_size = 50
-    var mas = mutableMapOf<Int, String?>()
 
-    fun loadReports(theme: Int, reportStatus: Int, page: Int?) {
+    fun loadReports(theme: Int, reportStatus: Int?, page: Int?) {
         reportRepository.getReports(theme = theme, mapper = preferences.getInt(User.ID), page= page, page_size = page_size, status = reportStatus)
-            .doOnSuccess { (next, _) ->
-                mas[reportStatus] = next
-                if(next == null)
-                    view.disableLoadDemand()
-            }
-            .flatMap { (_, reports) ->
+            .flatMap { (next, reports) ->
+                    viewModel.notifyOnDemand(next)
                 reportRepository.saveReports(reports)
             }
             .fromIoToMainThread(scheduler)
@@ -45,13 +39,10 @@ class ReportsPresenter(
             .subscribe(
                 { notifyReportsOnViewModel(it.filter { it.status == ReportStatus.UNAPPROVED.value }, ReportStatus.UNAPPROVED) },
                 {
-                    if(it is HttpException) {
-                        if ((it.code() == 404)) {
-                            return@subscribe
-                        }
+                    if(it is HttpException && it.code() == 404) {
+                        return@subscribe
                     }
                     ErrorHandlerHelper.showError(it, R.string.report_list_error) { msg ->
-
                         view.showMessage(msg)
                     }
                 }

@@ -121,10 +121,6 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
         presenter.loadReports(ThemeData.themeId, reportStatus, actualPage)
     }
 
-    override fun disableLoadDemand() {
-
-    }
-
     private fun setupView() {
         binding.apply {
             isLoading = loadingObserver

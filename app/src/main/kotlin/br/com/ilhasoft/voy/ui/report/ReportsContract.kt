@@ -15,7 +15,4 @@ interface ReportsContract : BaseView, CheckConnectionProvider{
 
     fun navigateToReportDetail(report: Report)
 
-    fun disableLoadDemand() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 }
