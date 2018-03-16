@@ -2,6 +2,7 @@ package br.com.ilhasoft.voy.ui.report.fragment
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.databinding.ObservableBoolean
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -19,12 +20,10 @@ import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
+import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
 import br.com.ilhasoft.voy.ui.base.BaseFragment
-import br.com.ilhasoft.voy.ui.report.ReportStatus
-import br.com.ilhasoft.voy.ui.report.ReportViewModel
-import br.com.ilhasoft.voy.ui.report.ReportsActivity
-import br.com.ilhasoft.voy.ui.report.RequestReportListener
+import br.com.ilhasoft.voy.ui.report.*
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
 
@@ -68,6 +67,17 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     }
     private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
     private var page = 1
+    private var nextPage: String? = null
+    private var loadReports: LoadReports? = null
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        loadReports = if (context is LoadReports) {
+            context
+        } else {
+            null
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -82,6 +92,10 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
         setupView(binding)
         loadReports()
         presenter.attachView(this)
+        loadReports?.loadReports(ThemeData.themeId, status, 1, 50)
+        viewModel.getNextPage().observe(activity, Observer {
+            nextPage = it?.get(status)
+        })
     }
 
     override fun onDestroy() {
@@ -95,9 +109,8 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     }
 
     override fun onLoadMore() {
-        if(viewModel.onDemandStatus) {
-            requestReportListener.requestMoreReports(reportsAdapter.itemCount, status, page)
-            page++
+        nextPage?.let {
+            requestReportListener.requestMoreReports(it, status)
         }
     }
 

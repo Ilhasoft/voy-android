@@ -13,6 +13,7 @@ class ReportViewModel : ViewModel() {
     private var pendingReports: MutableLiveData<List<Report>> = MutableLiveData()
     private var approvedReports: MutableLiveData<List<Report>> = MutableLiveData()
     private var unApprovedReports: MutableLiveData<List<Report>> = MutableLiveData()
+    private var nextPage: MutableLiveData<Map<Int, String?>> = MutableLiveData()
 
     var onDemandStatus = true
 
@@ -28,8 +29,16 @@ class ReportViewModel : ViewModel() {
         ReportStatus.UNAPPROVED -> unApprovedReports
     }
 
-    fun notifyOnDemand(next: String?) {
-        if(next == "")
+    fun notifyOnDemand(status: Int, next: String?) {
+        if(next == "" || next == null) {
+            nextPage.value = mapOf(status to next)
             onDemandStatus = false
+        } else {
+            nextPage.value = mapOf(status to next)
+        }
+    }
+
+    fun getNextPage(): LiveData<Map<Int, String?>> {
+        return nextPage
     }
 }

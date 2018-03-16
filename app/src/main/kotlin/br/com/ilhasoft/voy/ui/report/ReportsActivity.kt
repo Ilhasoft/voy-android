@@ -29,7 +29,7 @@ import java.util.*
 /**
  * Created by developer on 11/01/18.
  */
-class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
+class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener, LoadReports {
 
 
     companion object {
@@ -82,7 +82,6 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
         super.onCreate(savedInstanceState)
         setupView()
         presenter.attachView(this)
-        presenter.loadReports(themeId,null, 1)//default initial request
     }
 
     override fun onStart() {
@@ -98,6 +97,10 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun loadReports(theme: Int, reportStatus: Int?, page: Int?, pageSize: Int) {
+        presenter.loadReports(theme, reportStatus, page, pageSize)
     }
 
     override fun navigateBack() {
@@ -122,8 +125,8 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener {
         startActivity(ReportDetailActivity.createIntent(this, report))
     }
 
-    override fun requestMoreReports(displayedCount: Int, reportStatus: Int, actualPage: Int?) {
-        presenter.loadReports(ThemeData.themeId, reportStatus, actualPage)
+    override fun requestMoreReports(url: String, status: Int) {
+        presenter.loadByPage(url, status)
     }
 
     private fun setupView() {

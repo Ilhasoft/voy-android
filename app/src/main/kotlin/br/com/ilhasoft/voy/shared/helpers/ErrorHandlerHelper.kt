@@ -12,6 +12,7 @@ import java.net.UnknownHostException
 object ErrorHandlerHelper {
 
     fun showError(throwable: Throwable, defaultError: Int = 0, block: (Int) -> Unit) {
+        throwable.printStackTrace()
         Timber.e(throwable)
         block.invoke(
                 when (throwable) {

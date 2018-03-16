@@ -25,6 +25,10 @@ class ReportRepository(
         }
     }
 
+    override fun getReports(url: String): Single<Pair<String?, List<Report>>> {
+        return remoteReportDataSource.getReports(url)
+    }
+
     override fun saveReport(report: Report): Single<Report> = Single.just(report)
 
     override fun saveReports(reports: List<Report>): Single<List<Report>> {
