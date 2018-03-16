@@ -5,7 +5,6 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 /**
  * Created by developer on 09/01/18.
@@ -13,7 +12,7 @@ import retrofit2.http.Query
 interface ProjectApi {
 
     @GET("/api/projects/")
-    fun getProjects(@Query("auth_token") token: String): Flowable<MutableList<Project>>
+    fun getProjects(): Flowable<MutableList<Project>>
 
     @GET("/api/projects/{id}/")
     fun getProject(@Path("id") projectId: Int): Single<Project>
