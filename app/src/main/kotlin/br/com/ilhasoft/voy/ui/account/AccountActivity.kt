@@ -5,6 +5,7 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ObservableBoolean
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -135,6 +136,17 @@ class AccountActivity : BaseActivity(), AccountContract, CheckConnectionProvider
     override fun changeLockState() {
         isPasswordLocked.set(!isPasswordLocked.get())
         binding.user?.let { it.password = null }
+    }
+
+    override fun logoutAlert() {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle(R.string.logout_alert_title)
+            .setMessage(R.string.logout_alert_message)
+            .setPositiveButton(android.R.string.yes) { _, _ -> presenter.logout()}
+            .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
+            .create()
+
+        alertDialog.show()
     }
 
     override fun navigateToMakeLogout() = startActivity(LoginActivity.createIntent(this))
