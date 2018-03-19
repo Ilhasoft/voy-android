@@ -16,8 +16,7 @@ class ReportPresenter(
     private val preferences: Preferences,
     private val reportRepository: ReportRepository,
     private val scheduler: BaseScheduler
-) :
-    Presenter<ReportContract>(ReportContract::class.java) {
+) : Presenter<ReportContract>(ReportContract::class.java) {
 
 
     val mapper = preferences.getInt(User.ID)

@@ -8,6 +8,7 @@ import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
+import java.util.*
 
 /**
  * Created by lucasbarros on 15/01/18.
@@ -37,7 +38,7 @@ class ReportViewModel(private val addReportInteractor: AddReportInteractor) : Vi
     val selectedTags by lazy { mutableListOf<String>() }
     val allowLinks = ThemeData.allowLinks
 
-    var report = Report()
+    var report = Report(createdOn = Date())
 
     fun addUri(uri: String) {
         medias.add(uri)
