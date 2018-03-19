@@ -33,11 +33,11 @@ open class ReportDbModel : RealmObject() {
     var filesToDelete: RealmList<ReportFileDbModel> = RealmList()
     var createdOn: String = ""
     var shouldSend: Boolean = true
+    var thumbnail: String? = null
     var lastNotification: String = ""
 }
 
 fun ReportDbModel.toReport(): Report {
-    var lastImage: ReportFile? = null
     val files = mutableListOf<ReportFile>()
     medias.forEach {
         var mimeType = FileHelper.getMimeTypeFromUri(VoyApplication.instance, Uri.parse(it.file))
@@ -47,10 +47,6 @@ fun ReportDbModel.toReport(): Report {
             "video"
         }
         files.add(ReportFile(id = it.id, file = it.file, reportId = id, mediaType = mimeType))
-    }
-
-    if (files.size > 0) {
-        lastImage = files.lastOrNull { it.mediaType == ReportFile.TYPE_IMAGE }
     }
 
     return Report(
@@ -64,7 +60,7 @@ fun ReportDbModel.toReport(): Report {
         urls = urls.toMutableList(),
         status = status,
         files = files,
-        lastImage = lastImage,
+        thumbnail = thumbnail ?: "",
         internalId = internalId,
         shouldSend = shouldSend,
         lastNotification = lastNotification

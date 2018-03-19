@@ -66,9 +66,9 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
 
     override fun saveReport(
         theme: Int, location: Location, description: String?, name: String,
-        tags: List<String>, urls: List<String>?, medias: List<File>
+        tags: List<String>, urls: List<String>?, medias: List<File>, thumbnail: String
     ): Observable<Report> {
-        var auxReport = Report(createdOn = Date())
+        var auxReport = Report(createdOn = Date(), thumbnail = thumbnail)
         return saveReportInternal(theme, location, description, name, tags, urls)
             .flatMapObservable {
                 auxReport = it
@@ -77,8 +77,6 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
             .flatMapSingle { saveFile(it, auxReport.id) }
             .doOnNext {
                 auxReport.files.add(it)
-                if (it.mediaType == "image")
-                    auxReport.lastImage = it
             }
             .toList()
             .flatMapObservable { Observable.just(auxReport) }
@@ -93,7 +91,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         tags: List<String>,
         urls: List<String>?,
         newFiles: List<File>?,
-        filesToDelete: List<Int>?
+        filesToDelete: List<Int>?,
+        thumbnail: String
     ): Observable<Report> {
         return if (filesToDelete?.isNotEmpty() == true) {
             deleteFilesAndUpdateReport(
@@ -105,7 +104,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
                 tags,
                 urls,
                 newFiles,
-                filesToDelete
+                filesToDelete,
+                thumbnail
             )
         } else {
             updateReportInternal(
@@ -116,7 +116,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
                 name,
                 tags,
                 urls,
-                newFiles
+                newFiles,
+                thumbnail
             )
         }
     }
@@ -130,7 +131,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         tags: List<String>,
         urls: List<String>?,
         newFiles: List<File>? = null,
-        filesToDelete: List<Int>?
+        filesToDelete: List<Int>?,
+        thumbnail: String
     ): Observable<Report> {
         return Observable.just(filesToDelete)
             .flatMapCompletable {
@@ -146,7 +148,8 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
                     name,
                     tags,
                     urls,
-                    newFiles
+                    newFiles,
+                    thumbnail
                 )
             }
     }
@@ -159,13 +162,14 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        newFiles: List<File>? = null
+        newFiles: List<File>? = null,
+        thumbnail: String
     ): Observable<Report> {
 
         val requestBody = ReportRequest(theme, location, description, name, tags, urls)
 
         return if (newFiles?.isNotEmpty() == true) {
-            var auxReport = Report(createdOn = Date())
+            var auxReport = Report(createdOn = Date(), thumbnail = thumbnail)
             api.updateReport(reportId, requestBody).flatMapObservable {
                 auxReport = it
                 Observable.fromIterable(newFiles)
@@ -173,8 +177,6 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
                 .flatMapSingle { saveFile(it, auxReport.id) }
                 .doOnNext {
                     auxReport.files.add(it)
-                    if (it.mediaType == "image")
-                        auxReport.lastImage = it
                 }
                 .toList()
                 .flatMapObservable { Observable.just(auxReport) }

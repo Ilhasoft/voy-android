@@ -22,7 +22,7 @@ data class Report(
     var tags: MutableList<String> = mutableListOf(),
     @SerializedName("theme_color") var themeColor: String = "",
     @SerializedName("created_by") var createdBy: User? = null,
-    @SerializedName("last_image") var lastImage: ReportFile? = null,
+    val thumbnail: String,
     var status: Int = 0,
     var urls: MutableList<String> = mutableListOf(),
     var files: MutableList<ReportFile> = mutableListOf(),
@@ -43,7 +43,7 @@ data class Report(
         source.createStringArrayList(),
         source.readString(),
         source.readParcelable<User>(User::class.java.classLoader),
-        source.readParcelable<ReportFile>(ReportFile::class.java.classLoader),
+        source.readString(),
         source.readInt(),
         source.createStringArrayList(),
         source.createTypedArrayList(ReportFile.CREATOR),
@@ -67,7 +67,7 @@ data class Report(
         writeStringList(tags)
         writeString(themeColor)
         writeParcelable(createdBy, 0)
-        writeParcelable(lastImage, 0)
+        writeString(thumbnail)
         writeInt(status)
         writeStringList(urls)
         writeTypedList(files)

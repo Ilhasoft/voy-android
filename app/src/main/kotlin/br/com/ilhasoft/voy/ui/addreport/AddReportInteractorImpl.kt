@@ -53,12 +53,14 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             }
             }.toMutableList(),
             createdOn = Date().format("dd/MM/yyyy HH:mm"),
+            thumbnail = urls?.lastOrNull() ?: "",
             lastNotification = ""
         )
             .observeOn(Schedulers.io())
             .flatMapObservable {
                 if (ConnectivityManager.isConnected()) {
-                    reportRepository.saveReport(theme, location, description, name, tags, urls, medias)
+                    reportRepository.saveReport(theme, location, description,
+                        name, tags, urls, medias, urls?.lastOrNull() ?: "")
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete { reportDbHelper.removeReport(it.internalId!!) }
                 } else {
@@ -94,6 +96,7 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             newFiles?.map { it.absolutePath },
             filesToDelete,
             createdOn = Date().format("dd/MM/yyyy HH:mm"),
+            thumbnail = urls?.lastOrNull() ?: "",
             lastNotification = ""
         )
             .onMainThread()
@@ -141,7 +144,8 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             tags,
             urls,
             newFiles,
-            filesToDelete
+            filesToDelete,
+            urls?.lastOrNull() ?: ""
         )
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { reportDbHelper.removeReport(reportInternalId) }

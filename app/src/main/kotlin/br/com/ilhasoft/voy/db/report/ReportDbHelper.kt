@@ -21,7 +21,6 @@ import java.io.File
  */
 class ReportDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) : ReportDataSource {
 
-
     override fun getReport(
         id: Int,
         theme: Int?,
@@ -39,7 +38,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        medias: List<File>
+        medias: List<File>,
+        thumbnail: String
     ): Observable<Report> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -62,7 +62,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         tags: List<String>,
         urls: List<String>?,
         newFiles: List<File>?,
-        filesToDelete: List<Int>?
+        filesToDelete: List<Int>?,
+        thumbnail: String
     ): Observable<Report> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -91,7 +92,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
             medias = createReportFileDbModel(report.files), reportId = report.id, status = report.status,
             shouldSend = report.shouldSend, createdOn = report.createdOn.format("dd/MM/yyyy HH:mm"),
-            lastNotification = report.lastNotification ?: ""
+            thumbnail = report.thumbnail, lastNotification = report.lastNotification ?: ""
         ).onMainThread(scheduler)
     }
 
@@ -119,6 +120,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         status: Int = ReportStatus.PENDING.value,
         shouldSend: Boolean = true,
         createdOn: String,
+        thumbnail: String,
         lastNotification: String
     ): Single<Report> {
 
@@ -139,6 +141,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                     status,
                     shouldSend,
                     createdOn,
+                    thumbnail,
                     lastNotification
                 )
             }
@@ -176,6 +179,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         status: Int = ReportStatus.PENDING.value,
         shouldSend: Boolean = true,
         createdOn: String,
+        thumbnail: String,
         lastNotification: String
     ): ReportDbModel {
         return ReportDbModel().apply {
@@ -206,6 +210,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                 }
             }
             this.createdOn = createdOn
+            this.thumbnail = thumbnail
             this.lastNotification = lastNotification
         }
     }

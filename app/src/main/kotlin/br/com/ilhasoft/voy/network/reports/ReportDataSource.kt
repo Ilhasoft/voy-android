@@ -30,7 +30,7 @@ interface ReportDataSource {
 
     fun saveReport(
         theme: Int, location: Location, description: String?, name: String,
-        tags: List<String>, urls: List<String>?, medias: List<File>
+        tags: List<String>, urls: List<String>?, medias: List<File>, thumbnail: String
     ): Observable<Report>
 
     fun saveReports(reports: List<Report>): Single<List<Report>>
@@ -44,7 +44,8 @@ interface ReportDataSource {
         tags: List<String>,
         urls: List<String>?,
         newFiles: List<File>?,
-        filesToDelete: List<Int>?
+        filesToDelete: List<Int>?,
+        thumbnail: String
     ): Observable<Report>
 
     fun saveFile(file: File, reportId: Int): Single<ReportFile>
