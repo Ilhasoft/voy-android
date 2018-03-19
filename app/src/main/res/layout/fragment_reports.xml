@@ -35,6 +35,10 @@
             name="isEmptyState"
             type="android.databinding.ObservableBoolean" />
 
+        <variable
+            name="isLoading"
+            type="android.databinding.ObservableBoolean" />
+
     </data>
 
     <FrameLayout
@@ -118,5 +122,12 @@
                 android:paddingTop="4dp"
                 tools:listitem="@layout/item_report" />
         </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="@dimen/progress_medium"
+            android:layout_height="@dimen/progress_medium"
+            android:layout_gravity="center"
+            app:isVisible="@{isLoading}"/>
+
     </FrameLayout>
 </layout>

@@ -1,35 +1,27 @@
 package br.com.ilhasoft.voy.ui.report
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.databinding.ObservableBoolean
 import android.graphics.Color
 import android.os.Bundle
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
-import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.Report
-import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.network.reports.ReportRepository
-import br.com.ilhasoft.voy.network.reports.ReportService
-import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.addreport.AddReportActivity
 import br.com.ilhasoft.voy.ui.base.BaseActivity
 import br.com.ilhasoft.voy.ui.report.adapter.NavigationItem
 import br.com.ilhasoft.voy.ui.report.adapter.ReportsAdapter
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.fragment.ReportFragment
-import io.realm.Realm
 import java.util.*
 
 /**
  * Created by developer on 11/01/18.
  */
-class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener, LoadReports {
+class ReportsActivity : BaseActivity(), ReportsContract {
 
 
     companion object {
@@ -64,19 +56,9 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener, 
     private val binding: ActivityReportsBinding by lazy {
         DataBindingUtil.setContentView<ActivityReportsBinding>(this, R.layout.activity_reports)
     }
-    private val presenter: ReportsPresenter by lazy {
-        ReportsPresenter(
-            SharedPreferences(this),
-            ReportRepository(ReportService(), ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()), this),
-            StandardScheduler(),
-            ViewModelProviders
-                .of(this)
-                .get(ReportViewModel::class.java)
-        )
-    }
+    private val presenter: ReportsPresenter by lazy { ReportsPresenter() }
+
     private val themeName: String by lazy { intent.extras.getString(EXTRA_THEME_NAME) }
-    private val themeId: Int by lazy { intent.extras.getInt(EXTRA_THEME_ID, 0) }
-    private val loadingObserver by lazy { ObservableBoolean(true) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,10 +81,6 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener, 
         presenter.detachView()
     }
 
-    override fun loadReports(theme: Int, reportStatus: Int?, page: Int?, pageSize: Int) {
-        presenter.loadReports(theme, reportStatus, page, pageSize)
-    }
-
     override fun navigateBack() {
         finish()
     }
@@ -113,25 +91,12 @@ class ReportsActivity : BaseActivity(), ReportsContract, RequestReportListener, 
 
     override fun hasConnection() = ConnectivityManager.isConnected()
 
-    override fun showLoading() {
-        loadingObserver.set(true)
-    }
-
-    override fun dismissLoading() {
-        loadingObserver.set(false)
-    }
-
     override fun navigateToReportDetail(report: Report) {
         startActivity(ReportDetailActivity.createIntent(this, report))
     }
 
-    override fun requestMoreReports(url: String, status: Int) {
-        presenter.loadByPage(url, status)
-    }
-
     private fun setupView() {
         binding.apply {
-            isLoading = loadingObserver
             setUpToolBar()
             presenter = this@ReportsActivity.presenter
             setupTabs()

@@ -1,8 +1,5 @@
 package br.com.ilhasoft.voy.ui.report.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.databinding.ObservableBoolean
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -18,14 +15,20 @@ import br.com.ilhasoft.support.recyclerview.decorations.LinearSpaceItemDecoratio
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.databinding.FragmentReportsBinding
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
+import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.SharedPreferences
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.network.reports.ReportService
 import br.com.ilhasoft.voy.shared.helpers.ResourcesHelper
+import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import br.com.ilhasoft.voy.ui.base.BaseFragment
-import br.com.ilhasoft.voy.ui.report.*
+import br.com.ilhasoft.voy.ui.report.ReportStatus
+import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import br.com.ilhasoft.voy.ui.report.holder.ReportViewHolder
+import io.realm.Realm
 
 class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
 
@@ -48,11 +51,9 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
 
     private lateinit var binding: FragmentReportsBinding
     private lateinit var presenter: ReportPresenter
-    private lateinit var viewModel: ReportViewModel
     private val itemsQuantityObserver = ObservableBoolean(false)
     private val emptyStateObserver = ObservableBoolean(false)
-
-    private val requestReportListener: RequestReportListener by lazy { activity as ReportsActivity }
+    private val loadingObserver by lazy { ObservableBoolean(true) }
 
     private val reportViewHolder: OnCreateViewHolder<Report, ReportViewHolder> by lazy {
         OnCreateViewHolder { layoutInflater, parent, _ ->
@@ -67,40 +68,40 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     }
     private val status: Int by lazy { arguments.getInt(EXTRA_STATUS) }
     private var page = 1
-    private var nextPage: String? = null
-    private var loadReports: LoadReports? = null
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        loadReports = if (context is LoadReports) {
-            context
-        } else {
-            null
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentReportsBinding.inflate(inflater!!, container, false)
-        presenter = ReportPresenter(SharedPreferences(context))
-        viewModel = ViewModelProviders.of(activity).get(ReportViewModel::class.java)
+        presenter = ReportPresenter(
+            SharedPreferences(context),
+            ReportRepository(
+                ReportService(),
+                ReportDbHelper(Realm.getDefaultInstance(), StandardScheduler()),
+                activity as ReportsActivity),
+            StandardScheduler())
+
         return binding.root
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(binding)
-        loadReports()
         presenter.attachView(this)
-        loadReports?.loadReports(ThemeData.themeId, status, 1, 50)
-        viewModel.getNextPage().observe(activity, Observer {
-            nextPage = it?.get(status)
-        })
+        presenter.loadReports(ThemeData.themeId, status, page)
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun showLoading() {
+        loadingObserver.set(true)
+    }
+
+    override fun dismissLoading() {
+        loadingObserver.set(false)
     }
 
     //TODO pass projectID to query
@@ -109,14 +110,23 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     }
 
     override fun onLoadMore() {
-        nextPage?.let {
-            requestReportListener.requestMoreReports(it, status)
-        }
+        presenter.loadReports(ThemeData.themeId, status, page)
+        page++
+    }
+
+    override fun disableLoadOnDemand() {
+        reportsAdapter.isEnableOnDemand = false
+        page = 1
+    }
+
+    override fun setupReportsAdapter(reports: List<Report>) {
+        fillReportsAdapter(reports)
     }
 
     private fun setupView(binding: FragmentReportsBinding) = with(binding) {
         isBiggerThenZero = this@ReportFragment.itemsQuantityObserver
         isEmptyState = this@ReportFragment.emptyStateObserver
+        isLoading = this@ReportFragment.loadingObserver
         setupRecyclerView(reports)
         presenter?.let {
             val position = it.getAvatarPositionFromPreferences()
@@ -178,13 +188,6 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
         LinearSpaceItemDecoration(LinearLayoutManager.VERTICAL).apply {
             space = DimensionHelper.toPx(context, 12f)
         }
-
-    private fun loadReports() {
-        viewModel.getReports(getReportStatus(status))
-            .observe(activity, Observer<List<Report>> { reports ->
-                reports?.let { fillReportsAdapter(it) }
-            })
-    }
 
     private fun getReportStatus(status: Int): ReportStatus = when(status) {
         ReportStatus.APPROVED.value -> ReportStatus.APPROVED
