@@ -131,7 +131,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
                 .setTitle(getString(R.string.issues_related_report))
                 .setMessage(spannable)
                 .setPositiveButton(getString(R.string.edit_report_label).toUpperCase(), { _, _ -> navigateToEditReport() })
-                .setNegativeButton(getString(R.string.close_dialog_label).toUpperCase(), { _, _ -> })
+                .setNegativeButton(getString(R.string.close_dialog_label).toUpperCase(), { alert, _ ->  alert.dismiss() })
                 .show()
         dialog.getButton(Dialog.BUTTON_NEGATIVE)
                 .setTextColor(ContextCompat.getColor(this, R.color.charcoal_grey))

@@ -92,7 +92,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
             medias = createReportFileDbModel(report.files), reportId = report.id, status = report.status,
             shouldSend = report.shouldSend, createdOn = report.createdOn.format("dd/MM/yyyy HH:mm"),
-            thumbnail = report.thumbnail
+            thumbnail = report.thumbnail, lastNotification = report.lastNotification ?: ""
         ).onMainThread(scheduler)
     }
 
@@ -120,7 +120,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         status: Int = ReportStatus.PENDING.value,
         shouldSend: Boolean = true,
         createdOn: String,
-        thumbnail: String
+        thumbnail: String,
+        lastNotification: String
     ): Single<Report> {
 
         return Single.fromCallable {
@@ -140,7 +141,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                     status,
                     shouldSend,
                     createdOn,
-                    thumbnail
+                    thumbnail,
+                    lastNotification
                 )
             }
 
@@ -177,7 +179,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         status: Int = ReportStatus.PENDING.value,
         shouldSend: Boolean = true,
         createdOn: String,
-        thumbnail: String
+        thumbnail: String,
+        lastNotification: String
     ): ReportDbModel {
         return ReportDbModel().apply {
             themeId = theme
@@ -208,6 +211,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
             }
             this.createdOn = createdOn
             this.thumbnail = thumbnail
+            this.lastNotification = lastNotification
         }
     }
 
@@ -218,7 +222,5 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                 file = it.file
             }
         }.toMutableList()
-
     }
-
 }

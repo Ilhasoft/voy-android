@@ -34,6 +34,7 @@ open class ReportDbModel : RealmObject() {
     var createdOn: String = ""
     var shouldSend: Boolean = true
     var thumbnail: String? = null
+    var lastNotification: String = ""
 }
 
 fun ReportDbModel.toReport(): Report {
@@ -61,6 +62,7 @@ fun ReportDbModel.toReport(): Report {
         files = files,
         thumbnail = thumbnail ?: "",
         internalId = internalId,
-        shouldSend = shouldSend
+        shouldSend = shouldSend,
+        lastNotification = lastNotification
     )
 }
