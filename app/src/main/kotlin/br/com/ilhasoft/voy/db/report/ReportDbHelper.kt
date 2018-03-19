@@ -81,6 +81,10 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
             .onMainThread(scheduler)
     }
 
+    override fun getReports(url: String): Single<Pair<String?, List<Report>>> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun saveReport(report: Report): Single<Report> {
         return saveReport(report.internalId, theme = report.theme, location = report.location!!,
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,

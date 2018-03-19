@@ -16,6 +16,9 @@ interface ReportsApi {
     @GET("/api/reports/")
     fun getReports(@QueryMap parameters: Map<String, Int?>): Single<Response<Report>>
 
+    @GET
+    fun getReportsByUrl(@Url url: String): Single<Response<Report>>
+
     @GET("/api/reports/{id}/")
     fun getReport(@Path("id") id: Int,
                   @QueryMap parameters: Map<String, Int?>): Single<Report>

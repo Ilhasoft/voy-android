@@ -24,6 +24,9 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
             .map { it.next to it.results }
     }
 
+    override fun getReports(url: String): Single<Pair<String?, List<Report>>> = api.getReportsByUrl(url)
+        .map { it.next to it.results }
+
     override fun saveReport(report: Report): Single<Report> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

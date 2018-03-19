@@ -5,6 +5,7 @@ import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ThemeData
+import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
 import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
@@ -19,7 +20,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -43,9 +43,10 @@ class ReportsPresenterTest {
     private lateinit var view: ReportsContract
     private lateinit var presenter: ReportsPresenter
     private val mockedThemeId = 1
+    private val mockedStatusId = 1
     private val mockedMapperId = 1
     private val mockedPage = "1"
-    private val mockedPair = mockedPage to listOf(mock(Report::class.java), mock(Report::class.java))
+    private val mockedPageSize = 50
     private val mockedList = listOf(mock(Report::class.java), mock(Report::class.java))
     private val viewModel = mock(ReportViewModel::class.java)
     private val mockedInvalidDateToReport = createFakeDate(6, 1, 2018)
@@ -104,47 +105,47 @@ class ReportsPresenterTest {
 
     @Test
     fun `Should get reports from service when online`() {
+        `when`(preferences.getInt(User.ID)).thenReturn(mockedMapperId)
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(remoteDataSource.getReports(theme = mockedThemeId, mapper = mockedMapperId))
-            .thenReturn(Single.just(mockedPair))
-        `when`(localDataSource.saveReports(mockedList)).thenReturn(
-            Single.just(
-                mockedList
-            )
-        )
+        `when`(remoteDataSource.getReports(mockedThemeId,null, mockedMapperId,
+            mockedStatusId, mockedPage.toInt(), mockedPageSize))
+            .thenReturn(Single.just(mockedPage to mockedList))
+        `when`(localDataSource.saveReports(mockedList)).thenReturn(Single.just(mockedList))
 
-        presenter.loadReports(mockedThemeId, mockedMapperId, mockedPage.toInt())
+        presenter.loadReports(mockedThemeId, mockedStatusId, mockedPage.toInt(), mockedPageSize)
 
         verify(view).showLoading()
         verify(view).dismissLoading()
+        verify(viewModel).notifyOnDemand(mockedPage)
         verify(viewModel, times(3)).notifyReports(any(), any())
     }
 
     @Test
     fun `Should get reports from cache when offline`() {
+        `when`(preferences.getInt(User.ID)).thenReturn(mockedMapperId)
         `when`(connectionProvider.hasConnection()).thenReturn(false)
-        `when`(localDataSource.getReports(theme = mockedThemeId, mapper = mockedMapperId))
-            .thenReturn(Single.just(mockedPair))
+        `when`(
+            localDataSource.getReports(theme = mockedThemeId, mapper = mockedMapperId, status = mockedStatusId)
+        ).thenReturn(Single.error(Exception()))
 
-        presenter.loadReports(mockedThemeId, mockedMapperId, mockedPage.toInt())
+        presenter.loadReports(mockedThemeId, mockedStatusId, mockedPage.toInt())
 
         verify(view).showLoading()
         verify(view).dismissLoading()
-        verify(viewModel, times(3)).notifyReports(any(), any())
+        verify(view).showMessage(R.string.report_list_error)
     }
 
     @Test
     fun `Should show an error message when something wrong`() {
-        `when`(connectionProvider.hasConnection()).thenReturn(false)
+        `when`(preferences.getInt(User.ID)).thenReturn(mockedMapperId)
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
         `when`(
-            localDataSource.getReports(
-                theme = mockedThemeId,
-                mapper = mockedMapperId,
-                page = mockedPage.toInt()
+            remoteDataSource.getReports(
+                mockedThemeId,null, mockedMapperId, mockedStatusId, mockedPage.toInt(), mockedPageSize
             )
         ).thenReturn(Single.error(Exception()))
 
-        presenter.loadReports(mockedThemeId, mockedMapperId, mockedPage.toInt())
+        presenter.loadReports(mockedThemeId, mockedStatusId, mockedPage.toInt(), mockedPageSize)
 
         verify(view).showLoading()
         verify(view).dismissLoading()
