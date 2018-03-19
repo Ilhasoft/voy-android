@@ -33,6 +33,7 @@ open class ReportDbModel : RealmObject() {
     var filesToDelete: RealmList<ReportFileDbModel> = RealmList()
     var createdOn: String = ""
     var shouldSend: Boolean = true
+    var lastNotification: String = ""
 }
 
 fun ReportDbModel.toReport(): Report {
@@ -65,6 +66,7 @@ fun ReportDbModel.toReport(): Report {
         files = files,
         lastImage = lastImage,
         internalId = internalId,
-        shouldSend = shouldSend
+        shouldSend = shouldSend,
+        lastNotification = lastNotification
     )
 }
