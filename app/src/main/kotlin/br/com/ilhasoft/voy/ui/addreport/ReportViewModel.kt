@@ -38,7 +38,7 @@ class ReportViewModel(private val addReportInteractor: AddReportInteractor) : Vi
     val selectedTags by lazy { mutableListOf<String>() }
     val allowLinks = ThemeData.allowLinks
 
-    var report = Report(createdOn = Date())
+    var report = Report(createdOn = Date(), thumbnail = "")
 
     fun addUri(uri: String) {
         medias.add(uri)

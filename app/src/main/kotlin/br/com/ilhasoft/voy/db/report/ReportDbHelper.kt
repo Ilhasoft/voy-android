@@ -21,7 +21,6 @@ import java.io.File
  */
 class ReportDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) : ReportDataSource {
 
-
     override fun getReport(
         id: Int,
         theme: Int?,
@@ -39,7 +38,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        medias: List<File>
+        medias: List<File>,
+        thumbnail: String
     ): Observable<Report> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -62,7 +62,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         tags: List<String>,
         urls: List<String>?,
         newFiles: List<File>?,
-        filesToDelete: List<Int>?
+        filesToDelete: List<Int>?,
+        thumbnail: String
     ): Observable<Report> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -90,7 +91,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         return saveReport(report.internalId, theme = report.theme, location = report.location!!,
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
             medias = createReportFileDbModel(report.files), reportId = report.id, status = report.status,
-            shouldSend = report.shouldSend, createdOn = report.createdOn.format("dd/MM/yyyy HH:mm")
+            shouldSend = report.shouldSend, createdOn = report.createdOn.format("dd/MM/yyyy HH:mm"),
+            thumbnail = report.thumbnail
         ).onMainThread(scheduler)
     }
 
@@ -117,7 +119,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         filesToDelete: List<ReportFile>? = null,
         status: Int = ReportStatus.PENDING.value,
         shouldSend: Boolean = true,
-        createdOn: String
+        createdOn: String,
+        thumbnail: String
     ): Single<Report> {
 
         return Single.fromCallable {
@@ -136,7 +139,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                     filesToDelete,
                     status,
                     shouldSend,
-                    createdOn
+                    createdOn,
+                    thumbnail
                 )
             }
 
@@ -172,7 +176,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         filesToDelete: List<ReportFile>?,
         status: Int = ReportStatus.PENDING.value,
         shouldSend: Boolean = true,
-        createdOn: String
+        createdOn: String,
+        thumbnail: String
     ): ReportDbModel {
         return ReportDbModel().apply {
             themeId = theme
@@ -202,6 +207,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                 }
             }
             this.createdOn = createdOn
+            this.thumbnail = thumbnail
         }
     }
 

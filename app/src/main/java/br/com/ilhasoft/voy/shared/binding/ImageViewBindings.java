@@ -4,7 +4,6 @@ import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
-import android.util.Log;
 import android.widget.ImageView;
 
 import br.com.ilhasoft.voy.GlideApp;
@@ -32,6 +31,7 @@ public class ImageViewBindings {
                 .centerCrop()
                 .placeholder(placeholderRes)
                 .error(placeholderRes)
+                .skipMemoryCache(true)
                 .dontAnimate()
                 .into(view);
     }

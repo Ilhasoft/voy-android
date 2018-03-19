@@ -55,9 +55,10 @@ class ReportRepository(
         name: String,
         tags: List<String>,
         urls: List<String>?,
-        medias: List<File>
+        medias: List<File>,
+        thumbnail: String
     ): Observable<Report> =
-        remoteReportDataSource.saveReport(theme, location, description, name, tags, urls, medias)
+        remoteReportDataSource.saveReport(theme, location, description, name, tags, urls, medias, thumbnail)
 
     override fun updateReport(
         reportId: Int,
@@ -68,7 +69,8 @@ class ReportRepository(
         tags: List<String>,
         urls: List<String>?,
         newFiles: List<File>?,
-        filesToDelete: List<Int>?
+        filesToDelete: List<Int>?,
+        thumbnail: String
     ): Observable<Report> {
         return remoteReportDataSource.updateReport(
             reportId,
@@ -79,7 +81,8 @@ class ReportRepository(
             tags,
             urls,
             newFiles,
-            filesToDelete
+            filesToDelete,
+            thumbnail
         )
     }
 
