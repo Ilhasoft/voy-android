@@ -13,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.RequestBody
 import java.io.File
+import java.util.*
 
 /**
  * Created by lucasbarros on 08/01/18.
@@ -32,27 +33,6 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
     }
 
     override fun saveReports(reports: List<Report>): Single<List<Report>> = Single.just(reports)
-//
-//    fun getReports(
-//        page: Int? = null,
-//        page_size: Int? = null,
-//        theme: Int? = null,
-//        project: Int? = null,
-//        mapper: Int? = null,
-//        status: Int? = null
-//    ): Single<Response<Report>> {
-//
-//        val reportsRequest = mutableMapOf<String, Int?>()
-//        reportsRequest.apply {
-//            putIfNotNull("page", page)
-//            putIfNotNull("page_size", page_size)
-//            putIfNotNull("theme", theme)
-//            putIfNotNull("project", project)
-//            putIfNotNull("mapper", mapper)
-//            putIfNotNull("status", status)
-//        }
-//        return api.getReports(reportsRequest)
-//    }
 
     private fun createReportQuery(theme: Int? = null, project: Int? = null, mapper: Int? = null,
                                   status: Int? = null, page: Int? = null, page_size: Int? = null): Map<String, Int?> {
@@ -88,7 +68,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         theme: Int, location: Location, description: String?, name: String,
         tags: List<String>, urls: List<String>?, medias: List<File>
     ): Observable<Report> {
-        var auxReport = Report()
+        var auxReport = Report(createdOn = Date())
         return saveReportInternal(theme, location, description, name, tags, urls)
             .flatMapObservable {
                 auxReport = it
@@ -185,7 +165,7 @@ class ReportService : ServiceFactory<ReportsApi>(ReportsApi::class.java), Report
         val requestBody = ReportRequest(theme, location, description, name, tags, urls)
 
         return if (newFiles?.isNotEmpty() == true) {
-            var auxReport = Report()
+            var auxReport = Report(createdOn = Date())
             api.updateReport(reportId, requestBody).flatMapObservable {
                 auxReport = it
                 Observable.fromIterable(newFiles)

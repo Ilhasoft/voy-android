@@ -6,6 +6,7 @@ import br.com.ilhasoft.voy.db.theme.BoundDbModel
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
+import br.com.ilhasoft.voy.shared.extensions.parse
 import br.com.ilhasoft.voy.shared.helpers.FileHelper
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import io.realm.RealmList
@@ -56,6 +57,7 @@ fun ReportDbModel.toReport(): Report {
         themeId,
         Location("Point", arrayListOf(location!!.lng, location!!.lat)),
         name = name,
+        createdOn = createdOn.parse("dd/MM/yyyy HH:mm"),
         description = description,
         tags = tags.toMutableList(),
         urls = urls.toMutableList(),

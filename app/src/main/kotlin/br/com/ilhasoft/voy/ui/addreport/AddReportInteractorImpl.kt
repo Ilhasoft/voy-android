@@ -9,6 +9,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.shared.extensions.format
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.schedulers.StandardScheduler
 import io.reactivex.Flowable
@@ -17,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import java.io.File
+import java.util.*
 
 /**
  * Created by lucasbarros on 09/02/18.
@@ -49,7 +51,8 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
                 ReportFileDbModel().apply {
                 file = it.absolutePath
             }
-            }.toMutableList()
+            }.toMutableList(),
+            createdOn = Date().format("dd/MM/yyyy HH:mm")
         )
             .observeOn(Schedulers.io())
             .flatMapObservable {
@@ -88,7 +91,8 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             medias,
             reportId,
             newFiles?.map { it.absolutePath },
-            filesToDelete
+            filesToDelete,
+            createdOn = Date().format("dd/MM/yyyy HH:mm")
         )
             .onMainThread()
             .observeOn(Schedulers.io())

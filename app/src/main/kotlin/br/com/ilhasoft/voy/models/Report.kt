@@ -16,7 +16,7 @@ data class Report(
     @SerializedName("can_receive_comments") var canReceiveComments: Boolean = false,
     var editable: Boolean = false,
     var visible: Boolean = false,
-    @SerializedName("created_on") var createdOn: Date = Date(),
+    @SerializedName("created_on") var createdOn: Date,
     var description: String? = "",
     var name: String = "",
     var tags: MutableList<String> = mutableListOf(),

@@ -12,3 +12,10 @@ fun Date?.format(pattern: String): String {
     val formatter = SimpleDateFormat(pattern, Locale.getDefault())
     return this?.let { formatter.format(it).capitalize() } ?: ""
 }
+
+fun String?.parse(pattern: String? = null): Date {
+    val formatter = SimpleDateFormat()
+    pattern?.let { formatter.applyPattern(it) }
+
+    return formatter.parse(this)
+}

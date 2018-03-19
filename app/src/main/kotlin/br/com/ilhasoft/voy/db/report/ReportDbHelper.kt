@@ -6,6 +6,7 @@ import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
 import br.com.ilhasoft.voy.network.reports.ReportDataSource
+import br.com.ilhasoft.voy.shared.extensions.format
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import br.com.ilhasoft.voy.ui.report.ReportStatus
@@ -89,7 +90,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         return saveReport(report.internalId, theme = report.theme, location = report.location!!,
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
             medias = createReportFileDbModel(report.files), reportId = report.id, status = report.status,
-            shouldSend = report.shouldSend
+            shouldSend = report.shouldSend, createdOn = report.createdOn.format("dd/MM/yyyy HH:mm")
         ).onMainThread(scheduler)
     }
 
@@ -115,7 +116,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         newFiles: List<String>? = null,
         filesToDelete: List<ReportFile>? = null,
         status: Int = ReportStatus.PENDING.value,
-        shouldSend: Boolean = true
+        shouldSend: Boolean = true,
+        createdOn: String
     ): Single<Report> {
 
         return Single.fromCallable {
@@ -133,7 +135,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                     newFiles,
                     filesToDelete,
                     status,
-                    shouldSend
+                    shouldSend,
+                    createdOn
                 )
             }
 
@@ -168,7 +171,8 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         newFiles: List<String>?,
         filesToDelete: List<ReportFile>?,
         status: Int = ReportStatus.PENDING.value,
-        shouldSend: Boolean = true
+        shouldSend: Boolean = true,
+        createdOn: String
     ): ReportDbModel {
         return ReportDbModel().apply {
             themeId = theme
@@ -197,6 +201,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                     }
                 }
             }
+            this.createdOn = createdOn
         }
     }
 
