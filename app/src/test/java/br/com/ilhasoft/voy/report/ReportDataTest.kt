@@ -41,8 +41,8 @@ class ReportDataTest {
     private val mockProject = 1
     private val mockMapper = 1
     private val mockStatus = 1
-    private val mockPage = 1
     private val mockNext = ""
+    private val mockPair = mockNext to mutableListOf<Report>()
     private val mockName = "FakeName"
     private val mockDescription = "FakeDescription"
     private val mockLocation = Location("GPS", arrayListOf(1.2, 2.2))
@@ -81,7 +81,7 @@ class ReportDataTest {
                 mockMapper,
                 mockStatus
             )
-        ).thenReturn(Single.just(mockNext to mockReponse.results))
+        ).thenReturn(Single.just(mockPair))
 
         reportRepository.getReports(
             mockTheme,
@@ -92,7 +92,7 @@ class ReportDataTest {
             .test()
             .assertSubscribed()
             .assertNoErrors()
-            .assertValue { it == mockReponse.results }
+            .assertValue { it == mockPair }
     }
 
     @Test
