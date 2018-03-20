@@ -63,7 +63,7 @@ class AutoSendInteractorImpl : AutoSendInteractor {
                 report.name,
                 report.tags,
                 report.urls,
-                reportDbModel.medias.map { File(it.file) },
+                report.files.map { File(it.file) },
                 report.thumbnail
             )
         } else {
@@ -76,7 +76,7 @@ class AutoSendInteractorImpl : AutoSendInteractor {
                 report.tags,
                 report.urls,
                 reportDbModel.newFiles.map { File(it) },
-                reportDbModel.filesToDelete.map { it.id },
+                reportDbModel.filesToDelete.map { it.serverId },
                 report.thumbnail
             )
         }

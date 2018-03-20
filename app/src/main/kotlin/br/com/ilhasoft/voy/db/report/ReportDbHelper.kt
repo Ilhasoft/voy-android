@@ -14,6 +14,7 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.realm.Realm
+import io.realm.RealmList
 import java.io.File
 
 /**
@@ -192,7 +193,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
             this.status = status
             this.description = description
             this.tags.addAll(tags)
-            this.medias.addAll(medias)
+            this.medias = RealmList(*medias.toTypedArray())
             this.shouldSend = shouldSend
             urls?.let {
                 this.urls.addAll(it)
@@ -202,7 +203,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
                 this.newFiles.addAll(it)
             }
             filesToDelete?.map { reportFile ->
-                medias.filter { it.id == reportFile.id }.map {
+                medias.filter { it.serverId == reportFile.id }.map {
                     ReportFileDbModel().apply {
                         id = it.id
                         file = it.file
@@ -218,7 +219,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
     private fun createReportFileDbModel(files: MutableList<ReportFile>): MutableList<ReportFileDbModel> {
         return files.map {
             ReportFileDbModel().apply {
-                id = it.id
+                serverId = it.id
                 file = it.file
             }
         }.toMutableList()
