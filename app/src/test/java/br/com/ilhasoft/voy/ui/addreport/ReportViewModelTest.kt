@@ -182,7 +182,7 @@ class ReportViewModelTest {
 
     @Test
     fun `should set up view model with report`() {
-        val report = mock(Report::class.java) //(name = "name", description = "description", urls = mutableListOf(), tags = mutableListOf())
+        val report = mock(Report::class.java)
         viewModel.setUpWithReport(report)
 
         assertEquals(report.files, viewModel.mediasFromServer)

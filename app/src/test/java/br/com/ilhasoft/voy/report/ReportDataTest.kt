@@ -532,25 +532,7 @@ class ReportDataTest {
         )
     }
 
-    private fun createMockReport(): Report = mock(Report::class.java)/*(
-        1,
-        1,
-        mockLocation,
-        true,
-        true,
-        true,
-        Date(),
-        "description",
-        "name",
-        mutableListOf(),
-        "themeColor",
-        mockedUser,
-        mockThumbnail,
-        1,
-        mutableListOf(),
-        mutableListOf(),
-        "lastNotification"
-    )*/
+    private fun createMockReport(): Report = mock(Report::class.java)
 
     private fun createMockReportFile() =
         ReportFile(
