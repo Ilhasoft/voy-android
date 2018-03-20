@@ -11,8 +11,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
@@ -46,7 +45,7 @@ class HomePresenterTest {
             mockedTheme.copy(id = 3)
     )
 
-    private val mockedNotification = Notification(1, 1, 1, false, "", Report(), "")
+    private val mockedNotification = Notification(1, 1, 1, false, "", mock(Report::class.java), "")
     private val mockedNotificationList = mutableListOf(
             mockedNotification.copy(id = 1),
             mockedNotification.copy(id = 2),

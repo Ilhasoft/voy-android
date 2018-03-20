@@ -16,10 +16,10 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import java.io.File
 import java.net.UnknownHostException
-import java.util.*
 import java.util.concurrent.TimeoutException
 
 /**
@@ -45,6 +45,7 @@ class ReportDataTest {
     private val mockPair = mockNext to mutableListOf<Report>()
     private val mockName = "FakeName"
     private val mockDescription = "FakeDescription"
+    private val mockThumbnail = "thumbnail.jpg"
     private val mockLocation = Location("GPS", arrayListOf(1.2, 2.2))
     private val mockedUser = User(
         1,
@@ -252,7 +253,8 @@ class ReportDataTest {
                 mockName,
                 createMockTagList(),
                 createMockUrlList(),
-                createMockFileList()
+                createMockFileList(),
+                mockThumbnail
             )
         ).thenReturn(Observable.just(mockReport))
 
@@ -263,7 +265,8 @@ class ReportDataTest {
             mockName,
             createMockTagList(),
             createMockUrlList(),
-            createMockFileList()
+            createMockFileList(),
+            mockThumbnail
         ).test()
             .assertSubscribed()
             .assertNoErrors()
@@ -282,7 +285,8 @@ class ReportDataTest {
                 mockName,
                 createMockTagList(),
                 createMockUrlList(),
-                createMockFileList()
+                createMockFileList(),
+                mockThumbnail
             )
         ).thenReturn(Observable.error(TimeoutException()))
 
@@ -293,7 +297,8 @@ class ReportDataTest {
             mockName,
             createMockTagList(),
             createMockUrlList(),
-            createMockFileList()
+            createMockFileList(),
+            mockThumbnail
         ).test()
             .assertSubscribed()
             .assertError { it is TimeoutException }
@@ -309,7 +314,8 @@ class ReportDataTest {
                 mockName,
                 createMockTagList(),
                 createMockUrlList(),
-                createMockFileList()
+                createMockFileList(),
+                mockThumbnail
             )
         ).thenReturn(Observable.error(UnknownHostException()))
 
@@ -320,7 +326,8 @@ class ReportDataTest {
             mockName,
             createMockTagList(),
             createMockUrlList(),
-            createMockFileList()
+            createMockFileList(),
+            mockThumbnail
         ).test()
             .assertSubscribed()
             .assertError { it is UnknownHostException }
@@ -338,7 +345,8 @@ class ReportDataTest {
                 createMockTagList(),
                 createMockUrlList(),
                 createMockFileList(),
-                null
+                null,
+                mockThumbnail
             )
         ).thenReturn(Observable.just(mockReport))
 
@@ -351,7 +359,8 @@ class ReportDataTest {
             createMockTagList(),
             createMockUrlList(),
             createMockFileList(),
-            null
+            null,
+            mockThumbnail
         ).test()
             .assertSubscribed()
             .assertComplete()
@@ -372,7 +381,8 @@ class ReportDataTest {
                 createMockTagList(),
                 createMockUrlList(),
                 createMockFileList(),
-                null
+                null,
+                mockThumbnail
             )
         ).thenReturn(Observable.error(TimeoutException()))
 
@@ -385,7 +395,8 @@ class ReportDataTest {
             createMockTagList(),
             createMockUrlList(),
             createMockFileList(),
-            null
+            null,
+            mockThumbnail
         ).test()
             .assertSubscribed()
             .assertError { it is TimeoutException }
@@ -403,7 +414,8 @@ class ReportDataTest {
                 createMockTagList(),
                 createMockUrlList(),
                 createMockFileList(),
-                null
+                null,
+                mockThumbnail
             )
         ).thenReturn(Observable.error(UnknownHostException()))
 
@@ -416,7 +428,8 @@ class ReportDataTest {
             createMockTagList(),
             createMockUrlList(),
             createMockFileList(),
-            null
+            null,
+            mockThumbnail
         ).test()
             .assertSubscribed()
             .assertError { it is UnknownHostException }
@@ -434,7 +447,8 @@ class ReportDataTest {
                 createMockTagList(),
                 createMockUrlList(),
                 createMockFileList(),
-                null
+                null,
+                mockThumbnail
             )
         ).thenReturn(Observable.error(NetworkErrorException()))
 
@@ -447,7 +461,8 @@ class ReportDataTest {
             createMockTagList(),
             createMockUrlList(),
             createMockFileList(),
-            null
+            null,
+            mockThumbnail
         ).test()
             .assertSubscribed()
             .assertError { it is NetworkErrorException }
@@ -517,7 +532,7 @@ class ReportDataTest {
         )
     }
 
-    private fun createMockReport(): Report = Report(
+    private fun createMockReport(): Report = mock(Report::class.java)/*(
         1,
         1,
         mockLocation,
@@ -530,12 +545,12 @@ class ReportDataTest {
         mutableListOf(),
         "themeColor",
         mockedUser,
-        null,
+        mockThumbnail,
         1,
         mutableListOf(),
         mutableListOf(),
         "lastNotification"
-    )
+    )*/
 
     private fun createMockReportFile() =
         ReportFile(

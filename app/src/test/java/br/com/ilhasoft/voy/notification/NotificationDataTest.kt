@@ -1,7 +1,6 @@
 package br.com.ilhasoft.voy.notification
 
 import br.com.ilhasoft.voy.models.Notification
-import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.network.notification.NotificationDataSource
 import br.com.ilhasoft.voy.network.notification.NotificationRepository
 import io.reactivex.Completable
@@ -10,6 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import java.util.concurrent.TimeoutException
 
@@ -22,7 +22,6 @@ class NotificationDataTest {
     private lateinit var notificationService: NotificationDataSource
 
     private lateinit var notificationRepository: NotificationRepository
-
     private val mockNotificationId = 34
 
     @Before
@@ -79,10 +78,9 @@ class NotificationDataTest {
 
     private fun createMockNotificationList(): List<Notification> {
         return listOf(
-                Notification(1, 1, 1, false, null, Report(), ""),
-                Notification(2, 3, 3, false, null, Report(), ""),
-                Notification(3, 3, 3, false, null, Report(), ""),
-                Notification(4, 4, 4, false, null, Report(), "")
+            mock(Notification::class.java),
+            mock(Notification::class.java),
+            mock(Notification::class.java)
         )
     }
 
