@@ -15,10 +15,10 @@ class ReportsPresenter : Presenter<ReportsContract>(ReportsContract::class.java)
     }
 
     fun onClickAddReport(currentTime: Date) {
-        if ((ThemeData.startAt..ThemeData.endAt).contains(currentTime))
-            view.navigateToAddReport()
-        else
-            view.showMessage(R.string.period_ended_text)
+        when  {
+            currentTime in ThemeData.startAt..ThemeData.endAt -> view.navigateToAddReport()
+            ThemeData.startAt > currentTime -> view.showMessage(R.string.period_future_text)
+            else -> view.showMessage(R.string.period_ended_text)
+        }
     }
-
 }
