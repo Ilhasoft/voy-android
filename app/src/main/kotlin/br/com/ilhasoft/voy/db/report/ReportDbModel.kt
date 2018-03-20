@@ -38,16 +38,15 @@ open class ReportDbModel : RealmObject() {
 }
 
 fun ReportDbModel.toReport(): Report {
-    val files = mutableListOf<ReportFile>()
-    medias.forEach {
+    val files = this.medias.map {
         var mimeType = FileHelper.getMimeTypeFromUri(VoyApplication.instance, Uri.parse(it.file))
         mimeType = if (FileHelper.imageTypes.contains(mimeType)) {
             "image"
         } else {
             "video"
         }
-        files.add(ReportFile(id = it.id, file = it.file, reportId = id, mediaType = mimeType))
-    }
+        ReportFile(id = it.serverId, file = it.file, reportId = id, mediaType = mimeType)
+    }.toMutableList()
 
     return Report(
         id,

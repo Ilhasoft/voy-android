@@ -39,6 +39,7 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
         medias: List<File>,
         urls: List<String>?
     ): Observable<Report> {
+
         return reportDbHelper.saveReport(
             reportInternalId,
             theme,
@@ -47,10 +48,10 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             name,
             tags,
             urls,
-            medias.map {
+            medias = medias.map {
                 ReportFileDbModel().apply {
-                file = it.absolutePath
-            }
+                    file = it.absolutePath
+                }
             }.toMutableList(),
             createdOn = Date().format("dd/MM/yyyy HH:mm"),
             thumbnail = urls?.lastOrNull() ?: "",
@@ -59,8 +60,10 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             .observeOn(Schedulers.io())
             .flatMapObservable {
                 if (ConnectivityManager.isConnected()) {
-                    reportRepository.saveReport(theme, location, description,
-                        name, tags, urls, medias, urls?.lastOrNull() ?: "")
+                    reportRepository.saveReport(
+                        theme, location, description,
+                        name, tags, urls, medias, urls?.lastOrNull() ?: ""
+                    )
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete { reportDbHelper.removeReport(it.internalId!!) }
                 } else {

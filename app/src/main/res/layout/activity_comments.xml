@@ -70,8 +70,6 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_border_white"
                     android:hint="@string/send_comment_hint"
-                    android:inputType="textImeMultiLine"
-                    android:imeOptions="actionDone"
                     android:padding="8dp"
                     app:validateEmpty="@{true}" />
 
