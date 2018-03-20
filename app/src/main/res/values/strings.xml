@@ -34,6 +34,7 @@
 
     <string name="title_activity_add_report">Add Report</string>
     <string name="period_ended_text">Unfortunately the period to receive new reports has ended. Thank you for your effort.</string>
+    <string name="period_future_text">We are preparing this theme for you, please come back later or contact your administrator!</string>
     <string name="next">Next</string>
     <string name="add_photos_videos">Add photos\nand videos</string>
     <string name="done">Done</string>

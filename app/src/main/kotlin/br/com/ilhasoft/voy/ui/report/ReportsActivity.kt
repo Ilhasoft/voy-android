@@ -23,7 +23,6 @@ import java.util.*
  */
 class ReportsActivity : BaseActivity(), ReportsContract {
 
-
     companion object {
         @JvmStatic
         private val EXTRA_THEME_NAME = "themeName"
@@ -35,16 +34,16 @@ class ReportsActivity : BaseActivity(), ReportsContract {
             themeName: String, themeColor: String,
             themeBounds: List<List<Double>>,
             allowLinks: Boolean,
-            startAt: Date,
-            endAt: Date
+            startAt: Date?,
+            endAt: Date?
         ): Intent {
             ThemeData.themeId = themeId
             ThemeData.themeColor =
                     Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds
             ThemeData.allowLinks = allowLinks
-            ThemeData.startAt = startAt
-            ThemeData.endAt = endAt
+            startAt?.let { ThemeData.startAt = it }
+            endAt?.let { ThemeData.endAt = it }
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
