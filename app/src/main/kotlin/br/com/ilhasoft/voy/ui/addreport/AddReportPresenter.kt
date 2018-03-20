@@ -1,6 +1,7 @@
 package br.com.ilhasoft.voy.ui.addreport
 
 import android.net.Uri
+import android.os.Build
 import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.support.rxgraphics.FileCompressor
 import br.com.ilhasoft.voy.R
@@ -110,10 +111,14 @@ class AddReportPresenter(
             .map { Uri.parse(it) }
             .flatMap {
                 val file = getFile(it)
-                if (FileHelper.imageTypes.contains(getMimeType(it)))
+                if (FileHelper.imageTypes.contains(getMimeType(it))) {
                     FileCompressor.compressPicture(file, 1280, 720, 80)
-                else
-                    FileCompressor.compressVideo(file)
+                } else {
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN)
+                        Flowable.just(file)
+                    else
+                        FileCompressor.compressVideo(file)
+                }
             }
             .toList()
             .onMainThread()
