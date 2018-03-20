@@ -172,12 +172,13 @@ class AddReportPresenter(
             .doOnSubscribe { view.showLoading() }
             .doAfterTerminate { view.dismissLoading() }
             .doOnComplete { view.navigateToThanks() }
-            .subscribe({
-                reportViewModel.report = it
-            }, {
-                it.printStackTrace()
-                Timber.e(it)
-            })
+            .subscribe(
+                { reportViewModel.report = it },
+                {
+                    it.printStackTrace()
+                    Timber.e(it)
+                }
+            )
     }
 
     private fun getFile(uri: Uri) = view.getFileFromUri(uri)

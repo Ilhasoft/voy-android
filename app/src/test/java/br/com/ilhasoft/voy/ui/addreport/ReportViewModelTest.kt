@@ -13,6 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 
 /**
@@ -181,7 +182,7 @@ class ReportViewModelTest {
 
     @Test
     fun `should set up view model with report`() {
-        val report = Report(name = "name", description = "description", urls = mutableListOf(), tags = mutableListOf())
+        val report = mock(Report::class.java)
         viewModel.setUpWithReport(report)
 
         assertEquals(report.files, viewModel.mediasFromServer)

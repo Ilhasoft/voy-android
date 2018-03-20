@@ -248,7 +248,7 @@ class ReportDetailPresentTest {
             mutableListOf(),
             "themeColor",
             mockedUser,
-            null,
+            "mockedThumbnail",
             1,
             mutableListOf(),
             mutableListOf(),

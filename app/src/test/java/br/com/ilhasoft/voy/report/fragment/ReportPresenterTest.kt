@@ -1,9 +1,13 @@
 package br.com.ilhasoft.voy.report.fragment
 
+import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Preferences
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.User
+import br.com.ilhasoft.voy.network.reports.ReportDataSource
+import br.com.ilhasoft.voy.network.reports.ReportRepository
+import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import br.com.ilhasoft.voy.ui.report.fragment.ReportContract
 import br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter
 import org.junit.Assert.assertEquals
@@ -22,9 +26,16 @@ class ReportPresenterTest {
 
     @Mock
     private lateinit var preferences: Preferences
+    @Mock
+    private lateinit var reportRemoteDataSource: ReportDataSource
+    @Mock
+    private lateinit var reportLocalDataSource: ReportDataSource
+    @Mock
+    private lateinit var connectionProvider: CheckConnectionProvider
 
     @Mock
     private lateinit var view: ReportContract
+    private lateinit var repository: ReportRepository
     private lateinit var presenter: ReportPresenter
 
     private val mockedLocation = createMockedLocation()
@@ -36,7 +47,8 @@ class ReportPresenterTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        presenter = ReportPresenter(preferences)
+        repository = ReportRepository(reportRemoteDataSource, reportLocalDataSource, connectionProvider)
+        presenter = ReportPresenter(preferences, repository, ImmediateScheduler())
         presenter.attachView(view)
     }
 
@@ -84,7 +96,7 @@ class ReportPresenterTest {
             mutableListOf(),
             "themeColor",
             mockedUser,
-            null,
+            "thumbnail",
             1,
             mutableListOf(),
             mutableListOf(),

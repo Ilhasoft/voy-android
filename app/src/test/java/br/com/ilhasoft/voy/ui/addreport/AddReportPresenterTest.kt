@@ -15,6 +15,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import java.util.*
 
 /**
  * Created by allan on 12/03/2018.
@@ -36,7 +37,9 @@ class AddReportPresenterTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        mockedReport = Report(name = "name", description = "description", location = br.com.ilhasoft.voy.models.Location("", arrayListOf()))
+        mockedReport = Report(name = "name", description = "description",
+            location = br.com.ilhasoft.voy.models.Location("", arrayListOf()),
+            createdOn = mock(Date::class.java), thumbnail = "thumbanail")
         viewModel = ReportViewModel(interactor)
 
         presenter = AddReportPresenter(viewModel, listOf(), mockedReport, interactor, ImmediateScheduler())
