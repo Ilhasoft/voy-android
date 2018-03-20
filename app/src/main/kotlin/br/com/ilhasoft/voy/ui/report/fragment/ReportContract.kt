@@ -6,6 +6,6 @@ import br.com.ilhasoft.voy.ui.base.BaseView
 interface ReportContract : BaseView {
 
     fun navigateToReportDetail(report: Report)
-    fun disableLoadOnDemand()
+    fun disableLoadOnDemand(shouldDisable: Boolean)
     fun setupReportsAdapter(reports: List<Report>)
 }

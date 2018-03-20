@@ -18,24 +18,22 @@ class ReportPresenter(
     private val scheduler: BaseScheduler
 ) : Presenter<ReportContract>(ReportContract::class.java) {
 
-
-    val mapper = preferences.getInt(User.ID)
     val pageSize = 50
 
     fun loadReports(theme: Int, status: Int, page: Int) {
-        reportRepository.getReports(theme = theme, mapper = mapper, status = status, page = page, page_size = pageSize)
+        reportRepository.getReports(
+            theme = theme,
+            mapper = preferences.getInt(User.ID),
+            status = status,
+            page = page,
+            page_size = pageSize
+        )
             .fromIoToMainThread(scheduler)
             .loadControl(view)
-            .doOnSuccess { (next, _) ->
-                if(next == null || next == "") {
-                    view.disableLoadOnDemand()
-                }
-            }
+            .doOnSuccess { (next, _) -> view.disableLoadOnDemand(next.isNullOrBlank()) }
             .flatMap { (_, reports) -> reportRepository.saveReports(reports) }
             .subscribe(
-                {
-                    view.setupReportsAdapter(it.filter { it.status == status })
-                },
+                { view.setupReportsAdapter(it) },
                 {
                     ErrorHandlerHelper.showError(it, R.string.report_list_error) { msg ->
                         view.showMessage(msg)

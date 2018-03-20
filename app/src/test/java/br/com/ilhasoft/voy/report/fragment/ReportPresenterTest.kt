@@ -1,5 +1,6 @@
 package br.com.ilhasoft.voy.report.fragment
 
+import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.models.Location
 import br.com.ilhasoft.voy.models.Preferences
@@ -10,12 +11,12 @@ import br.com.ilhasoft.voy.network.reports.ReportRepository
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import br.com.ilhasoft.voy.ui.report.fragment.ReportContract
 import br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter
+import io.reactivex.Single
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import java.util.*
 
@@ -44,6 +45,14 @@ class ReportPresenterTest {
 
     private val mockedUserAvatar = "http://voy-dev.ilhasoft.mobi/media/users/avatars/group-21.png"
 
+    private val mockedThemeId = 1
+    private val mockedStatusId = 1
+    private val mockedMapperId = 1
+    private val mockedPage = "1"
+    private val mockedPageSize = 50
+    private val mockedList = listOf(mock(Report::class.java), mock(Report::class.java))
+    private val mockedPair = mockedPage to mockedList
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -66,6 +75,56 @@ class ReportPresenterTest {
         presenter.getAvatarPositionFromPreferences()
 
         assertEquals(preferences.getString(User.AVATAR), mockedUserAvatar)
+    }
+
+    @Test
+    fun `Should get reports from service when online`() {
+        `when`(preferences.getInt(User.ID)).thenReturn(mockedMapperId)
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+        `when`(reportRemoteDataSource.getReports(mockedThemeId,null, mockedMapperId,
+            mockedStatusId, mockedPage.toInt(), mockedPageSize))
+            .thenReturn(Single.just(mockedPair))
+        `when`(reportLocalDataSource.saveReports(mockedList)).thenReturn(Single.just(mockedList))
+
+        presenter.loadReports(mockedThemeId, mockedStatusId, mockedPage.toInt())
+
+        verify(view).showLoading()
+        verify(view).dismissLoading()
+        verify(view).disableLoadOnDemand(mockedPage.isNullOrBlank())
+        verify(view).setupReportsAdapter(mockedList)
+    }
+
+    @Test
+    fun `Should get reports from cache when offline`() {
+        `when`(connectionProvider.hasConnection()).thenReturn(false)
+        `when`(preferences.getInt(User.ID)).thenReturn(mockedMapperId)
+        `when`(reportLocalDataSource.getReports(
+            theme = mockedThemeId,
+            mapper = mockedMapperId,
+            status = mockedStatusId)
+        ).thenReturn(Single.just(mockedPair))
+
+        presenter.loadReports(mockedThemeId, mockedStatusId, mockedPage.toInt())
+
+        verify(view).showLoading()
+        verify(view).dismissLoading()
+        verify(view).disableLoadOnDemand(mockedPage.isNullOrBlank())
+        verify(view).setupReportsAdapter(mockedList)
+    }
+
+    @Test
+    fun `Should show an error message when something wrong`() {
+        `when`(preferences.getInt(User.ID)).thenReturn(mockedMapperId)
+        `when`(connectionProvider.hasConnection()).thenReturn(true)
+        `when`(reportRemoteDataSource.getReports(mockedThemeId,null, mockedMapperId,
+            mockedStatusId, mockedPage.toInt(), mockedPageSize)
+        ).thenReturn(Single.error(Exception()))
+
+        presenter.loadReports(mockedThemeId, mockedStatusId, mockedPage.toInt())
+
+        verify(view).showLoading()
+        verify(view).dismissLoading()
+        verify(view).showMessage(R.string.report_list_error)
     }
 
     private fun createMockedLocation() = Location("GPS", arrayListOf(1.2, 2.2))
