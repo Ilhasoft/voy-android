@@ -14,7 +14,7 @@
             type="br.com.ilhasoft.voy.models.Report" />
 
         <variable
-            name="pending"
+            name="pendingToSend"
             type="Boolean" />
 
         <variable
@@ -103,15 +103,15 @@
         </RelativeLayout>
 
         <ImageView
-            android:id="@+id/expanded_menu"
+            android:id="@+id/offline_signal_icon"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="top|end"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="12dp"
-            android:src="@drawable/ic_status_waiting"
-            app:isVisible="@{pending}" />
+            android:src="@drawable/ic_signal_wifi_off"
+            app:isVisible="@{pendingToSend}" />
 
     </android.support.v7.widget.CardView>
 
