@@ -115,7 +115,7 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     }
 
     override fun disableLoadOnDemand(shouldDisable: Boolean) {
-        reportsAdapter.isEnableOnDemand = shouldDisable
+        reportsAdapter.isEnableOnDemand = shouldDisable.not()
         if (shouldDisable) page = 1
     }
 
