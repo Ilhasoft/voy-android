@@ -27,26 +27,9 @@ class ReportViewHolder(
     override fun onBind(report: Report) {
         binding.let {
             it.themeIndicator.setBackgroundColor(ThemeData.themeColor)
-            it.pending = report.status == ReportStatus.PENDING.value
+            it.pendingToSend = (report.status == ReportStatus.PENDING.value) && report.shouldSend
             it.report = report
 
-            it.expandedMenu.run {
-                if (report.shouldSend) {
-                    setImageDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.ic_status_resend
-                        )
-                    )
-                } else {
-                    setImageDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.ic_status_waiting
-                        )
-                    )
-                }
-            }
             it.executePendingBindings()
         }
     }
