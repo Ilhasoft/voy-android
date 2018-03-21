@@ -77,7 +77,9 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         val next: String? = ""
         return Single.fromCallable {
             val reportsDb = realm.where(ReportDbModel::class.java)
-                .equalTo(ReportDbModel::themeId.name, theme).findAll()
+                .equalTo(ReportDbModel::themeId.name, theme)
+                .equalTo(ReportDbModel::status.name, status)
+                .findAll()
             reportsDb.map { it.toReport() }.toList()
         }
             .map { next to it }
