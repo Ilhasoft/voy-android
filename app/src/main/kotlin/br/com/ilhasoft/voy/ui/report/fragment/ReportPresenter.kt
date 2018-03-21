@@ -33,7 +33,7 @@ class ReportPresenter(
             .doOnSuccess { (next, _) -> view.disableLoadOnDemand(next.isNullOrBlank()) }
             .flatMap { (_, reports) -> reportRepository.saveReports(reports) }
             .subscribe(
-                { view.setupReportsAdapter(it.filter { it.status == status }) },
+                { view.setupReportsAdapter(it) },
                 {
                     ErrorHandlerHelper.showError(it, R.string.report_list_error) { msg ->
                         view.showMessage(msg)
