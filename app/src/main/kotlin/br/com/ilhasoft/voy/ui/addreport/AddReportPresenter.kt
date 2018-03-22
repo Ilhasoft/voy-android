@@ -121,7 +121,7 @@ class AddReportPresenter(
                 }
             }
             .toList()
-            .onMainThread()
+            .onMainThread(scheduler)
             .flatMapObservable {
                 reportInteractor.saveReport(
                     report.internalId,
