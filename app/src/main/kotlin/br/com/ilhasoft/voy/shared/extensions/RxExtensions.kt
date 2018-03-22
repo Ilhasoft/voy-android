@@ -122,6 +122,14 @@ fun <T> Maybe<T>.fromIoToMainThread(): Maybe<T> {
     }
 }
 
+fun <T> Maybe<T>.fromIoToMainThread(scheduler: BaseScheduler): Maybe<T> {
+    return compose { upstream ->
+        upstream
+            .subscribeOn(scheduler.io())
+            .observeOn(scheduler.ui())
+    }
+}
+
 fun <T> Maybe<T>.loadControl(loadView: LoadView): Maybe<T> {
     return compose { upstream ->
         upstream

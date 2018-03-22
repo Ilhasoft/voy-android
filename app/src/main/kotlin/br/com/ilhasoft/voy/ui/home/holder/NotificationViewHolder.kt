@@ -9,8 +9,10 @@ import br.com.ilhasoft.voy.ui.home.HomePresenter
 /**
  * Created by geral on 04/12/17.
  */
-class NotificationViewHolder(val binding: ItemNotificationBinding,
-                             val presenter: HomePresenter) : ViewHolder<Notification>(binding.root) {
+class NotificationViewHolder(
+    val binding: ItemNotificationBinding,
+    val presenter: HomePresenter
+) : ViewHolder<Notification>(binding.root) {
 
     init {
         binding.presenter = presenter
@@ -34,6 +36,5 @@ class NotificationViewHolder(val binding: ItemNotificationBinding,
             else
                 R.string.comment_was_not_approved
         }
-
     }
 }

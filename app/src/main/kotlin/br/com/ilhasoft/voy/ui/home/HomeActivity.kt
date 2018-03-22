@@ -3,6 +3,7 @@ package br.com.ilhasoft.voy.ui.home
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -20,10 +21,7 @@ import br.com.ilhasoft.voy.databinding.ItemNotificationBinding
 import br.com.ilhasoft.voy.databinding.ItemThemeBinding
 import br.com.ilhasoft.voy.db.project.ProjectDbHelper
 import br.com.ilhasoft.voy.db.theme.ThemeDbHelper
-import br.com.ilhasoft.voy.models.Notification
-import br.com.ilhasoft.voy.models.Project
-import br.com.ilhasoft.voy.models.SharedPreferences
-import br.com.ilhasoft.voy.models.Theme
+import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.network.notification.NotificationRepository
 import br.com.ilhasoft.voy.network.notification.NotificationService
 import br.com.ilhasoft.voy.network.projects.ProjectRepository
@@ -157,6 +155,17 @@ class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
         notificationsAdapter.clear()
         notificationsAdapter.addAll(notifications)
         binding.viewToolbar?.hasNotification = notificationsAdapter.isNotEmpty()
+    }
+
+    override fun putThemeOnThemeData(theme: Theme) {
+        theme.apply {
+            ThemeData.themeId = id
+            ThemeData.themeColor = Color.parseColor("#$color")
+            startAt?.let { ThemeData.startAt = it }
+            endAt?.let { ThemeData.endAt = it }
+            ThemeData.allowLinks = theme.allowLinks
+            ThemeData.themeBounds = theme.bounds
+        }
     }
 
     override fun hasConnection(): Boolean = ConnectivityManager.isConnected()

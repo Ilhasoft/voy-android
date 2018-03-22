@@ -7,6 +7,7 @@ import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.schedulers.ImmediateScheduler
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -163,11 +164,16 @@ class HomePresenterTest {
 
     @Test
     fun shouldNavigateToNotificationDetailsWhenOnClickItemNotification() {
+        val mockedTheme = mock(Theme::class.java)
         `when`(interactor.markAsRead(mockedNotification.id)).thenReturn(Completable.complete())
+        `when`(interactor.getTheme(mockedNotification.report.theme)).thenReturn(Maybe.just(mockedTheme))
 
         presenter.onClickItemNotification(mockedNotification)
 
+        verify(view).showLoading()
+        verify(view).putThemeOnThemeData(mockedTheme)
         verify(view).navigateToNotificationDetail(mockedNotification)
+        verify(view).dismissLoading()
     }
 
     @Test
