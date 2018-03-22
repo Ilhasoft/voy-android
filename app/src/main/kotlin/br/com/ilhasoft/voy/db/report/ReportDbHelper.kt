@@ -128,7 +128,7 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
     ): Single<Report> {
 
         return Single.fromCallable {
-            var reportDb = getReport(reportId ?: 0)
+            var reportDb = getReport(reportId)
             if (reportDb == null) {
                 reportDb = createDbModel(
                     theme,
@@ -164,8 +164,10 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         }
     }
 
-    private fun getReport(id: Int): ReportDbModel? {
-        return realm.where(ReportDbModel::class.java).equalTo("id", id).findFirst()
+    private fun getReport(id: Int?): ReportDbModel? {
+        return id?.let {
+            realm.where(ReportDbModel::class.java).equalTo("id", id).findFirst()
+        }
     }
 
     private fun createDbModel(

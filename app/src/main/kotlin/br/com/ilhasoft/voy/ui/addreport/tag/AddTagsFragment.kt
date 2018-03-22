@@ -60,7 +60,7 @@ class AddTagsFragment : BaseFragment(), CheckConnectionProvider {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupTagsRecyclerView()
         reportViewModel.getAllTags().observe(activity, Observer { list ->
-            list?.let { setTags(it) }
+            list?.let { setTags(it.sortedWith(String.CASE_INSENSITIVE_ORDER)) }
         })
         return binding.root
     }

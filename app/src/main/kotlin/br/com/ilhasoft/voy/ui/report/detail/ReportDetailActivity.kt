@@ -157,7 +157,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             this.report = report
         }
         setupMediasView()
-        tagsAdapter.addAll(report.tags)
+        tagsAdapter.addAll(report.tags.sortedWith(String.CASE_INSENSITIVE_ORDER))
         tagsAdapter.notifyDataSetChanged()
     }
 
