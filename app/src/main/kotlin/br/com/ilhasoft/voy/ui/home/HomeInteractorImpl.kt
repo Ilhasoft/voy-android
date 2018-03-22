@@ -10,6 +10,7 @@ import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 
 /**
  * Created by lucas on 07/02/18.
@@ -31,6 +32,10 @@ class HomeInteractorImpl(
         return themeRepository.getThemes(projectId, userId)
             .flatMap { themeRepository.saveThemes(it) }
             .fromIoToMainThread(scheduler)
+    }
+
+    override fun getTheme(themeId: Int): Maybe<Theme> {
+        return themeRepository.getTheme(themeId = themeId).toMaybe()
     }
 
     override fun getNotifications(): Flowable<List<Notification>> =

@@ -4,6 +4,8 @@ import br.com.ilhasoft.support.core.mvp.Presenter
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.models.*
 import br.com.ilhasoft.voy.shared.extensions.extractNumbers
+import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
+import br.com.ilhasoft.voy.shared.extensions.loadControl
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import timber.log.Timber
@@ -50,8 +52,23 @@ class HomePresenter(
 
     fun onClickItemNotification(notification: Notification) {
         homeInteractor.markAsRead(notification.id)
-            .doOnComplete { navigateToNotificationDetails(notification) }
+            .doOnComplete { getThemeByNotification(notification) }
             .subscribe({}, { Timber.e(it) })
+    }
+
+    private fun getThemeByNotification(notification: Notification) {
+        homeInteractor.getTheme(notification.report.theme)
+            .fromIoToMainThread(scheduler)
+            .loadControl(view)
+            .doOnSuccess { view.putThemeOnThemeData(it) }
+            .subscribe(
+                { navigateToNotificationDetails(notification) },
+                {
+                    ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
+                        view.showMessage(msg)
+                    }
+                }
+            )
     }
 
     fun onClickTheme(theme: Theme) {
@@ -74,8 +91,6 @@ class HomePresenter(
                 .subscribe(
                         { fillThemesAdapter(it) },
                         {
-                            Timber.e(it)
-                            it.printStackTrace()
                             ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
                                 view.showMessage(msg)
                             }

@@ -7,6 +7,7 @@ import com.facebook.stetho.Stetho
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import timber.log.Timber
 import java.util.regex.Pattern
 
 
@@ -33,7 +34,10 @@ class VoyApplication : MultiDexApplication() {
         val config = RealmConfiguration.Builder().name("voy.realm").build()
         Realm.setDefaultConfiguration(config)
 
-        if (BuildConfig.DEBUG) configStetho()
+        if (BuildConfig.DEBUG) {
+            configStetho()
+            Timber.plant(Timber.DebugTree())
+        }
     }
 
     private fun configStetho() {
