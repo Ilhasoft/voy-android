@@ -5,6 +5,7 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportsBinding
@@ -43,7 +44,15 @@ class ReportsActivity : BaseActivity(), ReportsContract {
             ThemeData.themeBounds = themeBounds
             ThemeData.allowLinks = allowLinks
             startAt?.let { ThemeData.startAt = it }
-            endAt?.let { ThemeData.endAt = it }
+            endAt?.let {
+                val precisionEndAt = Calendar.getInstance()
+                precisionEndAt.time = it
+                precisionEndAt.add(Calendar.HOUR, 23)
+                precisionEndAt.add(Calendar.MINUTE, 59)
+                precisionEndAt.add(Calendar.SECOND, 59)
+
+                ThemeData.endAt = precisionEndAt.time
+            }
 
             val intent = Intent(context, ReportsActivity::class.java)
             intent.putExtra(EXTRA_THEME_NAME, themeName)
