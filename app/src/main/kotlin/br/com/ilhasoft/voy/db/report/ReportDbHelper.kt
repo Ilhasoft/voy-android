@@ -95,10 +95,9 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
             description = report.description, name = report.name, tags = report.tags, urls = report.urls,
             medias = createReportFileDbModel(report.files), reportId = report.id, status = report.status,
             shouldSend = report.shouldSend, createdOn = report.createdOn.format("dd/MM/yyyy HH:mm"),
-            thumbnail = report.thumbnail, lastNotification = report.lastNotification ?: ""
+            thumbnail = report.thumbnail, lastNotification = report.lastNotification ?: "", isNew = true
         ).onMainThread(scheduler)
     }
-
 
     fun getReportDbModels(): Flowable<List<ReportDbModel>> {
         return Flowable.fromCallable {
@@ -124,13 +123,33 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         shouldSend: Boolean = true,
         createdOn: String,
         thumbnail: String,
-        lastNotification: String
+        lastNotification: String,
+        isNew: Boolean
     ): Single<Report> {
 
         return Single.fromCallable {
             var reportDb = getReport(reportId)
             if (reportDb == null) {
                 reportDb = createDbModel(
+                    theme,
+                    location,
+                    name,
+                    description,
+                    tags,
+                    medias,
+                    urls,
+                    reportId,
+                    newFiles,
+                    filesToDelete,
+                    status,
+                    shouldSend,
+                    createdOn,
+                    thumbnail,
+                    lastNotification
+                )
+            } else if (isNew.not()) {
+                reportDb = updateDbModel(
+                    reportDb.internalId,
                     theme,
                     location,
                     name,
@@ -188,6 +207,58 @@ class ReportDbHelper(private val realm: Realm, private val scheduler: BaseSchedu
         lastNotification: String
     ): ReportDbModel {
         return ReportDbModel().apply {
+            themeId = theme
+            this.location = BoundDbModel().apply {
+                lat = location.coordinates[1]
+                lng = location.coordinates[0]
+            }
+            this.name = name
+            this.status = status
+            this.description = description
+            this.tags.addAll(tags)
+            this.medias = RealmList(*medias.toTypedArray())
+            this.shouldSend = shouldSend
+            urls?.let {
+                this.urls.addAll(it)
+            }
+            reportId?.let { id = it }
+            newFiles?.let {
+                this.newFiles.addAll(it)
+            }
+            filesToDelete?.map { reportFile ->
+                medias.filter { it.serverId == reportFile.id }.map {
+                    ReportFileDbModel().apply {
+                        id = it.id
+                        file = it.file
+                    }
+                }
+            }
+            this.createdOn = createdOn
+            this.thumbnail = thumbnail
+            this.lastNotification = lastNotification
+        }
+    }
+
+    private fun updateDbModel(
+        internalId: String,
+        theme: Int,
+        location: Location,
+        name: String,
+        description: String?,
+        tags: List<String>,
+        medias: MutableList<ReportFileDbModel>,
+        urls: List<String>?,
+        reportId: Int?,
+        newFiles: List<String>?,
+        filesToDelete: List<ReportFile>?,
+        status: Int = ReportStatus.PENDING.value,
+        shouldSend: Boolean = true,
+        createdOn: String,
+        thumbnail: String,
+        lastNotification: String
+    ): ReportDbModel {
+        return ReportDbModel().apply {
+            this.internalId = internalId
             themeId = theme
             this.location = BoundDbModel().apply {
                 lat = location.coordinates[1]

@@ -114,6 +114,7 @@ class AddReportActivity : BaseActivity(), AddReportContract, CheckConnectionProv
     private val addMediasFragment by lazy { AddMediasFragment() }
     private val addTitleFragment by lazy { AddTitleFragment() }
     private val addTagsFragment by lazy { AddTagsFragment() }
+    private val shouldBeUpdate by lazy { intent.getParcelableExtra<Report?>(EXTRA_REPORT) != null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,6 +178,8 @@ class AddReportActivity : BaseActivity(), AddReportContract, CheckConnectionProv
         loadLocationWithPermissionCheck()
     }
 
+    override fun isUpdate() = shouldBeUpdate
+
     @SuppressLint("NeedOnRequestPermissionsResult")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -231,9 +234,11 @@ class AddReportActivity : BaseActivity(), AddReportContract, CheckConnectionProv
         val task = LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
         task.addOnCompleteListener {
             try {
-                it.getResult(ApiException::class.java)
-                showLoadLocationDialog()
-                locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null)
+                if (shouldBeUpdate.not()) {
+                    it.getResult(ApiException::class.java)
+                    showLoadLocationDialog()
+                    locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null)
+                }
             } catch (apiException: ApiException) {
                 when (apiException.statusCode) {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> resolveLocationEnable(apiException)
@@ -275,17 +280,17 @@ class AddReportActivity : BaseActivity(), AddReportContract, CheckConnectionProv
 
     private fun setUpObservables() {
         reportViewModel.buttonEnable.observe(this,
-                Observer {
-                    it?.let {
-                        binding.toolbar?.btnAction?.isEnabled = it
-                    }
-                })
+            Observer {
+                it?.let {
+                    binding.toolbar?.btnAction?.isEnabled = it
+                }
+            })
         reportViewModel.buttonTitle.observe(this,
-                Observer {
-                    it?.let {
-                        binding.toolbar?.actionName = resources.getString(it)
-                    }
-                })
+            Observer {
+                it?.let {
+                    binding.toolbar?.actionName = resources.getString(it)
+                }
+            })
     }
 
     private fun displayFragment(fragment: Fragment) {
