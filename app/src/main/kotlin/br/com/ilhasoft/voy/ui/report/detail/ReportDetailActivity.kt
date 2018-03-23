@@ -238,7 +238,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             flexWrap = FlexWrap.WRAP
         }
         addItemDecoration(setupItemDecoration())
-        setHasFixedSize(true)
+        setHasFixedSize(false)
         adapter = tagsAdapter
     }
 
