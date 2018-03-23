@@ -17,6 +17,7 @@ import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.io.File
 
 /**
  * Created by lucasbarros on 23/11/17.
@@ -109,17 +110,7 @@ class AddReportPresenter(
         Flowable.fromIterable(medias)
             .subscribeOn(Schedulers.io())
             .map { Uri.parse(it) }
-            .flatMap {
-                val file = getFile(it)
-                if (FileHelper.imageTypes.contains(getMimeType(it))) {
-                    FileCompressor.compressPicture(file, 1280, 720, 80)
-                } else {
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN)
-                        Flowable.just(file)
-                    else
-                        FileCompressor.compressVideo(file)
-                }
-            }
+            .flatMap { compressMedia(it) }
             .toList()
             .onMainThread(scheduler)
             .flatMapObservable {
@@ -150,13 +141,7 @@ class AddReportPresenter(
         Flowable.fromIterable(mediasToSave)
             .subscribeOn(scheduler.io())
             .map { Uri.parse(it) }
-            .flatMap {
-                val file = getFile(it)
-                if (FileHelper.imageTypes.contains(getMimeType(it)))
-                    FileCompressor.compressPicture(file, 1280, 720, 80)
-                else
-                    FileCompressor.compressVideo(file)
-            }
+            .flatMap { compressMedia(it) }
             .toList()
             .observeOn(scheduler.ui())
             .flatMapObservable {
@@ -189,6 +174,18 @@ class AddReportPresenter(
     private fun getFile(uri: Uri) = view.getFileFromUri(uri)
 
     private fun getMimeType(uri: Uri) = view.getMimeTypeFromUri(uri)
+
+    private fun compressMedia(uri: Uri): Flowable<File> {
+        val file = getFile(uri)
+        return if (FileHelper.imageTypes.contains(getMimeType(uri))) {
+            FileCompressor.compressPicture(file, 1280, 720, 80)
+        } else {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN)
+                Flowable.just(file)
+            else
+                FileCompressor.compressVideo(file)
+        }
+    }
 
     private fun checkedToContinue(isInsideBounds: Boolean) {
         if (!isInsideBounds) {
