@@ -119,9 +119,10 @@ class LoginPresenterTest {
 
         presenter.onClickLogin(validCredentials)
 
+        verify(view).showLoading()
         verify(preferences).put(User.TOKEN, token)
-        verify(view).showMessage(R.string.login_success)
         verify(view).navigateToHome()
+        verify(view).dismissLoading()
     }
 
     @Test

@@ -8,11 +8,11 @@ import br.com.ilhasoft.voy.models.User
 import br.com.ilhasoft.voy.network.BaseFactory
 import br.com.ilhasoft.voy.network.authorization.AuthorizationRepository
 import br.com.ilhasoft.voy.network.users.UserRepository
+import br.com.ilhasoft.voy.shared.extensions.fromIoToMainThread
+import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.helpers.ErrorHandlerHelper
-import br.com.ilhasoft.voy.shared.helpers.RxHelper
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import retrofit2.HttpException
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class LoginPresenter(
@@ -21,11 +21,6 @@ class LoginPresenter(
     private val preferences: Preferences,
     private val scheduler: BaseScheduler
 ) : Presenter<LoginContract>(LoginContract::class.java) {
-
-    override fun attachView(view: LoginContract) {
-        super.attachView(view)
-        checkPreferences()
-    }
 
     fun checkPreferences() {
         if (preferences.contains(User.TOKEN)) {
@@ -37,35 +32,39 @@ class LoginPresenter(
     fun onClickLogin(credentials: Credentials) {
         if (view.validate()) {
             authorizationRepository.loginWithCredentials(credentials)
+                .doOnSubscribe { view.showLoading() }
+                .doOnTerminate { view.dismissLoading() }
                 .doOnNext({
                     preferences.put(User.TOKEN, it.token)
                     BaseFactory.accessToken = it.token
                 })
                 .flatMapSingle { userRepository.getUser() }
-                .compose(RxHelper.defaultFlowableSchedulers(scheduler))
-                .doOnNext {
-                    if (it != null && it.isMapper)
-                        view.showMessage(R.string.login_success)
-                }
-                .delay(800, TimeUnit.MILLISECONDS, scheduler.computation())
-                .observeOn(scheduler.ui())
-                .subscribe({
-                    if (it != null && it.isMapper) {
-                        navigateToHome(it)
-                    } else {
-                        preferences.clear()
-                        view.showMessage(R.string.invalid_user)
-                    }
-                }, {
-                    Timber.e(it)
-                    if (it is HttpException && it.code() == 400) {
-                        view.showMessage(R.string.invalid_login)
-                    } else {
-                        ErrorHandlerHelper.showError(it, R.string.http_request_error) { msg ->
-                            view.showMessage(msg)
-                        }
-                    }
-                })
+                .fromIoToMainThread(scheduler)
+                .delay(300, TimeUnit.MILLISECONDS, scheduler.computation())
+                .onMainThread(scheduler)
+                .subscribe(
+                    { checkUser(it) },
+                    { handlerError(it) }
+                )
+        }
+    }
+
+    private fun handlerError(throwable: Throwable) {
+        if (throwable is HttpException && throwable.code() == 400) {
+            view.showMessage(R.string.invalid_login)
+        } else {
+            ErrorHandlerHelper.showError(throwable, R.string.http_request_error) { msg ->
+                view.showMessage(msg)
+            }
+        }
+    }
+
+    private fun checkUser(user: User?) {
+        if (user != null && user.isMapper) {
+            navigateToHome(user)
+        } else {
+            preferences.clear()
+            view.showMessage(R.string.invalid_user)
         }
     }
 
