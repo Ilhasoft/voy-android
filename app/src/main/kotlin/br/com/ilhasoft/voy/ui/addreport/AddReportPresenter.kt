@@ -102,7 +102,11 @@ class AddReportPresenter(
 
     private fun sendReport() {
         isFinalStep = true
-        view.checkLocation()
+        if (view.isUpdate()) {
+            updateReport()
+        } else {
+            view.checkLocation()
+        }
     }
 
     private fun saveReport() = with(reportViewModel) {

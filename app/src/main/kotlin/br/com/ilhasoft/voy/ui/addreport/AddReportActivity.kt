@@ -178,6 +178,8 @@ class AddReportActivity : BaseActivity(), AddReportContract, CheckConnectionProv
         loadLocationWithPermissionCheck()
     }
 
+    override fun isUpdate() = shouldBeUpdate
+
     @SuppressLint("NeedOnRequestPermissionsResult")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
