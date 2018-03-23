@@ -3,6 +3,7 @@ package br.com.ilhasoft.voy.ui.login
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.databinding.ObservableBoolean
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -40,19 +41,23 @@ class LoginActivity : BaseActivity(), LoginContract {
     }
 
     private val presenter: LoginPresenter by lazy {
-        LoginPresenter(AuthorizationRepository(AuthorizationService()), UserRepository(UserService()),
-                SharedPreferences(this@LoginActivity), StandardScheduler())
+        LoginPresenter(
+            AuthorizationRepository(AuthorizationService()), UserRepository(UserService()),
+            SharedPreferences(this@LoginActivity), StandardScheduler()
+        )
     }
 
     private val validator: Validator by lazy { Validator(binding) }
-
     private val credentials by lazy { Credentials() }
+    private val loadingObservable by lazy { ObservableBoolean(false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        presenter.attachView(this)
+        presenter.checkPreferences()
+
         super.onCreate(savedInstanceState)
         setupView()
         startListener()
-        presenter.attachView(this)
     }
 
     override fun onStart() {
@@ -70,6 +75,14 @@ class LoginActivity : BaseActivity(), LoginContract {
         presenter.detachView()
     }
 
+    override fun showLoading() {
+        loadingObservable.set(true)
+    }
+
+    override fun dismissLoading() {
+        loadingObservable.set(false)
+    }
+
     override fun validate(): Boolean = validator.validate()
 
     override fun showErrorMessage(message: CharSequence) {}
@@ -81,6 +94,7 @@ class LoginActivity : BaseActivity(), LoginContract {
 
     private fun setupView() {
         binding.run {
+            inProgress = loadingObservable
             credentials = this@LoginActivity.credentials
             presenter = this@LoginActivity.presenter
         }
@@ -91,13 +105,13 @@ class LoginActivity : BaseActivity(), LoginContract {
         val passwordObservable = createEditTextObservable(binding.password)
 
         Observables.combineLatest(usernameObservable, passwordObservable,
-                { username, password -> username.isNotEmpty() && password.isNotEmpty() })
-                .subscribe({ binding.login.isEnabled = it },
-                        { Log.e(TAG, "Error ", it) })
+            { username, password -> username.isNotEmpty() && password.isNotEmpty() })
+            .subscribe({ binding.login.isEnabled = it },
+                { Log.e(TAG, "Error ", it) })
     }
 
     private fun createEditTextObservable(editText: EditText) = RxTextView.textChanges(editText)
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
+        .debounce(500, TimeUnit.MILLISECONDS)
+        .observeOn(AndroidSchedulers.mainThread())
 
 }
