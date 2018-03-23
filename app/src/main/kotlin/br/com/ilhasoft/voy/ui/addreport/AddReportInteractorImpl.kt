@@ -55,7 +55,8 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             }.toMutableList(),
             createdOn = Date().format("dd/MM/yyyy HH:mm"),
             thumbnail = urls?.lastOrNull() ?: "",
-            lastNotification = ""
+            lastNotification = "",
+            isNew = true
         )
             .observeOn(Schedulers.io())
             .flatMapObservable {
@@ -100,7 +101,8 @@ class AddReportInteractorImpl(val reportRepository: ReportRepository) : AddRepor
             filesToDelete,
             createdOn = Date().format("dd/MM/yyyy HH:mm"),
             thumbnail = urls?.lastOrNull() ?: "",
-            lastNotification = ""
+            lastNotification = "",
+            isNew = false
         )
             .onMainThread()
             .observeOn(Schedulers.io())
