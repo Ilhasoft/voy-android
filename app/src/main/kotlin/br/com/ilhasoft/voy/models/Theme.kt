@@ -14,6 +14,6 @@ data class Theme(
     @SerializedName("tags") val tags: List<String> = arrayListOf(),
     @SerializedName("color") val color: String,
     @SerializedName("allow_links") val allowLinks: Boolean,
-    @SerializedName("start_at") val startAt: Date?,
-    @SerializedName("end_at") val endAt: Date?
+    @SerializedName("start_at") val startAt: Date? = null,
+    @SerializedName("end_at") val endAt: Date? = null
 )
