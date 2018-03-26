@@ -41,7 +41,7 @@ class ReportViewHolder(
             it.executePendingBindings()
 
             val lastMedia = report.files.last()
-            if (!lastMedia.file.contains("http")) {
+            if (!lastMedia.file.contains(Regex("^http"))) {
                 ImageViewBindings.loadFromBitmap(
                         it.image,
                         getOfflineReportThumbnail(lastMedia),
