@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 apply from: '../jacoco.gradle'
+apply from: "https://gist.githubusercontent.com/danielsanfr/6bd03fd981b3940863a843fe748794a9/raw/apk-better-name.gradle"
 
 android {
 
@@ -23,10 +24,17 @@ android {
         debug {
             testCoverageEnabled true
         }
+        debugWithProguard {
+            testCoverageEnabled true
+            debuggable true
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             debuggable false
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,6 +51,15 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        debugWithProGuard {
+            manifest.srcFile '/src/debug/AndroidManifest.xml'
+            java.srcDirs = ['src/debug/kotlin']
+            resources.srcDirs = ['src/debug/kotlin']
+            aidl.srcDirs = ['src/debug/kotlin']
+            renderscript.srcDirs = ['src/debug/kotlin']
+            res.srcDirs = ['src/debug/res']
+            assets.srcDirs = ['src/debug/assets']
+        }
     }
 
     testOptions {
