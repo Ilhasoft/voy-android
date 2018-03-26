@@ -10,6 +10,6 @@ object ThemeData {
     var themeColor: Int = 0
     var themeBounds: List<List<Double>> = arrayListOf()
     var allowLinks: Boolean = false
-    var startAt: Date = Date()
-    var endAt: Date = Date()
+    var startAt: Date = Date(0L)
+    var endAt: Date = Date(0L)
 }

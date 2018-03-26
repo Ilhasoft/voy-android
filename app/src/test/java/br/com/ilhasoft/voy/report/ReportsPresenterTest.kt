@@ -8,6 +8,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import java.util.*
@@ -54,7 +55,17 @@ class ReportsPresenterTest {
     }
 
     @Test
-    fun shouldNavigateToAddReportWhenClickedOnImageButtonIfInvalidDate() {
+    fun shouldNavigateToAddReportWhenClickedOnImageButtonAndThemeNotContainsTime() {
+        ThemeData.startAt = Date(0)
+        ThemeData.endAt = Date(0)
+
+        presenter.onClickAddReport(mockedValidDateToReport)
+
+        verify(view).navigateToAddReport()
+    }
+
+    @Test
+    fun shouldShowErrorMessageWhenClickedOnImageButtonIfInvalidDate() {
         presenter.onClickAddReport(mockedInvalidDateToReport)
 
         verify(view).showMessage(R.string.period_ended_text)
