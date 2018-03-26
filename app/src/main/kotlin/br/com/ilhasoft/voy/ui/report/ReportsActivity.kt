@@ -43,15 +43,19 @@ class ReportsActivity : BaseActivity(), ReportsContract {
                     Color.parseColor(context.getString(R.string.color_hex, themeColor))
             ThemeData.themeBounds = themeBounds
             ThemeData.allowLinks = allowLinks
-            startAt?.let { ThemeData.startAt = it }
-            endAt?.let {
+
+            if (startAt != null && endAt != null) {
                 val precisionEndAt = Calendar.getInstance()
-                precisionEndAt.time = it
+                precisionEndAt.time = endAt
                 precisionEndAt.add(Calendar.HOUR, 23)
                 precisionEndAt.add(Calendar.MINUTE, 59)
                 precisionEndAt.add(Calendar.SECOND, 59)
 
+                ThemeData.startAt = startAt
                 ThemeData.endAt = precisionEndAt.time
+            } else {
+                ThemeData.startAt = Date(0L)
+                ThemeData.endAt = Date(0L)
             }
 
             val intent = Intent(context, ReportsActivity::class.java)
