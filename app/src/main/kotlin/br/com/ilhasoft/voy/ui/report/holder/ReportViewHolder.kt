@@ -59,7 +59,7 @@ class ReportViewHolder(
         if (file.exists()) {
             when {
                 reportFile.mediaType == ReportFile.TYPE_IMAGE -> thumbnail = BitmapFactory.decodeFile(file.absolutePath)
-                reportFile.mediaType == ReportFile.TYPE_VIDEO -> thumbnail = ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MICRO_KIND)
+                reportFile.mediaType == ReportFile.TYPE_VIDEO -> thumbnail = ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)
             }
         }
 
