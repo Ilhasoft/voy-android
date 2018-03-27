@@ -24,7 +24,7 @@ object RetrofitHelper {
     }
 
     fun prepareVideoThumbnail(partName: String, file: File): MultipartBody.Part {
-        val thumbnailBitmap = ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.FULL_SCREEN_KIND)
+        val thumbnailBitmap = ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)
         val outputStream = ByteArrayOutputStream()
         thumbnailBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
 
