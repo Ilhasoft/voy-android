@@ -4,17 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.provider.MediaStore
-import android.support.v4.content.ContextCompat
-import android.util.Log
-import android.webkit.URLUtil
-import android.widget.PopupMenu
 import br.com.ilhasoft.support.recyclerview.adapters.ViewHolder
-import br.com.ilhasoft.voy.R
+import br.com.ilhasoft.voy.GlideApp
 import br.com.ilhasoft.voy.databinding.ItemReportBinding
 import br.com.ilhasoft.voy.models.Report
 import br.com.ilhasoft.voy.models.ReportFile
 import br.com.ilhasoft.voy.models.ThemeData
-import br.com.ilhasoft.voy.shared.binding.ImageViewBindings
 import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.fragment.ReportPresenter
 import java.io.File
@@ -27,8 +22,6 @@ class ReportViewHolder(
     val presenter: ReportPresenter
 ) : ViewHolder<Report>(binding.root) {
 
-    private lateinit var popupMenu: PopupMenu
-
     init {
         binding.presenter = presenter
     }
@@ -40,13 +33,13 @@ class ReportViewHolder(
             it.report = report
             it.executePendingBindings()
 
-            val lastMedia = report.files.last()
-            if (!lastMedia.file.contains(Regex("^http"))) {
-                ImageViewBindings.loadFromBitmap(
-                        it.image,
-                        getOfflineReportThumbnail(lastMedia),
-                        R.drawable.shape_rounded_grey
-                )
+            val lastMedia: ReportFile? = try { report.files.last() } catch (e: NoSuchElementException) { null }
+            if (lastMedia != null && !lastMedia.file.contains(Regex("^http"))) {
+                // TODO: improve setting thumbnail image
+                GlideApp.with(it.image)
+                        .load(getOfflineReportThumbnail(lastMedia))
+                        .centerCrop()
+                        .into(it.image)
             }
         }
     }
