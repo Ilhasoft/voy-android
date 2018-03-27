@@ -47,22 +47,16 @@ class ReportViewHolder(
                         getOfflineReportThumbnail(lastMedia),
                         R.drawable.shape_rounded_grey
                 )
-                it.executePendingBindings()
             }
         }
     }
 
     private fun getOfflineReportThumbnail(reportFile: ReportFile): Bitmap? {
         val file = File(reportFile.file)
-        var thumbnail: Bitmap? = null
-
-        if (file.exists()) {
-            when {
-                reportFile.mediaType == ReportFile.TYPE_IMAGE -> thumbnail = BitmapFactory.decodeFile(file.absolutePath)
-                reportFile.mediaType == ReportFile.TYPE_VIDEO -> thumbnail = ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)
-            }
+        return when {
+            !file.exists() -> null
+            reportFile.mediaType == ReportFile.TYPE_IMAGE -> BitmapFactory.decodeFile(file.absolutePath)
+            else -> ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)
         }
-
-        return thumbnail
     }
 }
