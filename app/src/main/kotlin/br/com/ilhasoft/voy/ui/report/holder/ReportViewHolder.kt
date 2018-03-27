@@ -33,7 +33,7 @@ class ReportViewHolder(
             it.report = report
             it.executePendingBindings()
 
-            val lastMedia: ReportFile? = try { report.files.last() } catch (e: NoSuchElementException) { null }
+            val lastMedia: ReportFile? = report.files.lastOrNull()
             if (lastMedia != null && !lastMedia.file.contains(Regex("^http"))) {
                 // TODO: improve setting thumbnail image
                 GlideApp.with(it.image)
