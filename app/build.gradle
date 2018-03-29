@@ -5,8 +5,20 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 apply from: '../jacoco.gradle'
+apply from: "https://gist.githubusercontent.com/danielsanfr/6bd03fd981b3940863a843fe748794a9/raw/apk-better-name.gradle"
 
 android {
+
+    loadProperties("signature")
+
+    signingConfigs {
+        signature {
+            keyAlias signatureProperties.keyAlias
+            keyPassword signatureProperties.keyPassword
+            storeFile file(signatureProperties.keyPath)
+            storePassword signatureProperties.storePassword
+        }
+    }
 
     compileSdkVersion 26
     defaultConfig {
@@ -28,6 +40,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signature
         }
     }
     dataBinding {
@@ -135,6 +148,8 @@ dependencies {
     }
 }
 
-realm {
-    syncEnabled = true
+def loadProperties(propertyName) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
+    ext."${propertyName}Properties" = properties
 }
