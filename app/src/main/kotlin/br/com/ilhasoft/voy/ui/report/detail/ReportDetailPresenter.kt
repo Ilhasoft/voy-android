@@ -42,6 +42,10 @@ class ReportDetailPresenter(
         view.showPopupMenu()
     }
 
+    fun onClickLink(link: String) {
+        view.navigateToLink(link)
+    }
+
     fun onClickCommentOnReport() {
         view.navigateToCommentReport()
     }
