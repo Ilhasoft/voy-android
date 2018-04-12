@@ -155,6 +155,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             name.setTextColor(ThemeData.themeColor)
             createdOn.setTextColor(ThemeData.themeColor)
             this.report = report
+            shouldDisplayCommentButton = hasConnection() && report.status == ReportStatus.APPROVED.value
         }
         setupMediasView()
         tagsAdapter.addAll(report.tags.sortedWith(String.CASE_INSENSITIVE_ORDER))

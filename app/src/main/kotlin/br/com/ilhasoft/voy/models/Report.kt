@@ -10,25 +10,26 @@ import java.util.*
  * Created by developer on 01/12/17.
  */
 data class Report(
-    var id: Int = 0,
-    var theme: Int = 0,
-    var location: Location? = null,
-    @SerializedName("can_receive_comments") var canReceiveComments: Boolean = false,
-    var editable: Boolean = false,
-    var visible: Boolean = false,
-    @SerializedName("created_on") var createdOn: Date,
-    var description: String? = "",
-    var name: String = "",
-    var tags: MutableList<String> = mutableListOf(),
-    @SerializedName("theme_color") var themeColor: String = "",
-    @SerializedName("created_by") var createdBy: User? = null,
-    val thumbnail: String,
-    var status: Int = 0,
-    var urls: MutableList<String> = mutableListOf(),
-    var files: MutableList<ReportFile> = mutableListOf(),
-    @SerializedName("last_notification") var lastNotification: String? = "",
-    @Ignore var internalId: String? = null,
-    @Ignore var shouldSend: Boolean = true
+        var id: Int = 0,
+        var theme: Int = 0,
+        var location: Location? = null,
+        @SerializedName("can_receive_comments") var canReceiveComments: Boolean = false,
+        var editable: Boolean = false,
+        var visible: Boolean = false,
+        @SerializedName("created_on") var createdOn: Date,
+        var description: String? = "",
+        var name: String = "",
+        var tags: MutableList<String> = mutableListOf(),
+        @SerializedName("theme_color") var themeColor: String = "",
+        @SerializedName("created_by") var createdBy: User? = null,
+        val thumbnail: String,
+        var status: Int = 0,
+        var urls: MutableList<String> = mutableListOf(),
+        var files: MutableList<ReportFile> = mutableListOf(),
+        @SerializedName("last_notification") var lastNotification: String? = "",
+        @SerializedName("comments") var commentsQuantity: Int = 0,
+        @Ignore var internalId: String? = null,
+        @Ignore var shouldSend: Boolean = true
 ) : Parcelable {
     constructor(source: Parcel) : this(
         source.readInt(),
@@ -48,6 +49,7 @@ data class Report(
         source.createStringArrayList(),
         source.createTypedArrayList(ReportFile.CREATOR),
         source.readString(),
+            source.readInt(),
         source.readString(),
         source.readValue(Boolean::class.java.classLoader) as Boolean
     )
@@ -71,6 +73,7 @@ data class Report(
         writeInt(status)
         writeStringList(urls)
         writeTypedList(files)
+        writeInt(commentsQuantity)
         writeString(lastNotification)
         writeString(internalId)
         writeValue(shouldSend)
