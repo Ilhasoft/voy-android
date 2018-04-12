@@ -32,26 +32,26 @@ data class Report(
         @Ignore var shouldSend: Boolean = true
 ) : Parcelable {
     constructor(source: Parcel) : this(
-        source.readInt(),
-        source.readInt(),
-        source.readParcelable<Location>(Location::class.java.classLoader),
-        1 == source.readInt(),
-        1 == source.readInt(),
-        1 == source.readInt(),
-        source.readSerializable() as Date,
-        source.readString(),
-        source.readString(),
-        source.createStringArrayList(),
-        source.readString(),
-        source.readParcelable<User>(User::class.java.classLoader),
-        source.readString(),
-        source.readInt(),
-        source.createStringArrayList(),
-        source.createTypedArrayList(ReportFile.CREATOR),
-        source.readString(),
             source.readInt(),
-        source.readString(),
-        source.readValue(Boolean::class.java.classLoader) as Boolean
+            source.readInt(),
+            source.readParcelable<Location>(Location::class.java.classLoader),
+            1 == source.readInt(),
+            1 == source.readInt(),
+            1 == source.readInt(),
+            source.readSerializable() as Date,
+            source.readString(),
+            source.readString(),
+            source.createStringArrayList(),
+            source.readString(),
+            source.readParcelable<User>(User::class.java.classLoader),
+            source.readString(),
+            source.readInt(),
+            source.createStringArrayList(),
+            source.createTypedArrayList(ReportFile.CREATOR),
+            source.readString(),
+            source.readInt(),
+            source.readString(),
+            source.readValue(Boolean::class.java.classLoader) as Boolean
     )
 
     override fun describeContents() = 0
