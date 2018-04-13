@@ -52,7 +52,7 @@
     <string name="share_title">Share by</string>
     <string name="share_text">Hello, I reported a problem in this region, take a look:</string>
 
-    <string name="comments_report_label">Comment</string>
+    <string name="comments_report_label">Comments</string>
     <string name="comment_report_label">Comment (%d)</string>
     <string name="send_comment_hint">Send Comment</string>
 
