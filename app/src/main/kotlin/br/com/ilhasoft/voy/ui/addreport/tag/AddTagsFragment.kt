@@ -90,7 +90,7 @@ class AddTagsFragment : BaseFragment(), CheckConnectionProvider {
 
     private fun setupTagsRecyclerView() = with(binding.tags) {
         layoutManager = setupLayoutManager()
-        setHasFixedSize(true)
+        setHasFixedSize(false)
         adapter = tagsAdapter
     }
 

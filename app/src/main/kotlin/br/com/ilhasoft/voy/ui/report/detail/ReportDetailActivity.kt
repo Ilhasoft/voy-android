@@ -237,14 +237,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         layoutManager = FlexboxLayoutManager(this@ReportDetailActivity).apply {
             flexWrap = FlexWrap.WRAP
         }
-        addItemDecoration(setupItemDecoration())
         setHasFixedSize(false)
         adapter = tagsAdapter
-    }
-
-    private fun setupItemDecoration(): SpaceItemDecoration {
-        val space = DimensionHelper.toPx(this, 4f)
-        return SpaceItemDecoration(0, 0, 2 * space, space)
     }
 
     private fun setupMediasView() {
