@@ -10,6 +10,10 @@
         <import type="br.com.ilhasoft.voy.ui.report.ReportStatus" />
 
         <variable
+            name="shouldDisplayCommentButton"
+            type="Boolean" />
+
+        <variable
             name="report"
             type="br.com.ilhasoft.voy.models.Report" />
 
@@ -145,11 +149,12 @@
             android:onClick="@{() -> presenter.onClickCommentOnReport()}"
             android:paddingLeft="112dp"
             android:paddingStart="112dp"
-            android:text="@string/comment_report_label"
+            android:text="@{@string/comment_report_label(report.commentsQuantity)}"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:theme="@style/WhiteRaisedButton"
-            app:visible="@{report.status == ReportStatus.APPROVED.value}"
-            tools:ignore="RtlSymmetry" />
+            app:visible="@{shouldDisplayCommentButton}"
+            tools:ignore="RtlSymmetry"
+            tools:text="Comment (3)" />
     </LinearLayout>
 </layout>

@@ -54,7 +54,8 @@
 
     <string name="external_links_label">External links</string>
 
-    <string name="comment_report_label">Comment</string>
+    <string name="comment_report_label">Comment (%d)</string>
+    <string name="comments_report_label">Comments</string>
     <string name="send_comment_hint">Send Comment</string>
 
     <string name="edit_menu_label">Edit</string>

@@ -170,6 +170,7 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             name.setTextColor(ThemeData.themeColor)
             createdOn.setTextColor(ThemeData.themeColor)
             this.report = report
+            shouldDisplayCommentButton = hasConnection() && report.status == ReportStatus.APPROVED.value
             hasLink = report.urls.size > 0
         }
         setupMediasView()
