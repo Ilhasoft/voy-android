@@ -2,30 +2,47 @@
 <!--Follow the same order of backend side-->
 <resources>
     <integer-array name="avatars">
-        <item>@drawable/ic_avatar9</item>
-        <item>@drawable/ic_avatar14</item>
-        <item>@drawable/ic_avatar19</item>
-        <item>@drawable/ic_avatar23</item>
-        <item>@drawable/ic_avatar21</item>
-        <item>@drawable/ic_avatar15</item>
-        <item>@drawable/ic_avatar10</item>
-        <item>@drawable/ic_avatar5</item>
-        <item>@drawable/ic_avatar18</item>
-        <item>@drawable/ic_avatar17</item>
-        <item>@drawable/ic_avatar16</item>
-        <item>@drawable/ic_avatar20</item>
-        <item>@drawable/ic_avatar13</item>
-        <item>@drawable/ic_avatar12</item>
-        <item>@drawable/ic_avatar11</item>
         <item>@drawable/ic_avatar1</item>
         <item>@drawable/ic_avatar2</item>
         <item>@drawable/ic_avatar3</item>
+        <item>@drawable/ic_avatar4</item>
+        <item>@drawable/ic_avatar5</item>
         <item>@drawable/ic_avatar6</item>
         <item>@drawable/ic_avatar7</item>
         <item>@drawable/ic_avatar8</item>
-        <item>@drawable/ic_avatar4</item>
+        <item>@drawable/ic_avatar9</item>
+        <item>@drawable/ic_avatar10</item>
+        <item>@drawable/ic_avatar11</item>
+        <item>@drawable/ic_avatar12</item>
+        <item>@drawable/ic_avatar13</item>
+        <item>@drawable/ic_avatar14</item>
+        <item>@drawable/ic_avatar15</item>
+        <item>@drawable/ic_avatar16</item>
+        <item>@drawable/ic_avatar17</item>
+        <item>@drawable/ic_avatar18</item>
+        <item>@drawable/ic_avatar19</item>
+        <item>@drawable/ic_avatar20</item>
+        <item>@drawable/ic_avatar21</item>
         <item>@drawable/ic_avatar22</item>
+        <item>@drawable/ic_avatar23</item>
         <item>@drawable/ic_avatar24</item>
         <item>@drawable/ic_avatar25</item>
+        <item>@drawable/ic_avatar26</item>
+        <item>@drawable/ic_avatar27</item>
+        <item>@drawable/ic_avatar28</item>
+        <item>@drawable/ic_avatar29</item>
+        <item>@drawable/ic_avatar30</item>
+        <item>@drawable/ic_avatar31</item>
+        <item>@drawable/ic_avatar32</item>
+        <item>@drawable/ic_avatar33</item>
+        <item>@drawable/ic_avatar34</item>
+        <item>@drawable/ic_avatar35</item>
+        <item>@drawable/ic_avatar36</item>
+        <item>@drawable/ic_avatar37</item>
+        <item>@drawable/ic_avatar38</item>
+        <item>@drawable/ic_avatar39</item>
+        <item>@drawable/ic_avatar40</item>
+        <item>@drawable/ic_avatar41</item>
+        <item>@drawable/ic_avatar42</item>
     </integer-array>
 </resources>
