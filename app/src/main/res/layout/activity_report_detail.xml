@@ -18,6 +18,10 @@
             type="br.com.ilhasoft.voy.models.Report" />
 
         <variable
+            name="hasLink"
+            type="Boolean" />
+
+        <variable
             name="presenter"
             type="br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter" />
 
@@ -94,6 +98,31 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     tools:text="KOPAJA - Koperasi Angkutan Jakarta, or in English Jakarta transportation Cooperation is a public transportation service in Jakarta. Many people in Jakarta use this transportation for commuting to the workplace from home, or vice versa. Besides providing benefits, KOPAJA has a bad impact on respiratory health from it's emissions. KOPAJA " />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    app:visible="@{hasLink}">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/external_links_label"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/links"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        tools:listitem="@layout/item_report_detail_link" />
+                </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/tags"

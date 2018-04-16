@@ -13,6 +13,8 @@ interface ReportDetailContract : BasicView {
 
     fun showPopupMenu()
 
+    fun navigateToLink(link: String)
+
     fun navigateToCommentReport()
 
     fun swapPage(indicator: Indicator)
