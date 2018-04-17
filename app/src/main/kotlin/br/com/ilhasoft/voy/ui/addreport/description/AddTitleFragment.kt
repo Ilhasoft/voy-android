@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
-import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
@@ -132,10 +131,10 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
 
     private fun startLinkListeners() {
         val validLinkObservable = RxTextView.textChangeEvents(binding.link)
+        val linkPattern = Pattern.compile("^(https://|http://)?[a-z0-9]+([-.][a-z0-9]+)+.*$")
         validLinkObservable.subscribe {
-            val linkPattern = "^(https://|http://)?[a-z0-9]+([-.][a-z0-9]+)+.*$"
-            val linkMatcher = Pattern.compile(linkPattern).matcher(it.text())
-            binding.addLink.isEnabled = reportViewModel.verifyListSize() && linkMatcher.matches()
+            binding.addLink.isEnabled = reportViewModel.verifyListSize()
+                    && linkPattern.matcher(it.text()).matches()
         }
     }
 
