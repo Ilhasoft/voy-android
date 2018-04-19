@@ -1,5 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext.envs = [:]
     ext.versions = [
             'gradle'             : '3.0.1',
             'androidSupport'     : '26.1.0',
@@ -52,3 +53,18 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task loadEnv(dependsOn: ':app:build') {
+    def files = file(rootProject.projectDir).listFiles().findAll { it.name.endsWith(".env") }
+
+    files.each { File file ->
+        if (file.isFile()) {
+            file.text.eachLine { line ->
+                def entries = line.split("=")
+                envs[entries[0]] = entries[1]
+            }
+        }
+
+    }
+}
+

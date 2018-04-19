@@ -18,6 +18,9 @@ app/src/release/res/values/keys.xml
 # Files for the Dalvik VM
 *.dex
 
+# Env files
+*.env
+
 # Java class files
 *.class
 

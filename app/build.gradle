@@ -9,14 +9,12 @@ apply from: "https://gist.githubusercontent.com/danielsanfr/6bd03fd981b3940863a8
 
 android {
 
-    loadProperties("signature")
-
     signingConfigs {
         signature {
-            keyAlias signatureProperties.keyAlias
-            keyPassword signatureProperties.keyPassword
-            storeFile file(signatureProperties.keyPath)
-            storePassword signatureProperties.storePassword
+            keyAlias envs['keyAlias'] ?: System.env['keyAlias']
+            keyPassword envs['keyPassword'] ?: System.env['keyPassword']
+            storeFile file(envs['keyPath'] ?: System.env['keyPath'])
+            storePassword envs['storePassword'] ?: System.env['storePassword']
         }
     }
 
@@ -146,10 +144,4 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true
     }
-}
-
-def loadProperties(propertyName) {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file("${propertyName}.properties").newDataInputStream())
-    ext."${propertyName}Properties" = properties
 }
