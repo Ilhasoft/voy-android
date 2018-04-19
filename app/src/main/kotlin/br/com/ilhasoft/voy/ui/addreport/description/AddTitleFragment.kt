@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
-import br.com.ilhasoft.support.validation.Validator
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
@@ -30,6 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.realm.Realm
 import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
 
 class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
 
@@ -45,8 +45,6 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
     }
 
     private lateinit var compositeDisposable: CompositeDisposable
-
-    private val validator: Validator by lazy { Validator(binding) }
 
     private val linkAdapter: AutoRecyclerAdapter<String, LinkViewHolder> by lazy {
         AutoRecyclerAdapter<String, LinkViewHolder>(linkViewHolder).apply {
@@ -133,11 +131,10 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
 
     private fun startLinkListeners() {
         val validLinkObservable = RxTextView.textChangeEvents(binding.link)
+        val linkPattern = Pattern.compile("^(https://|http://)?[a-z0-9]+([-.][a-z0-9]+)+.*$")
         validLinkObservable.subscribe {
-            val validLink = it.text().length > "http://".length
-                    && reportViewModel.verifyListSize()
-                    && validator.validate()
-            binding.addLink.isEnabled = validLink
+            binding.addLink.isEnabled = reportViewModel.verifyListSize()
+                    && linkPattern.matcher(it.text()).matches()
         }
     }
 

@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
@@ -17,15 +18,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.PopupMenu
-import br.com.ilhasoft.support.core.helpers.DimensionHelper
 import br.com.ilhasoft.support.recyclerview.adapters.AutoRecyclerAdapter
 import br.com.ilhasoft.support.recyclerview.adapters.OnCreateViewHolder
-import br.com.ilhasoft.support.recyclerview.decorations.SpaceItemDecoration
 import br.com.ilhasoft.voy.R
 import br.com.ilhasoft.voy.connectivity.CheckConnectionProvider
 import br.com.ilhasoft.voy.connectivity.ConnectivityManager
 import br.com.ilhasoft.voy.databinding.ActivityReportDetailBinding
 import br.com.ilhasoft.voy.databinding.ItemIndicatorBinding
+import br.com.ilhasoft.voy.databinding.ItemReportDetailLinkBinding
 import br.com.ilhasoft.voy.databinding.ItemTagBinding
 import br.com.ilhasoft.voy.db.report.ReportDbHelper
 import br.com.ilhasoft.voy.models.*
@@ -41,6 +41,7 @@ import br.com.ilhasoft.voy.ui.report.ReportStatus
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselAdapter
 import br.com.ilhasoft.voy.ui.report.detail.carousel.CarouselItem
 import br.com.ilhasoft.voy.ui.report.detail.holder.IndicatorViewHolder
+import br.com.ilhasoft.voy.ui.report.detail.holder.LinkViewHolder
 import br.com.ilhasoft.voy.ui.shared.TagViewHolder
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -81,6 +82,16 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private val indicatorAdapter: AutoRecyclerAdapter<Indicator, IndicatorViewHolder> by lazy {
         AutoRecyclerAdapter<Indicator, IndicatorViewHolder>(indicatorViewHolder).apply {
             setHasStableIds(false)
+        }
+    }
+    private val linkViewHolder: OnCreateViewHolder<String, LinkViewHolder> by lazy {
+        OnCreateViewHolder { layoutInflater, parent, _ ->
+            LinkViewHolder(ItemReportDetailLinkBinding.inflate(layoutInflater, parent, false), presenter)
+        }
+    }
+    private val linksAdapter: AutoRecyclerAdapter<String, LinkViewHolder> by lazy {
+        AutoRecyclerAdapter(mutableListOf(), linkViewHolder).apply {
+            setHasStableIds(true)
         }
     }
     private val tagViewHolder: OnCreateViewHolder<String, TagViewHolder> by lazy {
@@ -139,6 +150,10 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
 
     override fun showPopupMenu() = popupMenu.show()
 
+    override fun navigateToLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+    }
+
     override fun navigateToCommentReport() {
         startActivity(CommentsActivity.createIntent(this, report?.id ?: 0))
     }
@@ -155,8 +170,12 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
             name.setTextColor(ThemeData.themeColor)
             createdOn.setTextColor(ThemeData.themeColor)
             this.report = report
+            hasLink = report.urls.size > 0
+            shouldDisplayCommentButton = hasConnection() && report.status == ReportStatus.APPROVED.value
         }
         setupMediasView()
+        linksAdapter.addAll(report.urls)
+        linksAdapter.notifyDataSetChanged()
         tagsAdapter.addAll(report.tags.sortedWith(String.CASE_INSENSITIVE_ORDER))
         tagsAdapter.notifyDataSetChanged()
     }
@@ -198,7 +217,8 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
     private fun setupView() {
         binding.presenter = this@ReportDetailActivity.presenter
         setupToolbar()
-        setupRecyclerView(binding.tags)
+        setupLinksRecyclerView(binding.links)
+        setupTagsRecyclerView(binding.tags)
     }
 
     private fun setupToolbar() = binding.viewToolbar?.let {
@@ -233,18 +253,18 @@ class ReportDetailActivity : BaseActivity(), ReportDetailContract,
         }
     }
 
-    private fun setupRecyclerView(tags: RecyclerView) = with(tags) {
+    private fun setupLinksRecyclerView(links: RecyclerView) = with(links) {
+        layoutManager = LinearLayoutManager(this@ReportDetailActivity, LinearLayoutManager.VERTICAL, false)
+        setHasFixedSize(true)
+        adapter = linksAdapter
+    }
+
+    private fun setupTagsRecyclerView(tags: RecyclerView) = with(tags) {
         layoutManager = FlexboxLayoutManager(this@ReportDetailActivity).apply {
             flexWrap = FlexWrap.WRAP
         }
-        addItemDecoration(setupItemDecoration())
         setHasFixedSize(false)
         adapter = tagsAdapter
-    }
-
-    private fun setupItemDecoration(): SpaceItemDecoration {
-        val space = DimensionHelper.toPx(this, 4f)
-        return SpaceItemDecoration(0, 0, 2 * space, space)
     }
 
     private fun setupMediasView() {

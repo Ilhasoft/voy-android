@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="link"
+            type="String" />
+
+        <variable
+            name="presenter"
+            type="br.com.ilhasoft.voy.ui.report.detail.ReportDetailPresenter" />
+
+    </data>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:onClick="@{() -> presenter.onClickLink(link)}"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:text="@{link}"
+        android:textColor="@color/dark_sky_blue"
+        tools:text="http://resources.voy.com/description/223/search?pelr445" />
+
+</layout>

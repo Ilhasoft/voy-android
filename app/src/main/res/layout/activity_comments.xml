@@ -40,7 +40,7 @@
                 android:id="@+id/toolbar"
                 layout="@layout/view_toolbar"
                 app:onBackClick="@{() -> presenter.onClickNavigateBack()}"
-                app:title="@{@string/comment_report_label}" />
+                app:title="@{@string/comments_report_label}" />
 
             </android.support.design.widget.AppBarLayout>
 
