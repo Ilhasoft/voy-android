@@ -45,7 +45,7 @@ class ThemeDbHelper(private val realm: Realm, private val scheduler: BaseSchedul
 
     private fun createThemeDb(theme: Theme): ThemeDbModel = ThemeDbModel().apply {
         id = theme.id
-        projectId = theme.project.extractNumbers().toInt()
+        projectId = theme.project.id
         name = theme.name
         bounds.addAll(theme.bounds.map { bound ->
             BoundDbModel().apply {

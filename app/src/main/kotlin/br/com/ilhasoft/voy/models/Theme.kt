@@ -8,7 +8,7 @@ import java.util.*
  */
 data class Theme(
     @SerializedName("id") val id: Int,
-    @SerializedName("project") val project: String = "",
+    @SerializedName("project") val project: Project = Project(),
     @SerializedName("bounds") val bounds: List<List<Double>> = arrayListOf(),
     @SerializedName("name") val name: String,
     @SerializedName("tags") val tags: List<String> = arrayListOf(),
