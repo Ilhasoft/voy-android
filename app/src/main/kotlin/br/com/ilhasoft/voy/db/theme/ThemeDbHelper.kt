@@ -2,7 +2,6 @@ package br.com.ilhasoft.voy.db.theme
 
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.themes.ThemeDataSource
-import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
@@ -45,7 +44,7 @@ class ThemeDbHelper(private val realm: Realm, private val scheduler: BaseSchedul
 
     private fun createThemeDb(theme: Theme): ThemeDbModel = ThemeDbModel().apply {
         id = theme.id
-        projectId = theme.project.extractNumbers().toInt()
+        projectId = theme.project.id
         name = theme.name
         bounds.addAll(theme.bounds.map { bound ->
             BoundDbModel().apply {
