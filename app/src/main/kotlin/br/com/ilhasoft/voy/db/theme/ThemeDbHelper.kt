@@ -2,7 +2,6 @@ package br.com.ilhasoft.voy.db.theme
 
 import br.com.ilhasoft.voy.models.Theme
 import br.com.ilhasoft.voy.network.themes.ThemeDataSource
-import br.com.ilhasoft.voy.shared.extensions.extractNumbers
 import br.com.ilhasoft.voy.shared.extensions.onMainThread
 import br.com.ilhasoft.voy.shared.schedulers.BaseScheduler
 import io.reactivex.Flowable
