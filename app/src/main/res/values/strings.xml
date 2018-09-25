@@ -2,15 +2,24 @@
     <string name="app_name">Voices of Youth</string>
     <string name="wait">Loading…</string>
 
+
+    //Login Screen
     <string name="hey">Hey!</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
-    <string name="new_password_hint">New password</string>
     <string name="login_error">Username or password incorrect,\nplease try again!</string>
     <string name="login_success">Login successfully completed!</string>
     <string name="login_network_error">We do not identify an active internet connection,\ncheck your connection, and try again!</string>
     <string name="login_label">Log in</string>
+    <string name="invalid_login">Invalid user or password</string>
+    <string name="invalid_user">Invalid user</string>
+    <string name="password_min_length_error">Password should be at least 6 characters.</string>
 
+    //Theme List Screen
+    <string name="themes_quantity">You are part of %d themes</string>
+
+    //Reports List Screen
+    <string name="reports_quantity">You have %1$d reports %2$s</string>
     <string name="approved_fragment_title">Approved</string>
     <string name="pending_fragment_title">Pending</string>
     <string name="not_approved_fragment_title">Not Approved</string>
@@ -23,85 +32,77 @@
     <string name="add_report_label">Add Report</string>
     <string name="resend_menu_label">resend</string>
     <string name="wait_evaluation_menu_label">wait_evaluation</string>
+
+    //Notifications Screen
     <string name="notifications">Notifications</string>
-
-    <string name="add_report_title_label">Add Report</string>
-    <string name="title_activity_account">Account</string>
-    <string name="email">Email</string>
-    <string name="save">Save</string>
-    <string name="change">Change</string>
-    <string name="logout">Log out</string>
-
-    <string name="title_activity_add_report">Add Report</string>
-    <string name="period_ended_text">Unfortunately the period to receive new reports has ended. Thank you for your effort.</string>
-    <string name="period_future_text">We are preparing this theme for you, please come back later or contact your administrator!</string>
-    <string name="next">Next</string>
-    <string name="add_photos_videos">Add photos\nand videos</string>
-    <string name="done">Done</string>
-    <string name="add_title_and_description">Title and\nDescription</string>
-    <string name="title_hint">Title</string>
-    <string name="description_hint">Description</string>
-    <string name="add_link">Add Link</string>
-    <string name="add_tags">Add Tags</string>
-    <string name="themes">Themes</string>
-    <string name="cancel">Cancel</string>
-    <string name="select_theme">Select Theme</string>
-    <string name="send_report">Send</string>
-    <string name="thanks">Thanks!</string>
-    <string name="thanks_feedback">Thanks for reporting!\nPlease come back whenever\nyou want to add a new report</string>
-    <string name="share_title">Share by</string>
-    <string name="share_text">Hello, I reported a problem in this region, take a look:</string>
-
-    <string name="external_links_label">External links</string>
-
-    <string name="comment_report_label">Comment (%d)</string>
-    <string name="comments_report_label">Comments</string>
-    <string name="send_comment_hint">Send Comment</string>
-
-    <string name="edit_menu_label">Edit</string>
-    <string name="share_menu_label">Share</string>
-    <string name="remove_menu_label">Remove</string>
-
-    <string name="feedback_list_title">Hey!</string>
-    <string name="feedback_list_message">You can\'t add the same link twice :(</string>
-    <string name="invalid_login">Invalid user or password</string>
-    <string name="invalid_user">Invalid user</string>
-
-    <string name="themes_quantity">You are part of %d themes</string>
-    <string name="color_hex">#%s</string>
-    <string name="reports_quantity">You have %1$d reports %2$s</string>
-
-    <string name="issues_related_report">Issues reported in your report</string>
-    <string name="edit_report_label">Edit Report</string>
-    <string name="close_dialog_label">Close</string>
-
-    <string name="report">Report</string>
-    <string name="getting_location">Getting your location</string>
-    <string name="alert">Alert</string>
-    <string name="permission_denied">You denied permission which is require for this feature</string>
-    <string name="rationale_location_description">Your location is required for this feature, please allow it to continue.</string>
-    <string name="something_went_wrong">Something went wrong, please try again.</string>
-    <string name="deny">Deny</string>
-    <string name="outside_theme_bounds">You are outside the boundary for this theme. You can\'t create a report.</string>
-
-    <string name="empty_comments_message">No comments yet.</string>
-    <string name="comment_created_message">Your comment was sent for moderation. After it is approved it will be available here.</string>
-    <string name="comment_delete_error">We have a problem to remove this comment.</string>
-    <string name="comment_create_error">We have a problem to create a new comment.</string>
-    <string name="http_request_error">We have a problem to process your request, try again later!</string>
-
     <string name="report_was_approved">Your report was approved</string>
     <string name="report_was_not_approved">Your report was not approved</string>
     <string name="comment_was_approved">You have a new comment on your report</string>
     <string name="comment_was_not_approved">Your comment was not approved</string>
 
-    <string name="password_min_length_error">Password should be at least 6 characters.</string>
+    //Account Screen
+    <string name="title_activity_account">Account</string>
+    <string name="email">Email</string>
+    <string name="save">Save</string>
+    <string name="change">Change</string>
+    <string name="logout">Log out</string>
+    <string name="done">Done</string>
+    <string name="new_password_hint">New password</string>
     <string name="user_updated_message">Your user was updated!</string>
-
-    <string name="offline_error">Couldn\'t find connection. Check it and try again</string>
-
-    <string name="report_list_error">We have an error on get reports from server!</string>
-
     <string name="logout_alert_title">Will you logout?</string>
     <string name="logout_alert_message">When you log out, all reports that have not been sent will be lost. Do you want to continue?</string>
+
+    //Add Report Screen
+    <string name="add_report_title_label">Add Report</string>
+    <string name="title_activity_add_report">Add Report</string>
+    <string name="period_ended_text">Unfortunately the period to receive new reports has ended. Thank you for your effort.</string>
+    <string name="period_future_text">We are preparing this theme for you, please come back later or contact your administrator!</string>
+    <string name="next">Next</string>
+    <string name="add_photos_videos">Add photos\nand videos</string>
+    <string name="add_title_and_description">Title and\nDescription</string>
+    <string name="title_hint">Title</string>
+    <string name="description_hint">Description</string>
+    <string name="add_link">Add Link</string>
+    <string name="add_tags">Add Tags</string>
+    <string name="feedback_list_title">Hey!</string>
+    <string name="feedback_list_message">You can\'t add the same link twice :(</string>
+    <string name="send_report">Send</string>
+    <string name="thanks">Thanks!</string>
+    <string name="thanks_feedback">Thanks for reporting!\nPlease come back whenever\nyou want to add a new report</string>
+    <string name="getting_location">Getting your location</string>
+    <string name="outside_theme_bounds">You are outside the boundary for this theme. You can\'t create a report.</string>
+
+    //Report Details
+    <string name="issues_related_report">Issues reported in your report</string>
+    <string name="external_links_label">External links</string>
+    <string name="share_title">Share by</string>
+    <string name="share_text">Hello, I reported a problem in this region, take a look:</string>
+    <string name="comment_report_label">Comment (%d)</string>
+    <string name="share_menu_label">Share</string>
+    <string name="remove_menu_label">Remove</string>
+    <string name="edit_report_label">Edit Report</string>
+
+    Comments Screen
+    <string name="comments_report_label">Comments</string>
+    <string name="send_comment_hint">Send Comment</string>
+    <string name="empty_comments_message">No comments yet.</string>
+    <string name="comment_created_message">Your comment was sent for moderation. After it is approved it will be available here.</string>
+    <string name="comment_delete_error">We have a problem to remove this comment.</string>
+    <string name="comment_create_error">We have a problem to create a new comment.</string>
+
+
+    <string name="cancel">Cancel</string>
+    <string name="close_dialog_label">Close</string>
+
+    <string name="offline_error">Couldn\'t find connection. Check it and try again</string>
+    <string name="report_list_error">We have an error on get reports from server!</string>
+    <string name="something_went_wrong">Something went wrong, please try again.</string>
+    <string name="permission_denied">You denied permission which is require for this feature</string>
+    <string name="rationale_location_description">Your location is required for this feature, please allow it to continue.</string>
+    <string name="http_request_error">We have a problem to process your request, try again later!</string>
+
+    <string name="color_hex">#%s</string>
+    <string name="report">Report</string>
+    <string name="alert">Alert</string>
+
 </resources>
