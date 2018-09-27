@@ -4,13 +4,14 @@
 
     <item
         android:id="@+id/edit"
-        android:title="@string/edit_menu_label"
+        android:title="@string/edit_report_label"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/share"
         android:title="@string/share_menu_label"
         android:visible="false"
-        app:showAsAction="never" />
+        android:icon="@android:drawable/ic_menu_share"
+        app:showAsAction="always" />
 
 </menu>

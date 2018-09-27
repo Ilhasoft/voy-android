@@ -32,6 +32,9 @@
     <string name="add_report_label">Add Report</string>
     <string name="resend_menu_label">resend</string>
     <string name="wait_evaluation_menu_label">wait_evaluation</string>
+    <string name="you_have_x_reports_approved">You have %d reports approved</string>
+    <string name="you_have_x_reports_pending">You have %d reports pending</string>
+    <string name="you_have_x_reports_not_approved">You have %d reports not approved</string>
 
     //Notifications Screen
     <string name="notifications">Notifications</string>
@@ -67,6 +70,7 @@
     <string name="feedback_list_title">Hey!</string>
     <string name="feedback_list_message">You can\'t add the same link twice :(</string>
     <string name="send_report">Send</string>
+    <string name="deny">Deny</string>
     <string name="thanks">Thanks!</string>
     <string name="thanks_feedback">Thanks for reporting!\nPlease come back whenever\nyou want to add a new report</string>
     <string name="getting_location">Getting your location</string>

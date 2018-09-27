@@ -159,21 +159,18 @@ class ReportFragment : BaseFragment(), ReportContract, OnDemandListener {
     private fun getQuantityMessage(qtd: Int, status: Int): String =  when (getReportStatus(status)) {
         ReportStatus.APPROVED ->
             getString(
-                R.string.reports_quantity,
-                qtd,
-                getString(R.string.approved_fragment_title).toLowerCase()
+                R.string.you_have_x_reports_approved,
+                qtd
             )
         ReportStatus.PENDING ->
             getString(
-                R.string.reports_quantity,
-                qtd,
-                getString(R.string.pending_fragment_title).toLowerCase()
+                R.string.you_have_x_reports_pending,
+                qtd
             )
         else ->
             getString(
-                R.string.reports_quantity,
-                qtd,
-                getString(R.string.not_approved_fragment_title).toLowerCase()
+                R.string.you_have_x_reports_not_approved,
+                qtd
             )
     }
 

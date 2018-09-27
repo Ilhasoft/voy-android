@@ -36,69 +36,70 @@
     <string name="pending_greetings_tip">Todos tus reportes han sido aprovado</string>
     <string name="rejected_greetings">Buen trabajo</string>
     <string name="rejected_greetings_tip">Tu no has aprobado los reportes</string>
-    <string name="add_report_label">Rapor oluştur</string>
-    <string name="you_have_x_reports_approved">Raporlarının yüzde 1$%d ı onaylandı</string>
-    <string name="you_have_x_reports_pending">Raporlarının %d ı onaylanmayı bekliyor</string>
-    <string name="you_have_x_reports_not_approved">Raporlarının %d ı henüz onaylanmadı</string>
+    <string name="add_report_label">Añadir reporte</string>
+    <string name="you_have_x_reports_approved">Tu tienes aprobado el %dde los reportes</string>
+    <string name="you_have_x_reports_pending">Tu tienes pendiente el %dde los reportes</string>
+    <string name="you_have_x_reports_not_approved">Tu tienes el 1$%d de reportes no aprobados</string>
 
     // Notifications Screen
-    <string name="notifications">Bildirimler</string>
-    <string name="report_was_approved">Raporun onaylandı</string>
-    <string name="comment_was_approved">Raporun için yeni bir yorum var</string>
-    <string name="report_was_not_approved">Raporun onaylanmadı</string>
-    <string name="comment_was_not_approved">Yorumun onaylanmadı</string>
+    <string name="notifications">Notificación</string>
+    <string name="report_was_approved">Tu reporte fue aprobado</string>
+    <string name="comment_was_approved">Tienes un nuevo comentario en tu reporte</string>
+    <string name="report_was_not_approved">Tu reporte no fue aprobado</string>
+    <string name="comment_was_not_approved">Tu comentario no fue aprobado</string>
 
     // Account Screen
-    <string name="title_activity_account">Hesap</string>
-    <string name="save">Kaydet</string>
-    <string name="change">Değiştir</string>
-    <string name="done">Tamam</string>
-    <string name="logout">Çıkış yap</string>
-    <string name="email">E-posta</string>
-    <string name="new_password_hint">Yeni şifre</string>
-    <string name="logout_alert_message">Oturumunu kapattığında göndermemiş olduğun bütün raporlar silinecek. Devam etmek istiyor musun?</string>
-    <string name="user_updated_message">Kullanıcı profiliniz güncellendi!</string>
+    <string name="title_activity_account">Cuenta</string>
+    <string name="save">Guardar</string>
+    <string name="change">Cambiar</string>
+    <string name="done">Realizado</string>
+    <string name="logout">Salir</string>
+    <string name="email">Correo electrónico</string>
+    <string name="new_password_hint">Nueva contraseña</string>
+    <string name="logout_alert_message">Cuando salgas del sistema, todos tus reportes que no han sido enviados se perderán. Quieres continuar?</string>
+    <string name="user_updated_message">Tu usuario fue actualizado</string>
 
     // Report Details
-    <string name="issues_reported">Raporunda bazı sorunlar saptandı</string>
-    <string name="edit_report_label">Raporu düzenle</string>
-    <string name="close_dialog_label">Kapat</string>
-    <string name="comment">Yorum</string>
-    <string name="report">Raporla</string>
-    <string name="external_links_label">Linkler</string>
-    <string name="share_text">Hey! Bugün ne raporladığıma bak!</string>
-    <string name="error_getting_reports">Raporlara ulaşmaya çalışırken bir hata oluştu</string>
+    <string name="issues_reported">Temas informados en tu reporte</string>
+    <string name="edit_report_label">Editar reporte</string>
+    <string name="close_dialog_label">Salir</string>
+    <string name="comment_report_label">Comentarios (%d)</string>
+    <string name="comment">Comentario</string>
+    <string name="report">Reporte</string>
+    <string name="external_links_label">Enlaces externos</string>
+    <string name="share_text">Hey, miren el mapeo que realice en mi comunidad el día de hoy!</string>
+    <string name="error_getting_reports">Se ha producido un error mientras se elaboraba el reporte</string>
 
     // Comments Screen
-    <string name="comments_report_label">Yorumlar</string>
-    <string name="thanks">Teşekkürler!</string>
-    <string name="comment_created_message">Yorumunu moderatör ile paylaştık. Onaylandıktan sonra raporunu burada görebileceksin.</string>
-    <string name="send">Gönder</string>
-    <string name="send_comment">Yorum gönder</string>
-    <string name="remove_menu_label">Kaldır</string>
-    <string name="comment_delete_error">Bu yorumu silmekte sorun yaşıyoruz</string>
-    <string name="comment_create_error">Yeni yorum oluştururken sorun yaşandı</string>
+    <string name="comments_report_label">Comentarios</string>
+    <string name="thanks">Gracias</string>
+    <string name="comment_created_message">Su comentario fue enviado para revisión. Una vez aprobado, su comentario estará disponible aquí.</string>
+    <string name="send">Enviado</string>
+    <string name="send_comment_hint">El comentario fue enviado</string>
+    <string name="remove_menu_label">Eliminar</string>
+    <string name="comment_delete_error">Nosotros tuvimos problemas eliminando el comentario</string>
+    <string name="comment_create_error">Nosotros tuvimos problemas generando un nuevo comentario</string>
 
     // Add Report
-    <string name="add_report_title_label">Rapor oluştur</string>
-    <string name="title_activity_add_report">قم بإضافة تقرير</string>
-    <string name="period_ended_text">Ne yazık ki yeni rapor ekleyebileceğin süre sona erdi. Emeklerin için teşekkür ederiz!</string>
-    <string name="period_future_text">Bu konu üzerinde çalışıyoruz, lütfen daha sonra tekrar gel ya da yönetici ile iletişime geç!</string>
-    <string name="next">اSonraki</string>
-    <string name="add_photos_videos">Fotoğraf ve video ekle</string>
-    <string name="add_title_and_description">Başlık ve tanım</string>
-    <string name="title_hint">Başlık</string>
-    <string name="description_hint">Tanım</string>
-    <string name="add_link">Link ekle</string>
-    <string name="add_tags">Etiket ekle</string>
+    <string name="add_report_title_label">Añadir reporte</string>
+    <string name="title_activity_add_report">Añadir reporte</string>
+    <string name="period_ended_text">Desafortunadamente el periodo para recibir nuevos reportes a finalizado. Gracias por tu esfuerzo!!</string>
+    <string name="period_future_text">Nosotros estamos preparando la temática para ti, por favor regresa después o contacta con el administrador!</string>
+    <string name="next">Siguiente</string>
+    <string name="add_photos_videos">Añadir fotos y videos</string>
+    <string name="add_title_and_description">Titulo y Resumen</string>
+    <string name="title_hint">Titulo</string>
+    <string name="description_hint">Resumen</string>
+    <string name="add_link">agregar link</string>
+    <string name="add_tags">agregar etiquetas</string>
     <string name="movie">Video</string>
-    <string name="photo">Fotoğraf</string>
-    <string name="alert">Uyarı</string>
-    <string name="outside_themes_bounds">Bu konunun sınırları dışındasın. Rapor oluşturamazsın.</string>
-    <string name="permission_denied">Konum izni yok</string>
-    <string name="rationale_location_description">Rapor oluşturmadan önce uygulamanın konum iznini açmalısın.</string>
+    <string name="photo">Foto</string>
+    <string name="alert">Alerta</string>
+    <string name="outside_theme_bounds">Tu reporte está fuera del tema planteado. Tu no puedes crear este reporte.</string>
+    <string name="permission_denied">No autorización para uso de GPS</string>
+    <string name="rationale_location_description">debes tener permiso de la aplicación antes de crear tu reporte</string>
 
-    <string name="offline_error">Bağlantı kurulamadı. Kontrol et ve tekrar dene.</string>
-    <string name="getting_location">Konumun bulunuyor</string>
-    <string name="thanks_feedback">Rapor oluşturduğun için teşekkürler! Yeni bir rapor oluşturmak istediğinde lütfen geri gel.</string>
+    <string name="offline_error">No es posible conectarse. Revisa e intenta nuevamente</string>
+    <string name="getting_location">Cargando tu ubicación</string>
+    <string name="thanks_feedback">Gracias por tu reporte! Por favor ingresa nuevamente cuando quieras agregar un nuevo reporte</string>
 </resources>
