@@ -30,6 +30,7 @@ class ThemeDataTest {
 
     private val mockThemeObject = mock(Theme::class.java)
     private val mockThemeList = mutableListOf(mock(Theme::class.java), mock(Theme::class.java))
+    private val mockedLanguage = "en"
 
     @Before
     fun setup() {
@@ -41,9 +42,9 @@ class ThemeDataTest {
     @Test
     fun shouldReturnThemesWhenOnline() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(themeRemoteDataSource.getThemes()).thenReturn(Flowable.just(mockThemeList))
+        `when`(themeRemoteDataSource.getThemes(lang=mockedLanguage)).thenReturn(Flowable.just(mockThemeList))
 
-        themeRepository.getThemes()
+        themeRepository.getThemes(lang = mockedLanguage)
             .test()
             .assertSubscribed()
             .assertComplete()
@@ -53,13 +54,13 @@ class ThemeDataTest {
 
     @Test
     fun shouldReturnThemeById() {
-        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id)).thenReturn(
+        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id, lang = mockedLanguage)).thenReturn(
             Single.just(
                 mockThemeObject
             )
         )
 
-        themeRepository.getTheme(mockThemeObject.id)
+        themeRepository.getTheme(mockThemeObject.id, lang = mockedLanguage)
             .test()
             .assertSubscribed()
             .assertComplete()
@@ -70,10 +71,10 @@ class ThemeDataTest {
     @Test
     fun shouldNotReturnThemesTimeoutConnection() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(themeRemoteDataSource.getThemes())
+        `when`(themeRemoteDataSource.getThemes(lang = mockedLanguage))
             .thenReturn(Flowable.error(TimeoutException()))
 
-        themeRepository.getThemes()
+        themeRepository.getThemes(lang = mockedLanguage)
             .test()
             .assertSubscribed()
             .assertError { it is TimeoutException }
@@ -81,10 +82,10 @@ class ThemeDataTest {
 
     @Test
     fun shouldNotReturnThemeTimeoutConnection() {
-        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id))
+        `when`(themeRemoteDataSource.getTheme(mockThemeObject.id, lang = mockedLanguage))
             .thenReturn(Single.error(TimeoutException()))
 
-        themeRepository.getTheme(mockThemeObject.id)
+        themeRepository.getTheme(mockThemeObject.id, lang = mockedLanguage)
             .test()
             .assertSubscribed()
             .assertError { it is TimeoutException }

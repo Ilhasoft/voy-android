@@ -29,6 +29,7 @@ class ProjectDataTest {
     lateinit var projectRepository: ProjectRepository
 
     val mockProjectId = 2
+    val mockedLanguage = "en"
 
     @Before
     fun setup() {
@@ -39,10 +40,10 @@ class ProjectDataTest {
     @Test
     fun shouldReturnProjects() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(projectRemoteDataSource.getProjects())
+        `when`(projectRemoteDataSource.getProjects(mockedLanguage))
                 .thenReturn(Flowable.just(createMockProjectList()))
 
-        projectRepository.getProjects()
+        projectRepository.getProjects(mockedLanguage)
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()
@@ -52,10 +53,10 @@ class ProjectDataTest {
 
     @Test
     fun shouldNotReturnProjects() {
-        `when`(projectRemoteDataSource.getProjects())
+        `when`(projectRemoteDataSource.getProjects(mockedLanguage))
                 .thenReturn(Flowable.error(TimeoutException()))
 
-        projectRemoteDataSource.getProjects()
+        projectRemoteDataSource.getProjects(mockedLanguage)
                 .test()
                 .assertSubscribed()
                 .assertError { it is TimeoutException }
@@ -64,9 +65,9 @@ class ProjectDataTest {
     @Test
     fun shouldNotReturnProjectsUnknownHost() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(projectRemoteDataSource.getProjects()).thenReturn(Flowable.error(UnknownHostException()))
+        `when`(projectRemoteDataSource.getProjects(mockedLanguage)).thenReturn(Flowable.error(UnknownHostException()))
 
-        projectRepository.getProjects()
+        projectRepository.getProjects(mockedLanguage)
                 .test()
                 .assertSubscribed()
                 .assertError { it is UnknownHostException }
@@ -74,10 +75,10 @@ class ProjectDataTest {
 
     @Test
     fun shouldReturnSingleProject() {
-        `when`(projectRemoteDataSource.getProject(mockProjectId))
+        `when`(projectRemoteDataSource.getProject(mockProjectId, mockedLanguage))
                 .thenReturn(Single.just(createMockProject()))
 
-        projectRepository.getProject(mockProjectId)
+        projectRepository.getProject(mockProjectId, mockedLanguage)
                 .test()
                 .assertSubscribed()
                 .assertNoErrors()

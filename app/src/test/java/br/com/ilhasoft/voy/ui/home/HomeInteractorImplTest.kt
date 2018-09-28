@@ -48,6 +48,7 @@ class HomeInteractorImplTest {
     private val mockedNotificationId = 1
     private val mockedProjectId = 1
     private val mockedUserId = 1
+    private val mockedLanguage = "en"
 
     @Before
     fun setUp() {
@@ -64,10 +65,10 @@ class HomeInteractorImplTest {
     @Test
     fun `Should get projects and save on cache when online`() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(projectRemoteDataSource.getProjects()).thenReturn(Flowable.just(mockedProjects))
+        `when`(projectRemoteDataSource.getProjects(mockedLanguage)).thenReturn(Flowable.just(mockedProjects))
         `when`(projectLocalDataSource.saveProjects(mockedProjects)).thenReturn(Flowable.just(mockedProjects))
 
-        homeInteractor.getProjects(mockedUserId)
+        homeInteractor.getProjects(mockedUserId, mockedLanguage)
             .test()
             .assertNoErrors()
             .assertComplete()
@@ -77,9 +78,9 @@ class HomeInteractorImplTest {
     @Test
     fun `Should get projects when offline`() {
         `when`(connectionProvider.hasConnection()).thenReturn(false)
-        `when`(projectLocalDataSource.getProjects()).thenReturn(Flowable.just(mockedProjects))
+        `when`(projectLocalDataSource.getProjects(mockedLanguage)).thenReturn(Flowable.just(mockedProjects))
 
-        homeInteractor.getProjects(mockedUserId)
+        homeInteractor.getProjects(mockedUserId, mockedLanguage)
             .test()
             .assertNoErrors()
             .assertComplete()
@@ -89,10 +90,10 @@ class HomeInteractorImplTest {
     @Test
     fun `Should get themes and save on cache when online`() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(themeRemoteDataSource.getThemes(mockedProjectId, mockedUserId)).thenReturn(Flowable.just(mockedThemes))
+        `when`(themeRemoteDataSource.getThemes(mockedProjectId, mockedUserId, mockedLanguage)).thenReturn(Flowable.just(mockedThemes))
         `when`(themeLocalDataSource.saveThemes(mockedThemes)).thenReturn(Flowable.just(mockedThemes))
 
-        homeInteractor.getThemes(mockedProjectId, mockedUserId)
+        homeInteractor.getThemes(mockedProjectId, mockedUserId, mockedLanguage)
             .test()
             .assertNoErrors()
             .assertComplete()
@@ -102,9 +103,9 @@ class HomeInteractorImplTest {
     @Test
     fun `Should get themes when offline`() {
         `when`(connectionProvider.hasConnection()).thenReturn(false)
-        `when`(themeLocalDataSource.getThemes(mockedProjectId, mockedUserId)).thenReturn(Flowable.just(mockedThemes))
+        `when`(themeLocalDataSource.getThemes(mockedProjectId, mockedUserId, mockedLanguage)).thenReturn(Flowable.just(mockedThemes))
 
-        homeInteractor.getThemes(mockedProjectId, mockedUserId)
+        homeInteractor.getThemes(mockedProjectId, mockedUserId, mockedLanguage)
             .test()
             .assertNoErrors()
             .assertComplete()
