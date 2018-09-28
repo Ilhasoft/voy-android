@@ -33,13 +33,13 @@
     <string name="approved_greetings">Hola</string>
     <string name="approved_greetings_tip">No has creado ningún reporte hasta el momento</string>
     <string name="pending_greetings">Genial</string>
-    <string name="pending_greetings_tip">Todos tus reportes han sido aprovado</string>
+    <string name="pending_greetings_tip">Todos tus reportes han sido aprobado</string>
     <string name="rejected_greetings">Buen trabajo</string>
     <string name="rejected_greetings_tip">Tu no has aprobado los reportes</string>
     <string name="add_report_label">Añadir reporte</string>
-    <string name="you_have_x_reports_approved">Tu tienes aprobado el %dde los reportes</string>
-    <string name="you_have_x_reports_pending">Tu tienes pendiente el %dde los reportes</string>
-    <string name="you_have_x_reports_not_approved">Tu tienes el 1$%d de reportes no aprobados</string>
+    <string name="you_have_x_reports_approved">Tu tienes aprobado el %d de los reportes</string>
+    <string name="you_have_x_reports_pending">Tu tienes pendiente el %d de los reportes</string>
+    <string name="you_have_x_reports_not_approved">Tu tienes el %d de reportes no aprobados</string>
 
     // Notifications Screen
     <string name="notifications">Notificación</string>
