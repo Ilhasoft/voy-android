@@ -65,7 +65,7 @@ class HomeInteractorImplTest {
     @Test
     fun `Should get projects and save on cache when online`() {
         `when`(connectionProvider.hasConnection()).thenReturn(true)
-        `when`(projectRemoteDataSource.getProjects()).thenReturn(Flowable.just(mockedProjects))
+        `when`(projectRemoteDataSource.getProjects(mockedLanguage)).thenReturn(Flowable.just(mockedProjects))
         `when`(projectLocalDataSource.saveProjects(mockedProjects)).thenReturn(Flowable.just(mockedProjects))
 
         homeInteractor.getProjects(mockedUserId, mockedLanguage)
@@ -78,7 +78,7 @@ class HomeInteractorImplTest {
     @Test
     fun `Should get projects when offline`() {
         `when`(connectionProvider.hasConnection()).thenReturn(false)
-        `when`(projectLocalDataSource.getProjects()).thenReturn(Flowable.just(mockedProjects))
+        `when`(projectLocalDataSource.getProjects(mockedLanguage)).thenReturn(Flowable.just(mockedProjects))
 
         homeInteractor.getProjects(mockedUserId, mockedLanguage)
             .test()
