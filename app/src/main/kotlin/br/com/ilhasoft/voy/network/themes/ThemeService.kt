@@ -5,6 +5,7 @@ import br.com.ilhasoft.voy.network.ServiceFactory
 import br.com.ilhasoft.voy.shared.extensions.putIfNotNull
 import io.reactivex.Flowable
 import io.reactivex.Single
+import java.util.*
 
 /**
  * Created by developer on 09/01/18.
@@ -12,20 +13,22 @@ import io.reactivex.Single
 class ThemeService : ServiceFactory<ThemeApi>(ThemeApi::class.java), ThemeDataSource {
 
     override fun getThemes(project: Int?,
-                           user: Int?): Flowable<List<Theme>> {
+                           user: Int?,
+                           lang: String): Flowable<List<Theme>> {
         val themesRequest = mutableMapOf<String, Int?>()
         themesRequest.apply {
             putIfNotNull("project", project)
             putIfNotNull("user", user)
         }
-        return api.getThemes(themesRequest)
+        return api.getThemes(themesRequest, lang)
     }
 
     override fun getTheme(themeId: Int,
                           project: Int?,
                           yearStart: Int?,
                           yearEnd: Int?,
-                          user: Int?): Single<Theme> {
+                          user: Int?,
+                          lang: String): Single<Theme> {
         val themesRequest = mutableMapOf<String, Int?>()
         themesRequest.apply {
             putIfNotNull("project", project)
@@ -33,7 +36,7 @@ class ThemeService : ServiceFactory<ThemeApi>(ThemeApi::class.java), ThemeDataSo
             putIfNotNull("year_end", yearEnd)
             putIfNotNull("user", user)
         }
-        return api.getTheme(themeId, themesRequest)
+        return api.getTheme(themeId, themesRequest, lang)
     }
 
     override fun saveThemes(themes: List<Theme>): Flowable<MutableList<Theme>> {

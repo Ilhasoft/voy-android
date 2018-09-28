@@ -38,6 +38,7 @@ import br.com.ilhasoft.voy.ui.home.holder.ThemeViewHolder
 import br.com.ilhasoft.voy.ui.report.ReportsActivity
 import br.com.ilhasoft.voy.ui.report.detail.ReportDetailActivity
 import io.realm.Realm
+import java.util.*
 
 class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
 
@@ -67,7 +68,8 @@ class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
                 NotificationRepository(NotificationService()),
                 StandardScheduler()
             ),
-            StandardScheduler()
+            StandardScheduler(),
+            Locale.getDefault().language
         )
     }
     private val projectViewHolder: OnCreateViewHolder<Project, ProjectViewHolder> by lazy {
@@ -210,16 +212,16 @@ class HomeActivity : BaseActivity(), HomeContract, CheckConnectionProvider {
 
     override fun navigateToThemeReports(theme: Theme) {
         startActivity(
-                ReportsActivity.createIntent(
-                        this,
-                        theme.id,
-                        theme.name,
-                        theme.color,
-                        theme.bounds,
-                        theme.allowLinks,
-                        theme.startAt,
-                        theme.endAt
-                )
+            ReportsActivity.createIntent(
+                this,
+                theme.id,
+                theme.name,
+                theme.color,
+                theme.bounds,
+                theme.allowLinks,
+                theme.startAt,
+                theme.endAt
+            )
         )
     }
 

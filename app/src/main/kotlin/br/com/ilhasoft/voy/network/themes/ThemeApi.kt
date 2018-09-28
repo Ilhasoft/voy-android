@@ -5,6 +5,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 /**
@@ -13,10 +14,10 @@ import retrofit2.http.QueryMap
 interface ThemeApi {
 
     @GET("/api/themes/")
-    fun getThemes(@QueryMap parameters: Map<String, Int?>): Flowable<List<Theme>>
+    fun getThemes(@QueryMap parameters: Map<String, Int?>, @Query("lang") language: String): Flowable<List<Theme>>
 
     @GET("/api/themes/{id}/")
     fun getTheme(@Path("id") themeId: Int,
-                 @QueryMap parameters: Map<String, Int?>): Single<Theme>
+                 @QueryMap parameters: Map<String, Int?>, @Query("lang") language: String): Single<Theme>
 
 }
