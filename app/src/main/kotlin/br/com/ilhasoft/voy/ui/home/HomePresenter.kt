@@ -13,7 +13,8 @@ import timber.log.Timber
 class HomePresenter(
     private val preferences: Preferences,
     private val homeInteractor: HomeInteractor,
-    private val scheduler: BaseScheduler
+    private val scheduler: BaseScheduler,
+    private val language: String
 ) : Presenter<HomeContract>(HomeContract::class.java) {
 
     private var selectedProject: Project? = null
@@ -57,7 +58,7 @@ class HomePresenter(
     }
 
     private fun getThemeByNotification(notification: Notification) {
-        homeInteractor.getTheme(notification.report.theme)
+        homeInteractor.getTheme(notification.report.theme, language)
             .fromIoToMainThread(scheduler)
             .loadControl(view)
             .doOnSuccess { view.putThemeOnThemeData(it) }
@@ -81,12 +82,12 @@ class HomePresenter(
         preferences.getString(User.AVATAR).extractNumbers().toInt().minus(1) // minus() being used to get the correct position from resources Array
 
     private fun loadData() {
-        homeInteractor.getProjects(userId)
+        homeInteractor.getProjects(userId, language)
                 .doOnSubscribe { view.showLoading() }
                 .doOnNext { fillProjectsAdapter(it) }
                 .filter { it.isNotEmpty() }
                 .doOnNext { selectedProject = it.first() }
-                .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId) }
+                .flatMap { homeInteractor.getThemes(selectedProject!!.id, userId, language) }
                 .doOnTerminate { view.dismissLoading() }
                 .subscribe(
                         { fillThemesAdapter(it) },
@@ -99,7 +100,7 @@ class HomePresenter(
     }
 
     private fun loadThemesData(projectId: Int) {
-        homeInteractor.getThemes(projectId, userId)
+        homeInteractor.getThemes(projectId, userId, language)
             .doOnSubscribe { view.showLoading() }
             .doOnTerminate { view.dismissLoading() }
             .subscribe({ fillThemesAdapter(it) }, { Timber.e(it) })

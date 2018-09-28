@@ -22,20 +22,20 @@ class HomeInteractorImpl(
     private val scheduler: BaseScheduler
 ) : HomeInteractor {
 
-    override fun getProjects(userId: Int): Flowable<MutableList<Project>> {
-        return projectRepository.getProjects()
+    override fun getProjects(userId: Int, lang: String): Flowable<MutableList<Project>> {
+        return projectRepository.getProjects(lang)
             .fromIoToMainThread(scheduler)
             .flatMap { projectRepository.saveProjects(it) }
     }
 
-    override fun getThemes(projectId: Int, userId: Int): Flowable<MutableList<Theme>> {
-        return themeRepository.getThemes(projectId, userId)
+    override fun getThemes(projectId: Int, userId: Int, lang: String): Flowable<MutableList<Theme>> {
+        return themeRepository.getThemes(projectId, userId, lang)
             .flatMap { themeRepository.saveThemes(it) }
             .fromIoToMainThread(scheduler)
     }
 
-    override fun getTheme(themeId: Int): Maybe<Theme> {
-        return themeRepository.getTheme(themeId = themeId).toMaybe()
+    override fun getTheme(themeId: Int, lang: String): Maybe<Theme> {
+        return themeRepository.getTheme(themeId = themeId, lang = lang).toMaybe()
     }
 
     override fun getNotifications(): Flowable<List<Notification>> =

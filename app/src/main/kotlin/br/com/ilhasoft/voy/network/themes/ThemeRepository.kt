@@ -14,11 +14,11 @@ class ThemeRepository(
     private val connectionProvider: CheckConnectionProvider
 ) : ThemeDataSource {
 
-    override fun getThemes(project: Int?, user: Int?): Flowable<List<Theme>> {
+    override fun getThemes(project: Int?, user: Int?, lang: String): Flowable<List<Theme>> {
         return if (connectionProvider.hasConnection()) {
-            remoteThemeDataSource.getThemes(project, user)
+            remoteThemeDataSource.getThemes(project, user, lang)
         } else {
-            localThemeDataSource.getThemes(project, user)
+            localThemeDataSource.getThemes(project, user, lang)
         }
     }
 
@@ -27,9 +27,10 @@ class ThemeRepository(
         project: Int?,
         yearStart: Int?,
         yearEnd: Int?,
-        user: Int?
+        user: Int?,
+        lang: String
     ): Single<Theme> =
-        remoteThemeDataSource.getTheme(themeId, project, yearStart, yearEnd, user)
+        remoteThemeDataSource.getTheme(themeId, project, yearStart, yearEnd, user, lang)
 
     override fun saveThemes(themes: List<Theme>): Flowable<MutableList<Theme>> {
         return if (connectionProvider.hasConnection())

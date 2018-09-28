@@ -12,9 +12,9 @@ import io.reactivex.Maybe
  */
 interface HomeInteractor {
 
-    fun getProjects(userId: Int): Flowable<MutableList<Project>>
-    fun getThemes(projectId: Int, userId: Int): Flowable<MutableList<Theme>>
-    fun getTheme(themeId: Int): Maybe<Theme>
+    fun getProjects(userId: Int, lang: String): Flowable<MutableList<Project>>
+    fun getThemes(projectId: Int, userId: Int, lang: String): Flowable<MutableList<Theme>>
+    fun getTheme(themeId: Int, lang: String): Maybe<Theme>
     fun getNotifications(): Flowable<List<Notification>>
     fun markAsRead(notificationId: Int): Completable
 }

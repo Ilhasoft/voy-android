@@ -10,9 +10,9 @@ import io.reactivex.Single
  */
 class ProjectService : ServiceFactory<ProjectApi>(ProjectApi::class.java), ProjectDataSource {
 
-    override fun getProjects(): Flowable<MutableList<Project>> = api.getProjects()
+    override fun getProjects(lang: String): Flowable<MutableList<Project>> = api.getProjects(lang)
 
-    override fun getProject(projectId: Int): Single<Project> = api.getProject(projectId)
+    override fun getProject(projectId: Int, lang: String): Single<Project> = api.getProject(projectId, lang)
 
     override fun saveProjects(projects: MutableList<Project>): Flowable<MutableList<Project>> {
         return Flowable.just(projects)

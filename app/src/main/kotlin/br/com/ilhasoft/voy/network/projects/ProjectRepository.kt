@@ -14,15 +14,15 @@ class ProjectRepository(
     private val connectionProvider: CheckConnectionProvider
 ): ProjectDataSource {
 
-    override fun getProjects(): Flowable<MutableList<Project>> {
+    override fun getProjects(lang: String): Flowable<MutableList<Project>> {
         return if (connectionProvider.hasConnection()) {
-            remoteProjectDataSource.getProjects()
+            remoteProjectDataSource.getProjects(lang)
         } else {
-            localProjectDataSource.getProjects()
+            localProjectDataSource.getProjects(lang)
         }
     }
 
-    override fun getProject(projectId: Int): Single<Project> = remoteProjectDataSource.getProject(projectId)
+    override fun getProject(projectId: Int, lang: String): Single<Project> = remoteProjectDataSource.getProject(projectId, lang)
 
     override fun saveProjects(projects: MutableList<Project>): Flowable<MutableList<Project>> {
         return if (connectionProvider.hasConnection()) {

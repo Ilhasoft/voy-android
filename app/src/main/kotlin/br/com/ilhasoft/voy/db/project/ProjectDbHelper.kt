@@ -14,7 +14,7 @@ import io.realm.Realm
 class ProjectDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) :
     ProjectDataSource {
 
-    override fun getProjects(): Flowable<MutableList<Project>> {
+    override fun getProjects(lang: String): Flowable<MutableList<Project>> {
         return Flowable.just(realm)
             .onMainThread(scheduler)
             .flatMap {
@@ -22,7 +22,7 @@ class ProjectDbHelper(private val realm: Realm, private val scheduler: BaseSched
             }.map { it.map { Project(id = it.id, name = it.name) }.toMutableList() }
     }
 
-    override fun getProject(projectId: Int): Single<Project> {
+    override fun getProject(projectId: Int, lang:String): Single<Project> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

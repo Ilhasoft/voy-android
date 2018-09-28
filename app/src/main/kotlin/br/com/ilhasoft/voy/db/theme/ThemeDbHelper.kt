@@ -13,7 +13,7 @@ import io.realm.Realm
  */
 class ThemeDbHelper(private val realm: Realm, private val scheduler: BaseScheduler) : ThemeDataSource {
 
-    override fun getThemes(project: Int?, user: Int?): Flowable<List<Theme>> {
+    override fun getThemes(project: Int?, user: Int?, lang: String): Flowable<List<Theme>> {
         return Flowable.just(project)
             .onMainThread(scheduler)
             .flatMap {
@@ -25,7 +25,7 @@ class ThemeDbHelper(private val realm: Realm, private val scheduler: BaseSchedul
             }.map { it.map { it.toTheme() } }
     }
 
-    override fun getTheme(themeId: Int, project: Int?, yearStart: Int?, yearEnd: Int?, user: Int?): Single<Theme> {
+    override fun getTheme(themeId: Int, project: Int?, yearStart: Int?, yearEnd: Int?, user: Int?, lang: String): Single<Theme> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
