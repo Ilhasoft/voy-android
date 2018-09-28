@@ -39,7 +39,7 @@ class HomePresenterTest {
             mockedProject.copy(id = 3)
     )
 
-    private val mockedTheme = Theme(1, "", listOf(), "", listOf(), "", false)
+    private val mockedTheme = Theme(1, Project(), listOf(), "", listOf(), "", false)
     private val mockedThemeList = mutableListOf(
             mockedTheme.copy(id = 1),
             mockedTheme.copy(id = 2),
@@ -52,13 +52,14 @@ class HomePresenterTest {
             mockedNotification.copy(id = 2),
             mockedNotification.copy(id = 3)
     )
+    private val mockedLanguage: String = "en"
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         `when`(preferences.getInt(User.ID)).thenReturn(mockedUserId)
 
-        presenter = HomePresenter(preferences, interactor, ImmediateScheduler())
+        presenter = HomePresenter(preferences, interactor, ImmediateScheduler(), mockedLanguage)
         presenter.attachView(view)
     }
 
@@ -69,8 +70,8 @@ class HomePresenterTest {
 
     @Test
     fun shouldLoadProjectsOnStart() {
-        `when`(interactor.getProjects(mockedUserId)).thenReturn(Flowable.just(mockedProjectList))
-        `when`(interactor.getThemes(mockedProject.id, mockedUserId)).thenReturn(Flowable.just(mockedThemeList))
+        `when`(interactor.getProjects(mockedUserId, mockedLanguage)).thenReturn(Flowable.just(mockedProjectList))
+        `when`(interactor.getThemes(mockedProject.id, mockedUserId, mockedLanguage)).thenReturn(Flowable.just(mockedThemeList))
 
         presenter.start()
 
@@ -82,7 +83,7 @@ class HomePresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenTimeoutOnLoadProjects() {
-        `when`(interactor.getProjects(mockedUserId)).thenReturn(emitFlowableError(TimeoutException()))
+        `when`(interactor.getProjects(mockedUserId, mockedLanguage)).thenReturn(emitFlowableError(TimeoutException()))
 
         presenter.start()
 
@@ -93,7 +94,7 @@ class HomePresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenUnknownHostOnLoadProjects() {
-        `when`(interactor.getProjects(mockedUserId)).thenReturn(emitFlowableError(UnknownHostException()))
+        `when`(interactor.getProjects(mockedUserId, mockedLanguage)).thenReturn(emitFlowableError(UnknownHostException()))
 
         presenter.start()
 
@@ -104,7 +105,7 @@ class HomePresenterTest {
 
     @Test
     fun shouldShowErrorMessageWhenNetworkErrorOnLoadProjects() {
-        `when`(interactor.getProjects(mockedUserId)).thenReturn(emitFlowableError(NetworkErrorException()))
+        `when`(interactor.getProjects(mockedUserId, mockedLanguage)).thenReturn(emitFlowableError(NetworkErrorException()))
 
         presenter.start()
 
@@ -152,7 +153,7 @@ class HomePresenterTest {
 
     @Test
     fun shouldLoadThemesDataWhenOnClickProject() {
-        `when`(interactor.getThemes(mockedProject.id, mockedUserId)).thenReturn(Flowable.just(mockedThemeList))
+        `when`(interactor.getThemes(mockedProject.id, mockedUserId, mockedLanguage)).thenReturn(Flowable.just(mockedThemeList))
 
         presenter.onClickProject(mockedProject)
 
@@ -166,7 +167,7 @@ class HomePresenterTest {
     fun shouldNavigateToNotificationDetailsWhenOnClickItemNotification() {
         val mockedTheme = mock(Theme::class.java)
         `when`(interactor.markAsRead(mockedNotification.id)).thenReturn(Completable.complete())
-        `when`(interactor.getTheme(mockedNotification.report.theme)).thenReturn(Maybe.just(mockedTheme))
+        `when`(interactor.getTheme(mockedNotification.report.theme, mockedLanguage)).thenReturn(Maybe.just(mockedTheme))
 
         presenter.onClickItemNotification(mockedNotification)
 
