@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
+
 /**
  * Created by lucasbarros on 05/01/18.
  */
@@ -26,7 +27,7 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
     val api: ApiType by lazy {
         val clientBuilder = createOkHttpClient()
         clientBuilder.addInterceptor(AuthenticationInterceptor())
-                .addInterceptor(ContentTypeHeaderInterceptor())
+            .addInterceptor(ContentTypeHeaderInterceptor())
 
         mRetrofitBuilder.client(clientBuilder.build()).build().create<ApiType>(mClazz)
     }
@@ -34,16 +35,16 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
     val apiFile: ApiType by lazy {
         val clientBuilder = createOkHttpClient()
         clientBuilder.addInterceptor(AuthenticationInterceptor())
-                .addInterceptor(ContentTypeHeaderInterceptor("multipart/form-data"))
+            .addInterceptor(ContentTypeHeaderInterceptor("multipart/form-data"))
 
         mRetrofitBuilder.client(clientBuilder.build()).build().create<ApiType>(mClazz)
     }
 
     private fun createBaseRetrofit(): Retrofit.Builder {
         return Retrofit.Builder()
-                .baseUrl(Constants.API_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .baseUrl(Constants.API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
     }
 
     abstract fun createOkHttpClient(): OkHttpClient.Builder
