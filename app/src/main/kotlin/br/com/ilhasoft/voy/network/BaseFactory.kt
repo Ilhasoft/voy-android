@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.cert.X509Certificate
 
 
 /**
@@ -16,16 +17,17 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
 
     companion object {
         var accessToken: String = ""
+        var certificate: X509Certificate? = null
     }
 
     private var mRetrofitBuilder: Retrofit.Builder = createBaseRetrofit()
 
     val anonymousApi: ApiType by lazy {
-        mRetrofitBuilder.client(createOkHttpClient().build()).build().create<ApiType>(mClazz)
+        mRetrofitBuilder.client(createOkHttpClient(certificate).build()).build().create<ApiType>(mClazz)
     }
 
     val api: ApiType by lazy {
-        val clientBuilder = createOkHttpClient()
+        val clientBuilder = createOkHttpClient(certificate)
         clientBuilder.addInterceptor(AuthenticationInterceptor())
             .addInterceptor(ContentTypeHeaderInterceptor())
 
@@ -33,7 +35,7 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
     }
 
     val apiFile: ApiType by lazy {
-        val clientBuilder = createOkHttpClient()
+        val clientBuilder = createOkHttpClient(certificate)
         clientBuilder.addInterceptor(AuthenticationInterceptor())
             .addInterceptor(ContentTypeHeaderInterceptor("multipart/form-data"))
 
@@ -47,7 +49,6 @@ abstract class BaseFactory<out ApiType>(private var mClazz: Class<ApiType>) {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
     }
 
-    abstract fun createOkHttpClient(): OkHttpClient.Builder
-
+    abstract fun createOkHttpClient(certificate: X509Certificate?): OkHttpClient.Builder
 
 }

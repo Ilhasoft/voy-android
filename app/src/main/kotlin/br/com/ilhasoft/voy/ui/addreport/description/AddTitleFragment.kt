@@ -58,11 +58,11 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
     }
     private val sameLinkDialog by lazy {
         AlertDialog.Builder(context)
-                .setTitle(R.string.feedback_list_title)
-                .setMessage(R.string.feedback_list_message)
-                .setNegativeButton(android.R.string.ok, { dialog, _ -> dialog.dismiss() })
-                .setCancelable(true)
-                .create()
+            .setTitle(R.string.feedback_list_title)
+            .setMessage(R.string.feedback_list_message)
+            .setNegativeButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+            .setCancelable(true)
+            .create()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,21 +75,9 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
     override fun onStart() {
         super.onStart()
         compositeDisposable = CompositeDisposable()
-        compositeDisposable.add(
-                reportViewModel.linkAdded.subscribe({
-                    linkAdded(it)
-                })
-        )
-        compositeDisposable.add(
-                reportViewModel.linkRemoved.subscribe({
-                    linkRemoved(it)
-                })
-        )
-        compositeDisposable.add(
-                reportViewModel.linkAlreadyExist.subscribe({
-                    sameLinkDialog.show()
-                })
-        )
+        compositeDisposable.add(reportViewModel.linkAdded.subscribe { linkAdded(it) })
+        compositeDisposable.add(reportViewModel.linkRemoved.subscribe { linkRemoved(it) })
+        compositeDisposable.add(reportViewModel.linkAlreadyExist.subscribe { sameLinkDialog.show() })
     }
 
     override fun onDestroy() {
@@ -99,7 +87,7 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
 
     override fun onResume() {
         super.onResume()
-        reportViewModel.setButtonEnable(reportViewModel.name?.isNotBlank() == true)
+        reportViewModel.setButtonEnable(reportViewModel.name.isNotBlank())
         reportViewModel.setButtonTitle(R.string.next)
     }
 
@@ -134,7 +122,7 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
         val linkPattern = Pattern.compile("^(https://|http://)?[a-z0-9]+([-.][a-z0-9]+)+.*$")
         validLinkObservable.subscribe {
             binding.addLink.isEnabled = reportViewModel.verifyListSize()
-                    && linkPattern.matcher(it.text()).matches()
+                && linkPattern.matcher(it.text()).matches()
         }
     }
 
@@ -148,7 +136,7 @@ class AddTitleFragment : BaseFragment(), CheckConnectionProvider {
     }
 
     private fun createEditTextObservable(editText: EditText) = RxTextView.textChanges(editText)
-            .debounce(350, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
+        .debounce(350, TimeUnit.MILLISECONDS)
+        .observeOn(AndroidSchedulers.mainThread())
 
 }
