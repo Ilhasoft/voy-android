@@ -11,10 +11,10 @@ android {
 
     signingConfigs {
         signature {
-            keyAlias envs['keyAlias'] ?: System.env['keyAlias']
-            keyPassword envs['keyPassword'] ?: System.env['keyPassword']
-            storeFile file(envs['keyPath'] ?: System.env['keyPath'])
-            storePassword envs['storePassword'] ?: System.env['storePassword']
+            keyAlias envs['keyAlias'] ?: System.env['KEY_ALIAS']
+            keyPassword envs['keyPassword'] ?: System.env['KEY_PASSWORD']
+            storeFile file(envs['keyPath'] ?: System.env['KEY_PATH'])
+            storePassword envs['storePassword'] ?: System.env['STORE_PASSWORD']
         }
     }
 
