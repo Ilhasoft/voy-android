@@ -16,6 +16,9 @@ jobs:
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
+          name: Decrypt release keystore
+          command: openssl aes-256-cbc -d -in distribution/voy-keystore.jks-cipher -out distribution/voy-keystore.jks -md sha256 -k $CIPHER_DECRYPT_KEY
+      - run:
           name: Download Dependencies
           command: ./gradlew dependencies --no-daemon
       - run:
