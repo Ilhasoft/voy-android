@@ -26,10 +26,10 @@ abstract class ServiceFactory<out ApiType>(clazz: Class<ApiType>) :
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             client.addInterceptor(loggingInterceptor)
         }
-        return setupSSLSocket(client, certificate)
+        return if (certificate != null) setupSSLSocket(client, certificate) else client
     }
 
-    private fun setupSSLSocket(client: OkHttpClient.Builder, certificate: X509Certificate?): OkHttpClient.Builder {
+    private fun setupSSLSocket(client: OkHttpClient.Builder, certificate: X509Certificate): OkHttpClient.Builder {
 
         val keyStoreType = KeyStore.getDefaultType()
         val keyStore = KeyStore.getInstance(keyStoreType).apply {
