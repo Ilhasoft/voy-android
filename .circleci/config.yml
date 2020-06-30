@@ -15,9 +15,9 @@ jobs:
       - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Decrypt release keystore
-          command: openssl aes-256-cbc -d -in distribution/voy-keystore.jks-cipher -out distribution/voy-keystore.jks -md sha256 -k $CIPHER_DECRYPT_KEY
+#      - run:
+#          name: Decrypt release keystore
+#          command: openssl aes-256-cbc -d -in distribution/voy-keystore.jks-cipher -out distribution/voy-keystore.jks -md sha256 -k $CIPHER_DECRYPT_KEY
       - run:
           name: Download Dependencies
           command: ./gradlew dependencies --no-daemon
@@ -26,7 +26,7 @@ jobs:
           command: ./gradlew build jacocoTestReport --no-daemon
       - run:
           name: Upload reports to Codecov
-          command: bash <(curl -s https://codecov.io/bash) -t 7ba5b04e-7dd8-4644-8705-c5cb5dd6f3b4
+          command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
       - save_cache:
           paths:
             - ~/.gradle
